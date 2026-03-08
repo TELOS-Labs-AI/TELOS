@@ -1,0 +1,153 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telos-gov"
+version = "2.0.0"
+description = "TELOS: Telically Entrained Linguistic Operational Substrate — Mathematical AI Governance Framework"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.9"
+authors = [
+    {name = "Jeffrey Brunner", email = "JB@telos-labs.ai"},
+]
+keywords = [
+    "ai-governance",
+    "ai-safety",
+    "alignment",
+    "primacy-attractor",
+    "embedding-governance",
+    "nist-ai-rmf",
+    "eu-ai-act",
+    "agent-governance",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Security",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "numpy>=1.24.0,<2.0.0",
+    "pydantic>=2.0.0,<3.0.0",
+    "python-dotenv>=1.0.0,<2.0.0",
+    "click>=8.1.0,<9.0.0",
+]
+
+[project.scripts]
+telos = "telos_governance.cli:main"
+
+[project.optional-dependencies]
+cli = [
+    "pyyaml>=6.0.0,<7.0.0",
+    "cryptography>=41.0.0,<44.0.0",
+    "jinja2>=3.0.0,<4.0.0",
+]
+embeddings = [
+    "sentence-transformers>=2.2.0,<3.0.0",
+    "torch>=2.0.0,<3.0.0",
+]
+mistral = [
+    "mistralai>=0.1.0,<2.0.0",
+]
+observatory = [
+    "streamlit>=1.28.0,<2.0.0",
+    "plotly>=5.17.0,<6.0.0",
+    "matplotlib>=3.7.0,<4.0.0",
+    "pandas>=2.0.0,<3.0.0",
+    "jinja2>=3.0.0,<4.0.0",
+]
+onnx = [
+    "onnxruntime>=1.16.0,<2.0.0",
+    "tokenizers>=0.15.0,<1.0.0",
+    "huggingface_hub>=0.20.0,<1.0.0",
+]
+mlx = [
+    "mlx>=0.16.0",
+    "mlx-embeddings>=0.1.0",
+]
+langgraph = [
+    "langgraph>=0.0.20",
+    "langchain-core>=0.1.0",
+]
+dev = [
+    "pytest>=7.4.0,<9.0.0",
+    "pytest-cov>=4.1.0,<6.0.0",
+    "pytest-asyncio>=0.21.0,<1.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+all = [
+    "telos-gov[cli,embeddings,onnx,mistral,observatory,langgraph,dev]",
+]
+
+[project.urls]
+Homepage = "https://telos-labs.ai"
+Documentation = "https://docs.telos-labs.ai"
+Repository = "https://github.com/telos-ai-labs/telos"
+
+[tool.setuptools.packages.find]
+include = [
+    "telos_core*",
+    "telos_governance*",
+    "telos_adapters*",
+    "telos_observatory*",
+    "telos_privacy*",
+    "demos*",
+    "templates*",
+]
+
+[tool.setuptools.package-data]
+telos_governance = ["py.typed"]
+templates = ["*.yaml", "**/*.yaml"]
+"*" = ["*.yaml", "*.json", "*.jsonl"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+pythonpath = ["."]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests requiring external services",
+    "validation: marks adversarial validation tests",
+]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "S",    # flake8-bandit (security)
+    "UP",   # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "S101",  # assert used (fine in tests)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false

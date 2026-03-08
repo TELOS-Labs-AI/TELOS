@@ -1,0 +1,35 @@
+{
+  "package_version": "1.0.0",
+  "created_at": "2026-03-02T06:02:38.327391",
+  "telos_version": "v4.0.0-hardened",
+  "benchmarks": [
+    {
+      "benchmark": "agentharm",
+      "report_id": "forensic_agentharm_20260302_051837",
+      "total_tasks": 24,
+      "correctness_rate": 0.9166666666666666,
+      "defense_success_rate": 0.8333333333333334,
+      "trace_file": "traces/agentharm_trace_20260302_051837.jsonl"
+    },
+    {
+      "benchmark": "agentdojo",
+      "report_id": "forensic_agentdojo_20260302_060238",
+      "total_tasks": 23,
+      "correctness_rate": 0.5217391304347826,
+      "defense_success_rate": 1.0,
+      "trace_file": "traces/agentdojo_trace_20260302_060238.jsonl"
+    },
+    {
+      "benchmark": "safetoolbench",
+      "report_id": "forensic_safetoolbench_20260302_053345",
+      "total_tasks": 56,
+      "correctness_rate": 0.6607142857142857,
+      "defense_success_rate": 0.5178571428571429,
+      "trace_file": "traces/safetoolbench_trace_20260302_053345.jsonl"
+    }
+  ],
+  "navigation": {
+    "traces": "traces/",
+    "summary": "summary_reports/"
+  }
+}

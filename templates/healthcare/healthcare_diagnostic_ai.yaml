@@ -1,0 +1,111 @@
+# TELOS Agent Configuration — Healthcare Diagnostic AI Triage
+#
+# Governs diagnostic/radiology AI triage systems (Viz.ai, Aidoc, Paige.ai)
+# that analyze medical images and deliver priority notifications to
+# clinicians for time-sensitive conditions.
+#
+# Architecture: Image receive → PHI de-identification → AI inference →
+# result generation → clinician alert → viewer presentation → EHR filing.
+# Pipeline sourced from: research/diagnostic_ai_technical_workflows.md
+#
+# Radiology AI (10-step chain) and digital pathology (9-step chain)
+# consolidated into 8 governance tools. FDA-classified as notification
+# software, not diagnostic.
+#
+# Validate with: telos config validate healthcare_diagnostic_ai.yaml
+# Score with:    telos score "analyze this CT scan for suspected stroke" -c healthcare_diagnostic_ai.yaml
+
+agent:
+  id: healthcare_diagnostic_ai
+  name: Diagnostic AI Triage Agent
+  description: >-
+    AI-powered medical image analysis and triage notification system
+    for radiology (Viz.ai LVO detection, Aidoc CARE multi-condition
+    triage, 50+ FDA-cleared algorithms) and digital pathology (Paige.ai
+    prostate cancer detection). Operates as FDA-classified notification
+    software — De Novo Class II, not diagnostic.
+
+purpose:
+  statement: >-
+    Analyze medical images (CT, MRI, X-ray, whole slide pathology) to
+    identify suspected findings and deliver priority notifications to
+    qualified clinicians for review, operating as a triage and notification
+    tool that augments but does not replace clinical interpretation
+  example_requests:
+    - "Analyze this CT angiography for suspected large vessel occlusion"
+    - "Triage this chest CT for pulmonary embolism"
+    - "Flag this brain CT for intracranial hemorrhage"
+    - "Prioritize this abdomen CT scan in the worklist"
+    - "Analyze this whole slide image for suspected prostate cancer"
+    - "Route this stroke alert to the neurovascular team"
+    - "Score this brain CT using ASPECTS"
+
+scope: >-
+  Medical image analysis, radiology triage notification, digital pathology
+  slide analysis, worklist prioritization, clinician alerting via mobile
+  push and EHR notification, DICOM image processing, FHIR Observation
+  filing, care coordination for time-sensitive findings
+
+boundaries:
+  - text: "AI output is triage and notification only — not a diagnostic determination per FDA classification as radiological computer aided triage and notification software"
+    severity: hard
+  - text: "No replacement of radiologist or pathologist interpretation — AI augments, does not substitute for clinical judgment"
+    severity: hard
+  - text: "No autonomous ordering of procedures or treatments based on AI findings — suggestion only, clinician must order"
+    severity: hard
+  - text: "No transmission of full PHI to cloud without de-identification safeguards — Aidoc white-list de-identification preferred over full-PHI cloud transmission"
+    severity: hard
+  - text: "No suppression of AI findings — all results must be reviewable by a qualified clinician regardless of classification outcome"
+    severity: hard
+  - text: "No use of compressed or mobile preview images for diagnostic purposes — informational notification only, specialist must view on diagnostic display"
+    severity: hard
+
+violation_keywords:
+  - "without clinician"
+  - "remove the alert"
+
+safe_exemplars:
+  - "Analyze this CT angiography for suspected large vessel occlusion"
+  - "Triage this chest CT for pulmonary embolism"
+  - "Flag this brain CT for intracranial hemorrhage"
+  - "Prioritize this abdomen CT scan in the worklist"
+  - "Analyze this whole slide image for suspected prostate cancer"
+  - "Route this stroke alert to the neurovascular team"
+  - "Score this brain CT using ASPECTS"
+  - "Check this CT perfusion study for ischemic changes"
+  - "Notify the on-call radiologist about this flagged study"
+  - "Elevate this study priority in the reading worklist"
+  - "Process this pathology slide for cancer screening"
+  - "Alert the neurovascular team about this suspected LVO"
+
+tools:
+  - name: image_receive
+    description: "Receive DICOM images via auto-forwarding from scanner or PACS using DICOM C-STORE routing with TLS encryption"
+    risk_level: low
+  - name: phi_deidentify
+    description: "De-identify patient data from DICOM headers before cloud transmission using white-list tag copy with burned-in text removal and new UID generation"
+    risk_level: medium
+  - name: ai_inference
+    description: "Run trained CNN or foundation model inference on medical images in cloud (1-6 min latency, binary classification or multi-condition detection)"
+    risk_level: medium
+  - name: result_generate
+    description: "Generate structured AI findings as DICOM Structured Report (SR) or Secondary Capture (SC) with priority flag and coordinates per IHE AIR/AIW-I profiles"
+    risk_level: medium
+  - name: clinician_alert
+    description: "Deliver priority notification to specialist via mobile push (Viz.ai app), worklist elevation (Aidoc widget), SMS, or EHR notification via HL7 FHIR/FHIRcast"
+    risk_level: medium
+  - name: viewer_present
+    description: "Present AI findings in diagnostic viewer with source image overlay — compressed mobile preview for notification only, full PACS for diagnostic review"
+    risk_level: low
+  - name: ehr_result_file
+    description: "File AI-generated finding as FHIR Observation (DICOM Image Characteristics) in patient record via Epic Radiant integration"
+    risk_level: high
+  - name: downstream_order_suggest
+    description: "Suggest downstream clinical orders based on AI findings (thrombectomy scheduling, specialist consult, transfer, follow-up imaging) for clinician consideration"
+    risk_level: high
+
+constraints:
+  max_chain_length: 12
+  max_tool_calls_per_step: 4
+  escalation_threshold: 0.50
+  require_human_above_risk: medium

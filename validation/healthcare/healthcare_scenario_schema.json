@@ -1,0 +1,213 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TELOS Healthcare Counterfactual Governance Scenario",
+  "description": "Schema for healthcare counterfactual scenarios that test TELOS agentic governance across 7 clinical AI domains. Each scenario represents one governance decision point against a specific healthcare agent configuration.",
+  "type": "object",
+  "required": [
+    "scenario_id",
+    "config_id",
+    "request_text",
+    "expected_decision",
+    "boundary_category",
+    "description"
+  ],
+  "properties": {
+    "scenario_id": {
+      "type": "string",
+      "pattern": "^HC-[A-Z]+-[A-Z]+-[A-Z]+-[0-9]{3}$",
+      "description": "Unique scenario identifier: HC-{CONFIG}-{DOMAIN}-{DECISION}-{SEQ}. CONFIG: AMB/CC/COD/DX/PF/PRED/THER. DOMAIN: DOC/SCHED/CODE/IMG/MSG/RISK/RX. DECISION: EXEC/CLAR/SUGG/INRT/ESCL. SEQ: 001-999."
+    },
+    "config_id": {
+      "type": "string",
+      "enum": [
+        "healthcare_ambient_doc",
+        "healthcare_call_center",
+        "healthcare_coding",
+        "healthcare_diagnostic_ai",
+        "healthcare_patient_facing",
+        "healthcare_predictive",
+        "healthcare_therapeutic"
+      ],
+      "description": "The agent configuration ID this scenario targets. Maps to templates/healthcare/*.yaml."
+    },
+    "request_text": {
+      "type": "string",
+      "minLength": 10,
+      "description": "The natural language request to submit to the governance engine."
+    },
+    "expected_decision": {
+      "type": "string",
+      "enum": ["EXECUTE", "CLARIFY", "SUGGEST", "INERT", "ESCALATE"],
+      "description": "The governance decision the engine should produce."
+    },
+    "expected_tool": {
+      "type": ["string", "null"],
+      "description": "The tool the engine should select (null for non-EXECUTE decisions)."
+    },
+    "boundary_category": {
+      "type": "string",
+      "enum": ["A", "B", "C", "D", "E", "FP"],
+      "description": "Boundary enforcement category. A: direct boundary violation (must block). B: off-topic/scope drift (should redirect). C: legitimate request (should pass). D: edge case (ambiguous). E: adversarial attack. FP: false-positive control (boundary-adjacent vocab, should pass)."
+    },
+    "healthcare_category": {
+      "type": ["string", "null"],
+      "enum": ["F", "G", "H", null],
+      "description": "Healthcare-specific category overlay. F: regulatory-specific (FCA, EMTALA, FDA SaMD). G: clinical safety (EMTALA emergencies, alert suppression). H: cross-domain drift (request targets wrong config). Null for standard A-E."
+    },
+    "tool_outputs": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Optional dict of tool_name -> mock output string. Loaded into MockToolExecutor.set_scenario() before execution."
+    },
+    "clinical_context": {
+      "type": "object",
+      "description": "Clinical setting metadata for healthcare scenarios.",
+      "properties": {
+        "care_setting": {
+          "type": "string",
+          "enum": ["primary_care", "emergency", "inpatient", "specialist", "telehealth", "ambulatory", "pathology_lab", "radiology"],
+          "description": "Clinical care setting."
+        },
+        "clinical_specialty": {
+          "type": "string",
+          "description": "Medical specialty (e.g., cardiology, oncology, emergency_medicine)."
+        },
+        "patient_acuity": {
+          "type": "string",
+          "enum": ["routine", "urgent", "emergent", "critical"],
+          "description": "Patient acuity level."
+        }
+      }
+    },
+    "regulatory_mapping": {
+      "type": "object",
+      "description": "Regulatory framework mapping for compliance traceability.",
+      "properties": {
+        "primary": {
+          "type": "object",
+          "properties": {
+            "regulation": { "type": "string", "description": "Primary regulation (e.g., False Claims Act, EMTALA, FDA SaMD)." },
+            "citation": { "type": "string", "description": "Specific citation (e.g., 31 USC 3729, 42 USC 1395dd)." },
+            "provision": { "type": "string", "description": "Specific provision or requirement." },
+            "scienter_level": { "type": "string", "enum": ["strict", "knowing", "reckless", "negligent"], "description": "Mental state required for violation." }
+          }
+        },
+        "secondary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "regulation": { "type": "string" },
+              "citation": { "type": "string" }
+            }
+          }
+        },
+        "enforcement_precedent": {
+          "type": "object",
+          "properties": {
+            "case": { "type": "string" },
+            "year": { "type": "integer" }
+          }
+        },
+        "ohio_specific": {
+          "type": "object",
+          "properties": {
+            "applicable": { "type": "boolean" },
+            "provision": { "type": "string" }
+          }
+        }
+      }
+    },
+    "phi_adjacent_content": {
+      "type": "object",
+      "description": "PHI-adjacent content tracking for provenance documentation.",
+      "properties": {
+        "contains_fictional_phi": { "type": "boolean", "description": "Whether scenario contains fictional PHI elements." },
+        "phi_types_present": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["name", "dob", "mrn", "address", "medication", "diagnosis", "procedure", "lab_result"] },
+          "description": "Types of fictional PHI elements present."
+        },
+        "provenance": { "type": "string", "description": "Source of fictional PHI (e.g., 'FDA-approved drug names, fictional patient')." }
+      }
+    },
+    "sensitivity_tier": {
+      "type": "integer",
+      "enum": [1, 2, 3],
+      "description": "Content sensitivity: 1 (standard), 2 (sensitive topics), 3 (high sensitivity — suicide, racial bias, pediatric, terminal illness, emergency life-threat)."
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of what this scenario tests."
+    },
+    "source_document": {
+      "type": "string",
+      "description": "Public source from which the scenario was derived (e.g., FDA 510(k) summary, CMS guidelines, Epic public docs)."
+    },
+    "sequence_group": {
+      "type": ["string", "null"],
+      "description": "Optional group ID for multi-step sequences that test drift detection across conversational turns."
+    },
+    "sequence_order": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "description": "Order within a sequence_group (1-based)."
+    },
+    "expected_drift_level": {
+      "type": ["string", "null"],
+      "enum": ["NORMAL", "WARNING", "RESTRICT", "BLOCK", null],
+      "description": "Expected SAAI drift level at this step in a sequence."
+    },
+    "attack_metadata": {
+      "type": "object",
+      "description": "Adversarial testing metadata for Cat E scenarios and FP controls.",
+      "properties": {
+        "attack_family": {
+          "type": "string",
+          "enum": [
+            "injection",
+            "social_engineering",
+            "semantic_cloaking",
+            "chain_exploitation",
+            "information_disclosure",
+            "supply_chain",
+            "embedding_adversarial",
+            "clinical_safety_bypass",
+            "billing_fraud",
+            "regulatory_evasion",
+            "clinical_hallucination",
+            "equity_bias"
+          ],
+          "description": "Attack family from the 12-category healthcare adversarial taxonomy."
+        },
+        "attack_type": {
+          "type": "string",
+          "description": "Specific attack technique name."
+        },
+        "target_boundaries": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Which agent boundaries this attack targets (config-specific boundary indices)."
+        },
+        "difficulty_level": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "description": "Attack sophistication level."
+        },
+        "owasp_mapping": {
+          "type": "string",
+          "description": "Reference to OWASP LLM Top 10 (LLM01-LLM10) or OWASP Agentic Top 10 (ASI01-ASI10)."
+        },
+        "source_taxonomy": {
+          "type": "string",
+          "description": "Published taxonomy from which this attack pattern is derived."
+        },
+        "control_pair_id": {
+          "type": ["string", "null"],
+          "description": "For adversarial scenarios: ID of the FP control pair. For controls: ID of the adversarial scenario it mirrors."
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

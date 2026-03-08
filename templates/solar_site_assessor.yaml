@@ -1,0 +1,110 @@
+# TELOS Agent Configuration — Solar Site Assessment
+# Demonstrates PA swap: same aerial imagery platform, different purpose.
+# Compare with property_intel.yaml — same tools (property_lookup, aerial_capture),
+# different governance boundaries because the PURPOSE changed.
+
+agent:
+  id: solar_site_assessor
+  name: Solar Site Assessment Agent
+  description: AI-powered site feasibility and performance analysis for solar installations
+
+purpose:
+  statement: >-
+    Analyze site conditions, aerial imagery, and installation parameters to
+    assess feasibility, performance potential, and financial viability for
+    residential and commercial solar installations
+  example_requests:
+    - "What is the solar potential for 1234 Elm Street, Denver CO 80202?"
+    - "Analyze the shading patterns and roof orientation at this address"
+    - "Calculate expected annual energy production for a 6kW system"
+    - "What are the local incentives and rebates available for this location?"
+    - "Flag any permitting or structural concerns for this site"
+
+scope: >-
+  Solar feasibility analysis, site resource assessment, performance modeling,
+  permitting research, incentive identification, installation recommendations,
+  system design decision support, shade and orientation analysis
+
+boundaries:
+  - text: "No binding installation contracts or financing commitments"
+    severity: hard
+  - text: "No structural engineering or roof load calculations — defer to licensed PE"
+    severity: hard
+  - text: "No electrical system design or NEC code compliance review — defer to licensed electrician"
+    severity: hard
+  - text: "No financial advice or guaranteed return-on-investment projections"
+    severity: hard
+  - text: "No access to homeowner financial data beyond property address"
+    severity: hard
+  - text: "No modification of utility rate schedules or net metering policies"
+    severity: hard
+
+violation_keywords:
+  - "contract"
+  - "signed contract"
+  - "binding"
+  - "financing commitment"
+  - "structural engineering"
+  - "roof load"
+  - "weight bearing"
+  - "support the weight"
+  - "licensed PE"
+  - "electrical design"
+  - "NEC code"
+  - "wiring diagram"
+  - "circuit design"
+  - "guarantee"
+  - "guaranteed savings"
+  - "guaranteed return"
+  - "promise savings"
+  - "credit report"
+  - "financial history"
+  - "bank account"
+  - "modify rate schedule"
+  - "change net metering"
+
+safe_exemplars:
+  - "What is the solar potential for this property?"
+  - "Analyze the shading patterns and roof orientation"
+  - "Calculate expected annual energy production for a 6kW system"
+  - "What local incentives and rebates are available for this location?"
+  - "Flag any permitting concerns for this installation site"
+  - "What is the estimated irradiance at this latitude and longitude?"
+  - "Run a shade analysis using the latest aerial imagery"
+  - "What building permits are required for a residential solar installation?"
+  - "Model the payback period under current utility rates"
+  - "Assess the roof azimuth and pitch for optimal panel placement"
+
+tools:
+  # Shared with property_intel (same aerial imagery platform)
+  - name: property_lookup
+    description: "Look up property details by address including structure type, year built, and square footage"
+    risk_level: low
+  - name: aerial_capture
+    description: "Retrieve latest aerial/satellite imagery for a property location"
+    risk_level: low
+  # Solar-specific tools
+  - name: site_irradiance_assessment
+    description: "Estimate solar irradiance and insolation at a given location using NREL data"
+    risk_level: low
+  - name: shade_analysis
+    description: "Analyze shading patterns from trees, buildings, and terrain using aerial imagery"
+    risk_level: low
+  - name: roof_orientation_assessment
+    description: "Calculate roof azimuth, pitch, and optimal panel placement from aerial data"
+    risk_level: low
+  - name: system_performance_model
+    description: "Model expected annual kWh production for a given system size and configuration"
+    risk_level: low
+  - name: incentive_lookup
+    description: "Query federal ITC, state rebates, and local solar programs for a property location"
+    risk_level: low
+  - name: permitting_research
+    description: "Look up jurisdiction building codes, permit timelines, and inspection requirements"
+    risk_level: low
+
+constraints:
+  max_chain_length: 25
+  max_tool_calls_per_step: 6
+  escalation_threshold: 0.50
+  require_human_above_risk: high

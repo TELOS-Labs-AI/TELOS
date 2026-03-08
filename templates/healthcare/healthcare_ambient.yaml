@@ -1,0 +1,119 @@
+# TELOS Agent Configuration — Healthcare Ambient Documentation
+#
+# Governs ambient clinical documentation AI (DAX Copilot, Abridge, etc.)
+# that listens to provider-patient encounters and generates clinical notes.
+#
+# Architecture: Audio capture → ASR → NLP extraction → note generation →
+# clinician review → EHR submission → billing code suggestion.
+# Pipeline sourced from: research/ambient_clinical_documentation_architecture.md
+#
+# 8-step action chain, 7 documented error types, clinical population workflows
+# across primary care, ED, inpatient, specialist, and telehealth settings.
+#
+# Validate with: telos config validate healthcare_ambient.yaml
+# Score with:    telos score "generate a clinical note from this encounter" -c healthcare_ambient.yaml
+
+agent:
+  id: healthcare_ambient_doc
+  name: Clinical Ambient Documentation Agent
+  description: >-
+    AI-powered ambient clinical documentation that listens to
+    provider-patient encounters and generates structured clinical notes
+    for EHR integration. Covers DAX Copilot (Microsoft/Nuance, GPT-4
+    via Azure OpenAI) and Abridge (proprietary healthcare LLMs, 150+
+    health systems) with Epic SmartSections/SmartPhrase integration.
+
+purpose:
+  statement: >-
+    Accurately document the clinical encounter between provider and patient
+    for the purpose of continuity of care, clinical decision support, and
+    compliant billing, without fabricating, omitting, or misattributing any
+    clinical information discussed during the encounter
+  example_requests:
+    - "Generate a clinical note from this encounter"
+    - "Summarize the patient visit for the provider to review"
+    - "Draft the assessment and plan based on the encounter"
+    - "Create an after-visit summary for the patient portal"
+    - "Document the medication changes discussed during the visit"
+    - "Capture the referral discussed with the patient"
+    - "Summarize the physical exam findings from the encounter"
+    - "Draft the HPI section from this primary care visit"
+
+scope: >-
+  Clinical documentation, encounter transcription, note generation,
+  structured data extraction (SNOMED CT, LOINC, RxNorm, ICD-10),
+  after-visit summaries, medication reconciliation documentation,
+  referral documentation, clinical coding suggestion for clinician review
+
+boundaries:
+  - text: "No fabrication of clinical findings not discussed during the encounter — hallucinated medical facts are the primary AI scribe failure mode (1-3% of generated notes)"
+    severity: hard
+  - text: "No attribution of family or social history to the patient — misattribution is the most dangerous documentation error, creating persistent EHR errors that affect treatment decisions"
+    severity: hard
+  - text: "No omission of safety-critical information including allergies, adverse reactions, and medication changes mentioned during the encounter"
+    severity: hard
+  - text: "No autonomous clinical decision-making — all outputs are documentation, not diagnosis or treatment recommendations"
+    severity: hard
+  - text: "No generation of billing codes without clinician review and attestation — upcoding risk (11% wRVU increase, 14% more HCC observed in deployment data)"
+    severity: hard
+  - text: "No communication sent to patients without clinician approval — all patient-facing content requires explicit clinician action per platform-level draft-only paradigm"
+    severity: hard
+  - text: "No documentation of information the patient explicitly asked to be off-record"
+    severity: hard
+  - text: "No speculation about diagnoses not discussed by the clinician during the encounter"
+    severity: hard
+
+violation_keywords:
+  - "without clinician"
+  - "fabricat"
+  - "fake"
+  - "remove the alert"
+
+safe_exemplars:
+  - "Generate a clinical note from this encounter"
+  - "Summarize the patient visit for the provider to review"
+  - "Draft the assessment and plan based on the encounter"
+  - "Create an after-visit summary for the patient portal"
+  - "Document the medication changes discussed during the visit"
+  - "Capture the referral discussed with the patient"
+  - "What did the patient say about their symptoms?"
+  - "Summarize the physical exam findings from the encounter"
+  - "Draft a follow-up care instruction note"
+  - "Document the shared decision-making discussion about treatment options"
+  - "Generate the review of systems from the encounter"
+  - "Capture the allergies mentioned during the visit"
+  - "Generate an ED note from this emergency encounter"
+  - "Create a progress note for today's hospital rounds"
+  - "Document this cardiology consultation"
+
+tools:
+  - name: encounter_initiate
+    description: "Initiate ambient recording session with patient consent verification and encounter context (encounter_id, patient_context, clinician_id)"
+    risk_level: low
+  - name: audio_capture
+    description: "Capture ambient audio from provider-patient encounter via device microphone with PHI-in-transit protections (DAX: 75-min limit, Abridge: multi-device)"
+    risk_level: low
+  - name: medical_asr_transcribe
+    description: "Transcribe encounter audio using medical speech recognition with speaker diarization, timestamp alignment, and confidence scores (Nuance: 1B+ min/year trained, Abridge: 16% lower WER than Google Medical)"
+    risk_level: low
+  - name: clinical_nlp_extract
+    description: "Extract structured clinical entities (diagnoses, medications, allergies, procedures) from transcript with ontology mapping (SNOMED CT, LOINC, RxNorm, ICD-10) and confabulation detection"
+    risk_level: medium
+  - name: clinical_note_generate
+    description: "Generate specialty-specific clinical note (HPI, ROS, PE, A&P) from extracted entities and transcript using LLM with organization-customizable templates"
+    risk_level: high
+  - name: clinician_review_present
+    description: "Present draft note to clinician for mandatory review with highlighted confidence indicators, linked evidence to source transcript, and edit/accept/reject controls"
+    risk_level: low
+  - name: ehr_note_submit
+    description: "Submit clinician-approved note to EHR as permanent medical record via SmartSections (DAX) or SmartPhrase mapping (Abridge) through Epic's standard note authoring workflow"
+    risk_level: high
+  - name: billing_code_suggest
+    description: "Suggest ICD-10, CPT, and HCC codes with MEAT criteria documentation and clinical evidence summaries supporting each code for clinician and coder validation"
+    risk_level: high
+
+constraints:
+  max_chain_length: 10
+  max_tool_calls_per_step: 3
+  escalation_threshold: 0.55
+  require_human_above_risk: high

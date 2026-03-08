@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TELOS Civic Services Counterfactual Governance Scenario",
+  "description": "Schema for civic services counterfactual scenarios that test TELOS agentic governance against realistic municipal government service workflows. Each scenario represents one governance decision point. Part of the Mozilla Democracy x AI demonstration.",
+  "type": "object",
+  "required": [
+    "scenario_id",
+    "request_text",
+    "expected_decision",
+    "boundary_category",
+    "service_domain",
+    "description"
+  ],
+  "properties": {
+    "scenario_id": {
+      "type": "string",
+      "pattern": "^CV-[A-Z]+-[A-Z]+-[0-9]{3}$",
+      "description": "Unique scenario identifier: CV-{SERVICE_DOMAIN}-{DECISION}-{SEQ}. SERVICE_DOMAIN: SVC/ELIG/LOC/POL/REQ/GEN. DECISION: EXEC/CLAR/SUGG/INRT/ESCL/CTRL. SEQ: 001-999."
+    },
+    "request_text": {
+      "type": "string",
+      "minLength": 10,
+      "description": "The natural language request to submit to the governance engine."
+    },
+    "expected_decision": {
+      "type": "string",
+      "enum": ["EXECUTE", "CLARIFY", "SUGGEST", "INERT", "ESCALATE"],
+      "description": "The governance decision the engine should produce."
+    },
+    "expected_tool": {
+      "type": ["string", "null"],
+      "enum": [
+        "lookup_service",
+        "check_eligibility",
+        "find_office_location",
+        "search_policy",
+        "submit_service_request",
+        "escalate_to_staff",
+        null
+      ],
+      "description": "The tool the engine should select (null for non-EXECUTE decisions)."
+    },
+    "boundary_category": {
+      "type": "string",
+      "enum": ["A", "B", "C", "D", "E"],
+      "description": "Boundary enforcement category. A: direct boundary violation (must block). B: indirect/off-topic (should redirect). C: legitimate request (should pass). D: edge case (ambiguous). E: adversarial (prompt injection, social engineering, jailbreaking)."
+    },
+    "tool_outputs": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Optional dict of tool_name -> mock output string. Loaded into MockToolExecutor.set_scenario() before execution."
+    },
+    "service_domain": {
+      "type": "string",
+      "enum": ["permits", "benefits", "utilities", "transportation", "voting", "housing", "public_safety", "general"],
+      "description": "Municipal service domain for this scenario."
+    },
+    "boundary_tested": {
+      "type": ["string", "null"],
+      "enum": ["B1", "B2", "B3", "B4", "B5", null],
+      "description": "Which boundary this scenario tests (null for Cat B/C)."
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of what this scenario tests."
+    },
+    "source_document": {
+      "type": "string",
+      "description": "Public source from which the scenario was derived."
+    },
+    "attack_metadata": {
+      "type": "object",
+      "description": "Adversarial testing metadata for Cat E scenarios.",
+      "properties": {
+        "attack_family": {
+          "type": "string",
+          "enum": ["injection", "social_engineering", "semantic_cloaking", "chain_exploitation", "information_disclosure", "political_manipulation", "equity_exploitation"],
+          "description": "Attack family for civic domain adversarial scenarios."
+        },
+        "attack_type": {
+          "type": "string",
+          "description": "Specific attack technique name."
+        },
+        "target_boundaries": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["B1", "B2", "B3", "B4", "B5", "scope", "meta"]
+          },
+          "description": "Which agent boundaries this attack targets."
+        },
+        "difficulty_level": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "description": "Attack sophistication level."
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

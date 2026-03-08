@@ -1,0 +1,40 @@
+TELOS Governance Framework
+Copyright 2025-2026 TELOS AI Labs Inc.
+
+This product is licensed under the Apache License, Version 2.0.
+A copy of the license is available in the LICENSE file at the root of
+this repository or at: http://www.apache.org/licenses/LICENSE-2.0
+
+This product includes the following third-party dependencies:
+
+---
+
+numpy
+  License: BSD 3-Clause
+  Copyright (c) 2005-2026, NumPy Developers
+  https://numpy.org/doc/stable/license.html
+
+pydantic
+  License: MIT
+  Copyright (c) 2017-present, Samuel Colvin and other contributors
+  https://github.com/pydantic/pydantic/blob/main/LICENSE
+
+python-dotenv
+  License: BSD 3-Clause
+  Copyright (c) 2014, Saurabh Kumar
+  https://github.com/theskumar/python-dotenv/blob/main/LICENSE
+
+click
+  License: BSD 3-Clause
+  Copyright (c) 2014, Pallets Projects
+  https://github.com/pallets/click/blob/main/LICENSE.txt
+
+sentence-transformers (optional dependency)
+  License: Apache License 2.0
+  Copyright (c) 2019-present, UKP Lab, TU Darmstadt
+  https://github.com/UKPLab/sentence-transformers/blob/master/LICENSE
+
+---
+
+For the complete list of dependencies and their version constraints,
+see pyproject.toml in this repository.

@@ -1,0 +1,113 @@
+# TELOS Agent Configuration — Healthcare Predictive Clinical AI
+#
+# Governs predictive clinical AI systems (Epic Sepsis Model, COMPOSER,
+# deterioration indices) that continuously score patients for risk of
+# clinical deterioration and fire alerts to nursing/physician staff.
+#
+# Architecture: EHR data extract → feature compute → risk score calculate →
+# flowsheet write → BPA alert trigger → contributing factor display →
+# bundle compliance track.
+# Pipeline sourced from: research/diagnostic_ai_technical_workflows.md
+#
+# ESM v1 failure analysis (14.7% sensitivity in external validation) is
+# the canonical example of why clinical AI governance frameworks are needed.
+# COMPOSER achieves 0.938-0.945 AUROC with conformal prediction rejection.
+#
+# Validate with: telos config validate healthcare_predictive.yaml
+# Score with:    telos score "calculate sepsis risk for this patient" -c healthcare_predictive.yaml
+
+agent:
+  id: healthcare_predictive
+  name: Predictive Clinical AI Agent
+  description: >-
+    Continuous predictive scoring system that extracts real-time patient
+    data from EHR, computes risk scores for clinical deterioration
+    (sepsis, cardiac arrest, respiratory failure), fires best practice
+    advisory alerts to clinical staff, and tracks bundle compliance.
+    Covers Epic Sepsis Model (v2, gradient boosted tree), COMPOSER
+    (neural network, 4-hour horizon, conformal prediction), and
+    SepsisLab (Ohio State, active sensing).
+
+purpose:
+  statement: >-
+    Continuously extract patient data from EHR, compute predictive risk scores
+    for clinical deterioration, and deliver actionable alerts to nursing and
+    physician staff with contributing factors for clinical context, operating
+    as a clinical decision support tool that informs but does not direct
+    treatment decisions
+  example_requests:
+    - "Calculate sepsis risk score for this patient"
+    - "Show the top contributing factors for this alert"
+    - "Check bundle compliance for this sepsis case"
+    - "Display deterioration index trend for this ICU patient"
+    - "Fire a BPA alert for elevated sepsis risk"
+    - "Track lactate and blood culture completion times"
+    - "Show all patients above the alerting threshold on this unit"
+
+scope: >-
+  Predictive risk scoring, clinical deterioration detection, sepsis
+  prediction, best practice advisory alerting (interruptive and passive),
+  bundle compliance tracking (3-hour and 6-hour sepsis bundles),
+  contributing factor display, flowsheet documentation via HL7v2,
+  alert fatigue monitoring and governance
+
+boundaries:
+  - text: "Prediction only — no autonomous initiation of treatments, orders, or clinical interventions based on risk scores"
+    severity: hard
+  - text: "No suppression of alert fatigue data — all alert fire, dismiss, and override events must be logged as governance signals"
+    severity: hard
+  - text: "No model updates deployed without site-level validation against local patient population — ESM v1 showed 14.7% sensitivity in external validation vs 86% internal"
+    severity: hard
+  - text: "No predictive scoring on patient populations not represented in training data without disclosure to clinical staff"
+    severity: hard
+  - text: "No display of risk scores without accompanying contributing factors for clinical context and explainability"
+    severity: hard
+  - text: "No override of clinical judgment — alert dismissal with documented reason is always permitted and must be logged"
+    severity: hard
+
+violation_keywords:
+  - "without clinician"
+  - "remove the alert"
+
+safe_exemplars:
+  - "Calculate sepsis risk score for this patient"
+  - "Show the top contributing factors for this alert"
+  - "Check bundle compliance for this sepsis case"
+  - "Display deterioration index trend for this ICU patient"
+  - "Fire a BPA alert for elevated sepsis risk"
+  - "Track lactate and blood culture completion times"
+  - "Show all patients above the alerting threshold on this unit"
+  - "What variables are driving this patient's risk score?"
+  - "Review the alert override rate for this unit"
+  - "Show the 4-hour sepsis risk trajectory for this patient"
+  - "Check if antibiotics were administered within the 1-hour target"
+  - "Display contributing factors for this deterioration alert"
+
+tools:
+  - name: ehr_data_extract
+    description: "Extract real-time patient data (vitals, labs, medications, nursing assessments) via FHIR API or HL7v2 ADT feed at hourly resolution with OAuth 2.0 authentication"
+    risk_level: low
+  - name: feature_compute
+    description: "Compute ~150 predictive features from raw EHR data with missing value imputation, uncertainty quantification, and temporal windowing"
+    risk_level: low
+  - name: risk_score_calculate
+    description: "Run predictive model inference (neural network, gradient boosted tree, or LLM-augmented) to generate risk score with 4-hour prediction horizon and conformal prediction for out-of-distribution rejection"
+    risk_level: medium
+  - name: ehr_flowsheet_write
+    description: "Write risk score and top contributing factors to EHR flowsheet via HL7v2 outbound message for clinical visibility"
+    risk_level: medium
+  - name: bpa_alert_trigger
+    description: "Fire Best Practice Advisory alert to nursing or physician staff when risk score exceeds configurable threshold — interruptive or passive mode, embedded in primary workspace"
+    risk_level: high
+  - name: contributing_factor_display
+    description: "Display top contributing factors that drove the risk score for clinical context — enables clinician to evaluate prediction basis before acting"
+    risk_level: low
+  - name: bundle_compliance_track
+    description: "Track sepsis bundle element completion (blood cultures, serum lactate, broad-spectrum antibiotics, IV fluids) with automated timestamps against 1-hour and 3-hour targets"
+    risk_level: medium
+
+constraints:
+  max_chain_length: 8
+  max_tool_calls_per_step: 3
+  escalation_threshold: 0.50
+  require_human_above_risk: high

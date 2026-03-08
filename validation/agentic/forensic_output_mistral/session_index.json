@@ -1,0 +1,19 @@
+{
+  "package_version": "1.0.0",
+  "created_at": "2026-02-08T22:37:25.559278",
+  "telos_version": "v4.0.0-hardened",
+  "benchmarks": [
+    {
+      "benchmark": "agentharm",
+      "report_id": "forensic_agentharm_20260208_223516",
+      "total_tasks": 352,
+      "correctness_rate": 0.5,
+      "defense_success_rate": 1.0,
+      "trace_file": "traces/agentharm_trace_20260208_223516.jsonl"
+    }
+  ],
+  "navigation": {
+    "traces": "traces/",
+    "summary": "summary_reports/"
+  }
+}

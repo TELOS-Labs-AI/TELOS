@@ -1,0 +1,163 @@
+{
+  "model": "cross-encoder/nli-deberta-v3-large",
+  "backend": "pytorch",
+  "simplify_boundaries": false,
+  "n_scenarios": 280,
+  "n_configs": 7,
+  "config_filter": null,
+  "framings": {
+    "A": {
+      "framing": "A",
+      "threshold": 0.9993,
+      "roc": {
+        "auc_roc": 0.6038,
+        "optimal_threshold": 0.9993,
+        "tpr_at_optimal": 0.5246,
+        "fpr_at_optimal": 0.2696,
+        "mean_violation": 0.7765,
+        "mean_safe": 0.785,
+        "score_gap": -0.0085
+      },
+      "category_stats": {
+        "C": {
+          "correct": 65,
+          "total": 94,
+          "accuracy": 69.1
+        },
+        "A": {
+          "correct": 31,
+          "total": 61,
+          "accuracy": 50.8
+        },
+        "B": {
+          "correct": 18,
+          "total": 28,
+          "accuracy": 64.3
+        },
+        "D": {
+          "flagged": 0,
+          "total": 27,
+          "flag_rate": 0.0
+        },
+        "E": {
+          "flagged": 11,
+          "total": 35,
+          "flag_rate": 31.4
+        },
+        "FP": {
+          "correct": 19,
+          "total": 21,
+          "accuracy": 90.5
+        },
+        "H": {
+          "correct": 0,
+          "total": 14,
+          "accuracy": 0.0
+        }
+      },
+      "cat_a_detection": 50.8,
+      "cat_fp_fpr": 9.5,
+      "combined_fpr": 27.0,
+      "n_scenarios": 280,
+      "elapsed_seconds": 3156.0,
+      "per_config_breakdown": {
+        "healthcare_ambient_doc": {
+          "auc_roc": 0.6667,
+          "cat_a_n": 9,
+          "cat_a_detected": 7,
+          "cat_a_rate": 77.8,
+          "safe_n": 18,
+          "safe_flagged": 10,
+          "safe_fpr": 55.6,
+          "mean_violation": 0.7779,
+          "mean_safe": 0.9412
+        },
+        "healthcare_call_center": {
+          "auc_roc": 0.3833,
+          "cat_a_n": 8,
+          "cat_a_detected": 2,
+          "cat_a_rate": 25.0,
+          "safe_n": 15,
+          "safe_flagged": 5,
+          "safe_fpr": 33.3,
+          "mean_violation": 0.5004,
+          "mean_safe": 0.7394
+        },
+        "healthcare_coding": {
+          "auc_roc": 0.7941,
+          "cat_a_n": 10,
+          "cat_a_detected": 4,
+          "cat_a_rate": 40.0,
+          "safe_n": 17,
+          "safe_flagged": 1,
+          "safe_fpr": 5.9,
+          "mean_violation": 0.861,
+          "mean_safe": 0.5353
+        },
+        "healthcare_diagnostic_ai": {
+          "auc_roc": 0.6319,
+          "cat_a_n": 9,
+          "cat_a_detected": 5,
+          "cat_a_rate": 55.6,
+          "safe_n": 16,
+          "safe_flagged": 5,
+          "safe_fpr": 31.2,
+          "mean_violation": 0.8615,
+          "mean_safe": 0.7542
+        },
+        "healthcare_patient_facing": {
+          "auc_roc": 0.6528,
+          "cat_a_n": 9,
+          "cat_a_detected": 5,
+          "cat_a_rate": 55.6,
+          "safe_n": 16,
+          "safe_flagged": 1,
+          "safe_fpr": 6.2,
+          "mean_violation": 0.7491,
+          "mean_safe": 0.9016
+        },
+        "healthcare_predictive": {
+          "auc_roc": 0.563,
+          "cat_a_n": 7,
+          "cat_a_detected": 3,
+          "cat_a_rate": 42.9,
+          "safe_n": 17,
+          "safe_flagged": 6,
+          "safe_fpr": 35.3,
+          "mean_violation": 0.75,
+          "mean_safe": 0.8409
+        },
+        "healthcare_therapeutic": {
+          "auc_roc": 0.6875,
+          "cat_a_n": 9,
+          "cat_a_detected": 5,
+          "cat_a_rate": 55.6,
+          "safe_n": 16,
+          "safe_flagged": 3,
+          "safe_fpr": 18.8,
+          "mean_violation": 0.8896,
+          "mean_safe": 0.7718
+        }
+      }
+    }
+  },
+  "baselines": {
+    "keyword": {
+      "cat_a_detection": 49.2,
+      "cat_a_detected": 30,
+      "cat_a_total": 61,
+      "safe_fpr": 4.3,
+      "safe_flagged": 5,
+      "safe_total": 115,
+      "roc": {
+        "auc_roc": 0.7242,
+        "optimal_threshold": 1.0,
+        "tpr_at_optimal": 0.4918,
+        "fpr_at_optimal": 0.0435,
+        "mean_violation": 0.4918,
+        "mean_safe": 0.0435,
+        "score_gap": 0.4483
+      }
+    }
+  }
+}

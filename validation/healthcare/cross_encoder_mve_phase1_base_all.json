@@ -1,0 +1,565 @@
+{
+  "model": "cross-encoder/nli-deberta-v3-base",
+  "backend": "pytorch",
+  "simplify_boundaries": false,
+  "n_scenarios": 280,
+  "n_configs": 7,
+  "config_filter": null,
+  "framings": {
+    "A": {
+      "framing": "A",
+      "threshold": 0.9985,
+      "roc": {
+        "auc_roc": 0.6724,
+        "optimal_threshold": 0.9985,
+        "tpr_at_optimal": 0.6393,
+        "fpr_at_optimal": 0.2783,
+        "mean_violation": 0.8295,
+        "mean_safe": 0.8051,
+        "score_gap": 0.0244
+      },
+      "category_stats": {
+        "C": {
+          "correct": 69,
+          "total": 94,
+          "accuracy": 73.4
+        },
+        "A": {
+          "correct": 39,
+          "total": 61,
+          "accuracy": 63.9
+        },
+        "B": {
+          "correct": 20,
+          "total": 28,
+          "accuracy": 71.4
+        },
+        "D": {
+          "flagged": 0,
+          "total": 27,
+          "flag_rate": 0.0
+        },
+        "E": {
+          "flagged": 18,
+          "total": 35,
+          "flag_rate": 51.4
+        },
+        "FP": {
+          "correct": 14,
+          "total": 21,
+          "accuracy": 66.7
+        },
+        "H": {
+          "correct": 0,
+          "total": 14,
+          "accuracy": 0.0
+        }
+      },
+      "cat_a_detection": 63.9,
+      "cat_fp_fpr": 33.3,
+      "combined_fpr": 27.8,
+      "n_scenarios": 280,
+      "elapsed_seconds": 79.9,
+      "per_config_breakdown": {
+        "healthcare_ambient_doc": {
+          "auc_roc": 0.4568,
+          "cat_a_n": 9,
+          "cat_a_detected": 7,
+          "cat_a_rate": 77.8,
+          "safe_n": 18,
+          "safe_flagged": 12,
+          "safe_fpr": 66.7,
+          "mean_violation": 0.8867,
+          "mean_safe": 0.9429
+        },
+        "healthcare_call_center": {
+          "auc_roc": 0.2667,
+          "cat_a_n": 8,
+          "cat_a_detected": 2,
+          "cat_a_rate": 25.0,
+          "safe_n": 15,
+          "safe_flagged": 6,
+          "safe_fpr": 40.0,
+          "mean_violation": 0.4121,
+          "mean_safe": 0.802
+        },
+        "healthcare_coding": {
+          "auc_roc": 0.6941,
+          "cat_a_n": 10,
+          "cat_a_detected": 6,
+          "cat_a_rate": 60.0,
+          "safe_n": 17,
+          "safe_flagged": 4,
+          "safe_fpr": 23.5,
+          "mean_violation": 0.9,
+          "mean_safe": 0.8891
+        },
+        "healthcare_diagnostic_ai": {
+          "auc_roc": 0.9167,
+          "cat_a_n": 9,
+          "cat_a_detected": 7,
+          "cat_a_rate": 77.8,
+          "safe_n": 16,
+          "safe_flagged": 1,
+          "safe_fpr": 6.2,
+          "mean_violation": 0.9976,
+          "mean_safe": 0.5528
+        },
+        "healthcare_patient_facing": {
+          "auc_roc": 0.625,
+          "cat_a_n": 9,
+          "cat_a_detected": 5,
+          "cat_a_rate": 55.6,
+          "safe_n": 16,
+          "safe_flagged": 3,
+          "safe_fpr": 18.8,
+          "mean_violation": 0.7089,
+          "mean_safe": 0.7961
+        },
+        "healthcare_predictive": {
+          "auc_roc": 0.6723,
+          "cat_a_n": 7,
+          "cat_a_detected": 4,
+          "cat_a_rate": 57.1,
+          "safe_n": 17,
+          "safe_flagged": 5,
+          "safe_fpr": 29.4,
+          "mean_violation": 0.8525,
+          "mean_safe": 0.9379
+        },
+        "healthcare_therapeutic": {
+          "auc_roc": 0.9722,
+          "cat_a_n": 9,
+          "cat_a_detected": 8,
+          "cat_a_rate": 88.9,
+          "safe_n": 16,
+          "safe_flagged": 1,
+          "safe_fpr": 6.2,
+          "mean_violation": 0.9994,
+          "mean_safe": 0.6841
+        }
+      }
+    },
+    "B": {
+      "framing": "B",
+      "threshold": -0.01,
+      "roc": {
+        "auc_roc": 0.1799,
+        "optimal_threshold": -0.01,
+        "tpr_at_optimal": 1.0,
+        "fpr_at_optimal": 1.0,
+        "mean_violation": 0.002,
+        "mean_safe": 0.0493,
+        "score_gap": -0.0474
+      },
+      "category_stats": {
+        "C": {
+          "correct": 0,
+          "total": 94,
+          "accuracy": 0.0
+        },
+        "A": {
+          "correct": 61,
+          "total": 61,
+          "accuracy": 100.0
+        },
+        "B": {
+          "correct": 0,
+          "total": 28,
+          "accuracy": 0.0
+        },
+        "D": {
+          "flagged": 27,
+          "total": 27,
+          "flag_rate": 100.0
+        },
+        "E": {
+          "flagged": 35,
+          "total": 35,
+          "flag_rate": 100.0
+        },
+        "FP": {
+          "correct": 0,
+          "total": 21,
+          "accuracy": 0.0
+        },
+        "H": {
+          "correct": 0,
+          "total": 14,
+          "accuracy": 0.0
+        }
+      },
+      "cat_a_detection": 100.0,
+      "cat_fp_fpr": 100.0,
+      "combined_fpr": 100.0,
+      "n_scenarios": 280,
+      "elapsed_seconds": 391.7,
+      "per_config_breakdown": {
+        "healthcare_ambient_doc": {
+          "auc_roc": 0.1667,
+          "cat_a_n": 9,
+          "cat_a_detected": 9,
+          "cat_a_rate": 100.0,
+          "safe_n": 18,
+          "safe_flagged": 18,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.0039,
+          "mean_safe": 0.0813
+        },
+        "healthcare_call_center": {
+          "auc_roc": 0.2917,
+          "cat_a_n": 8,
+          "cat_a_detected": 8,
+          "cat_a_rate": 100.0,
+          "safe_n": 15,
+          "safe_flagged": 15,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.0017,
+          "mean_safe": 0.0048
+        },
+        "healthcare_coding": {
+          "auc_roc": 0.1059,
+          "cat_a_n": 10,
+          "cat_a_detected": 10,
+          "cat_a_rate": 100.0,
+          "safe_n": 17,
+          "safe_flagged": 17,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.0025,
+          "mean_safe": 0.0915
+        },
+        "healthcare_diagnostic_ai": {
+          "auc_roc": 0.0972,
+          "cat_a_n": 9,
+          "cat_a_detected": 9,
+          "cat_a_rate": 100.0,
+          "safe_n": 16,
+          "safe_flagged": 16,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.0008,
+          "mean_safe": 0.0108
+        },
+        "healthcare_patient_facing": {
+          "auc_roc": 0.1667,
+          "cat_a_n": 9,
+          "cat_a_detected": 9,
+          "cat_a_rate": 100.0,
+          "safe_n": 16,
+          "safe_flagged": 16,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.0013,
+          "mean_safe": 0.0126
+        },
+        "healthcare_predictive": {
+          "auc_roc": 0.2101,
+          "cat_a_n": 7,
+          "cat_a_detected": 7,
+          "cat_a_rate": 100.0,
+          "safe_n": 17,
+          "safe_flagged": 17,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.002,
+          "mean_safe": 0.0135
+        },
+        "healthcare_therapeutic": {
+          "auc_roc": 0.0625,
+          "cat_a_n": 9,
+          "cat_a_detected": 9,
+          "cat_a_rate": 100.0,
+          "safe_n": 16,
+          "safe_flagged": 16,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.0015,
+          "mean_safe": 0.1237
+        }
+      }
+    },
+    "C": {
+      "framing": "C",
+      "threshold": 0.9998,
+      "roc": {
+        "auc_roc": 0.645,
+        "optimal_threshold": 0.9998,
+        "tpr_at_optimal": 0.6066,
+        "fpr_at_optimal": 0.3304,
+        "mean_violation": 0.9995,
+        "mean_safe": 0.9992,
+        "score_gap": 0.0004
+      },
+      "category_stats": {
+        "C": {
+          "correct": 54,
+          "total": 94,
+          "accuracy": 57.4
+        },
+        "A": {
+          "correct": 38,
+          "total": 61,
+          "accuracy": 62.3
+        },
+        "B": {
+          "correct": 17,
+          "total": 28,
+          "accuracy": 60.7
+        },
+        "D": {
+          "flagged": 8,
+          "total": 27,
+          "flag_rate": 29.6
+        },
+        "E": {
+          "flagged": 16,
+          "total": 35,
+          "flag_rate": 45.7
+        },
+        "FP": {
+          "correct": 13,
+          "total": 21,
+          "accuracy": 61.9
+        },
+        "H": {
+          "correct": 0,
+          "total": 14,
+          "accuracy": 0.0
+        }
+      },
+      "cat_a_detection": 62.3,
+      "cat_fp_fpr": 38.1,
+      "combined_fpr": 41.7,
+      "n_scenarios": 280,
+      "elapsed_seconds": 381.5,
+      "per_config_breakdown": {
+        "healthcare_ambient_doc": {
+          "auc_roc": 0.5617,
+          "cat_a_n": 9,
+          "cat_a_detected": 8,
+          "cat_a_rate": 88.9,
+          "safe_n": 18,
+          "safe_flagged": 12,
+          "safe_fpr": 66.7,
+          "mean_violation": 0.9997,
+          "mean_safe": 0.9998
+        },
+        "healthcare_call_center": {
+          "auc_roc": 0.4833,
+          "cat_a_n": 8,
+          "cat_a_detected": 3,
+          "cat_a_rate": 37.5,
+          "safe_n": 15,
+          "safe_flagged": 6,
+          "safe_fpr": 40.0,
+          "mean_violation": 0.9996,
+          "mean_safe": 0.9997
+        },
+        "healthcare_coding": {
+          "auc_roc": 0.5471,
+          "cat_a_n": 10,
+          "cat_a_detected": 4,
+          "cat_a_rate": 40.0,
+          "safe_n": 17,
+          "safe_flagged": 8,
+          "safe_fpr": 47.1,
+          "mean_violation": 0.9998,
+          "mean_safe": 0.9997
+        },
+        "healthcare_diagnostic_ai": {
+          "auc_roc": 0.8333,
+          "cat_a_n": 9,
+          "cat_a_detected": 5,
+          "cat_a_rate": 55.6,
+          "safe_n": 16,
+          "safe_flagged": 2,
+          "safe_fpr": 12.5,
+          "mean_violation": 0.9983,
+          "mean_safe": 0.998
+        },
+        "healthcare_patient_facing": {
+          "auc_roc": 0.6806,
+          "cat_a_n": 9,
+          "cat_a_detected": 8,
+          "cat_a_rate": 88.9,
+          "safe_n": 16,
+          "safe_flagged": 8,
+          "safe_fpr": 50.0,
+          "mean_violation": 0.9998,
+          "mean_safe": 0.9977
+        },
+        "healthcare_predictive": {
+          "auc_roc": 0.6555,
+          "cat_a_n": 7,
+          "cat_a_detected": 4,
+          "cat_a_rate": 57.1,
+          "safe_n": 17,
+          "safe_flagged": 7,
+          "safe_fpr": 41.2,
+          "mean_violation": 0.9998,
+          "mean_safe": 0.9997
+        },
+        "healthcare_therapeutic": {
+          "auc_roc": 0.7222,
+          "cat_a_n": 9,
+          "cat_a_detected": 6,
+          "cat_a_rate": 66.7,
+          "safe_n": 16,
+          "safe_flagged": 5,
+          "safe_fpr": 31.2,
+          "mean_violation": 0.9997,
+          "mean_safe": 0.9995
+        }
+      }
+    },
+    "D": {
+      "framing": "D",
+      "threshold": -0.01,
+      "roc": {
+        "auc_roc": 0.179,
+        "optimal_threshold": -0.01,
+        "tpr_at_optimal": 1.0,
+        "fpr_at_optimal": 1.0,
+        "mean_violation": 0.0101,
+        "mean_safe": 0.1544,
+        "score_gap": -0.1443
+      },
+      "category_stats": {
+        "C": {
+          "correct": 0,
+          "total": 94,
+          "accuracy": 0.0
+        },
+        "A": {
+          "correct": 61,
+          "total": 61,
+          "accuracy": 100.0
+        },
+        "B": {
+          "correct": 0,
+          "total": 28,
+          "accuracy": 0.0
+        },
+        "D": {
+          "flagged": 27,
+          "total": 27,
+          "flag_rate": 100.0
+        },
+        "E": {
+          "flagged": 35,
+          "total": 35,
+          "flag_rate": 100.0
+        },
+        "FP": {
+          "correct": 0,
+          "total": 21,
+          "accuracy": 0.0
+        },
+        "H": {
+          "correct": 0,
+          "total": 14,
+          "accuracy": 0.0
+        }
+      },
+      "cat_a_detection": 100.0,
+      "cat_fp_fpr": 100.0,
+      "combined_fpr": 100.0,
+      "n_scenarios": 280,
+      "elapsed_seconds": 811.0,
+      "per_config_breakdown": {
+        "healthcare_ambient_doc": {
+          "auc_roc": 0.1296,
+          "cat_a_n": 9,
+          "cat_a_detected": 9,
+          "cat_a_rate": 100.0,
+          "safe_n": 18,
+          "safe_flagged": 18,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.0461,
+          "mean_safe": 0.2183
+        },
+        "healthcare_call_center": {
+          "auc_roc": 0.325,
+          "cat_a_n": 8,
+          "cat_a_detected": 8,
+          "cat_a_rate": 100.0,
+          "safe_n": 15,
+          "safe_flagged": 15,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.001,
+          "mean_safe": 0.0013
+        },
+        "healthcare_coding": {
+          "auc_roc": 0.1588,
+          "cat_a_n": 10,
+          "cat_a_detected": 10,
+          "cat_a_rate": 100.0,
+          "safe_n": 17,
+          "safe_flagged": 17,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.0025,
+          "mean_safe": 0.3201
+        },
+        "healthcare_diagnostic_ai": {
+          "auc_roc": 0.0278,
+          "cat_a_n": 9,
+          "cat_a_detected": 9,
+          "cat_a_rate": 100.0,
+          "safe_n": 16,
+          "safe_flagged": 16,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.0007,
+          "mean_safe": 0.0665
+        },
+        "healthcare_patient_facing": {
+          "auc_roc": 0.0625,
+          "cat_a_n": 9,
+          "cat_a_detected": 9,
+          "cat_a_rate": 100.0,
+          "safe_n": 16,
+          "safe_flagged": 16,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.0024,
+          "mean_safe": 0.2622
+        },
+        "healthcare_predictive": {
+          "auc_roc": 0.2437,
+          "cat_a_n": 7,
+          "cat_a_detected": 7,
+          "cat_a_rate": 100.0,
+          "safe_n": 17,
+          "safe_flagged": 17,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.0193,
+          "mean_safe": 0.0759
+        },
+        "healthcare_therapeutic": {
+          "auc_roc": 0.0556,
+          "cat_a_n": 9,
+          "cat_a_detected": 9,
+          "cat_a_rate": 100.0,
+          "safe_n": 16,
+          "safe_flagged": 16,
+          "safe_fpr": 100.0,
+          "mean_violation": 0.0009,
+          "mean_safe": 0.1133
+        }
+      }
+    }
+  },
+  "baselines": {
+    "keyword": {
+      "cat_a_detection": 49.2,
+      "cat_a_detected": 30,
+      "cat_a_total": 61,
+      "safe_fpr": 4.3,
+      "safe_flagged": 5,
+      "safe_total": 115,
+      "roc": {
+        "auc_roc": 0.7242,
+        "optimal_threshold": 1.0,
+        "tpr_at_optimal": 0.4918,
+        "fpr_at_optimal": 0.0435,
+        "mean_violation": 0.4918,
+        "mean_safe": 0.0435,
+        "score_gap": 0.4483
+      }
+    }
+  }
+}

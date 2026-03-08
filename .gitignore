@@ -1,0 +1,264 @@
+# Secrets & contacts (credentials + email addresses — never commit)
+.secrets/
+contacts/
+
+# MCP configuration (contains connection strings — use .mcp.json.example)
+.mcp.json
+
+# Legacy Observatory (replaced by telos_observatory/)
+telos_observatory_v3/
+
+# Nested repo copy (accidental duplication — 2.6GB)
+telos/
+
+# VC/business documents (not for collaborator repo)
+docs/The_Cost_of_Ungoverned_AI.pdf
+docs/TELOS_Cost_of_Ungoverned_AI_Gamma.md
+docs/TELOS_Strategic_Positioning*
+docs/TELOS_vs_Amodei_Analysis.md
+
+# Environment
+.env
+.env.local
+.env.*.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Test outputs
+tests/test_results/
+*.jsonl
+
+# Exception: Nearmap benchmark dataset (required for reproducibility)
+!validation/nearmap/nearmap_counterfactual_v1.jsonl
+
+# Exception: Backtest forensic dataset (required for Zenodo reproducibility)
+!research/backtest_forensic_dataset.jsonl
+
+# Session data (privacy)
+beta_data/
+beta_consents/
+consent_logs/
+session_data/
+*_sessions/
+
+# Local settings (not version controlled)
+.claude/settings.local.json
+
+# Embeddings cache
+embeddings_cache/
+.cache/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Local development files
+scratch/
+temp/
+tmp/
+
+# External benchmark repos (cloned locally, not committed)
+propensity-evaluation/
+agentdojo-repo/
+
+# Draft directories
+draft/
+drafts/
+*_draft/
+*_drafts/
+.tmp.driveupload/
+
+# Binary documents (use PDF/Markdown versions instead)
+*.docx
+
+# Legacy components (removed in hardened version)
+telos_configurator/
+screenshots/gateway_ui.png
+
+# Governance trace output
+telos_governance_traces/
+
+# Internal/business docs (kept locally, not for public repo)
+docs/ADJACENT_RESEARCH_LANDSCAPE.md
+docs/AGENTIC_AI_*.md
+docs/AGENTIC_AI_*.docx
+docs/AUDIT_DOCUMENTS.md
+docs/COMPETITIVE_POSITIONING_ANALYSIS.md
+docs/NSF_SBIR_*.md
+docs/STRATEGIC_POSITIONING_UCXM.md
+docs/SUPABASE_*.md
+docs/SUPABASE_*.txt
+docs/SUPER_AGENT_PAPER_ANALYSIS.md
+docs/TELOS_Competitive_Landscape.md
+docs/TELOS_EU_AI_Act_Positioning.md
+docs/TELOS_Enterprise_Differentiator_Deck.md
+docs/TELOS_Gateway_Technical_Brief_v1.0.md
+docs/TELOS_INSURANCE_BUSINESS_MODEL.md
+docs/TELOS_Lexicon_V1.1.md
+docs/TELOS_Pitch_Deck_v2.md
+docs/TELOS_QA_Interview.md
+docs/TELOS_Whitepaper_v2.4_humanized.*
+docs/WORKBENCH_INTEGRATION_SCOPE.md
+docs/EMBEDDING_ARCHITECTURE_INTERNAL.md
+docs/TELOS_TECHNICAL_ARCHITECTURE_INTERNAL.md
+docs/TELOS_Provider_Architecture.tex
+docs/TELOS_Provider_Architecture.pdf
+
+# LaTeX temp files
+*.aux
+*.out
+docs/*.log
+
+# Working drafts (local reference copies, not for repo)
+docs/TELOS_Academic_Paper_REVISED.*
+docs/TELOS_Academic_Paper_Distribution.*
+docs/TELOS_Paper_Review_Report.md
+docs/REVIEW_*.md
+docs/PAPER_TRANSFORMATION_SUMMARY.txt
+docs/DOCUMENT_INVENTORY.md
+
+# Archive (internal working docs, not for repo)
+archive/
+
+# Generated reports
+telos_reports/
+
+# Healthcare market research (internal, not for partner repo)
+research/healthcare_market_intelligence.md
+
+# ─── Audit additions (2026-02-15) ───
+
+# Nested repos
+telos_report_viewer/
+
+# Client deliverables
+docs/NEARMAP_GOVERNANCE_BRIEF*
+
+# Business/internal docs
+docs/TELOS_Org_Chart*
+docs/TELOS_Strategic_Positioning_VC_Brief*
+docs/TELOS_Cost_of_Ungoverned_AI*
+docs/The_Cost_of_Ungoverned_AI*
+docs/TELOS_vs_Amodei_Analysis*
+
+# Research — internal/ephemeral
+research/research_log.md
+research/cli_implementation_tracker.md
+research/cli_handoff.md
+research/session_5_handoff.md
+research/cost_analysis_*.md
+research/nearmap_*.md
+research/cross_framework_report.md
+research/langchain_integration_report.md
+research/langgraph_integration_report.md
+research/observability_integration_report.md
+research/Adapting-Business-*.pdf
+
+# Validation — Zenodo published packages (already on Zenodo)
+validation/zenodo*/
+validation/agentic/zenodo_*/
+
+# Validation — regenerable results
+validation/*_validation_results*.json
+validation/*_validation_summary.json
+validation/*_results.json
+validation/medsafetybench_full_*.json
+validation/medsafety_batch_*.json
+validation/telos_complete_validation_dataset.json
+validation/telos_validation_dataset_zenodo.json
+validation/forensic_test_output/
+validation/multiturn_results/
+validation/wmdp_results/
+validation/nearmap/reports/*.csv
+validation/nearmap/reports/*.html
+
+# ─── Healthcare + SetFit additions (2026-02-17) ───
+
+# Training checkpoints (260MB, regenerable)
+checkpoints/
+
+# ONNX models (87MB+, regenerable via export_setfit_model.py)
+models/
+
+# Healthcare validation — regenerable result JSONs
+validation/healthcare/*_results*.json
+validation/healthcare/ground_truth_analysis.json
+validation/healthcare/setfit_calibration.json
+validation/healthcare/reports/
+
+# Exception: Healthcare benchmark datasets (required for reproducibility)
+!validation/healthcare/healthcare_counterfactual_v1.jsonl
+!validation/healthcare/healthcare_disagreement_v1.jsonl
+!validation/healthcare/healthcare_ground_truth_v1.jsonl
+
+# Domain-specific SetFit artifacts — PROPRIETARY (trained weights, labeled data, calibration)
+# These stay local. The models/ rule covers head_weights + manifest.
+# The *.jsonl rule covers training + heldout.
+
+# Optimizer — large artifacts (regenerable via governance_optimizer.py)
+optimizer_output/**/study.db
+optimizer_output/**/optimizer.log
+optimizer_output/optimizer.pid
+
+# ─── Ops Console additions (2026-03-01) ───
+
+# Optimizer output (large, regeneratable — full directories)
+optimizer_output/
+optimizer_output_*/
+
+# Node modules
+node_modules/
+
+# Calibration queue (runtime state)
+calibration_queue/
+
+# SQLite databases
+*.db

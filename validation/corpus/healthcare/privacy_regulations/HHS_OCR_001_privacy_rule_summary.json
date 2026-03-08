@@ -1,0 +1,51 @@
+{
+  "document_id": "HHS_OCR_001",
+  "title": "Summary of the HIPAA Privacy Rule",
+  "category": "privacy_regulation",
+  "source": "U.S. Department of Health and Human Services - Office for Civil Rights (HHS OCR)",
+  "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/laws-regulations/index.html",
+  "publication_date": "2024-12-01",
+  "relevance_score": 5,
+  "summary": "The HIPAA Privacy Rule establishes national standards to protect individuals' medical records and other individually identifiable health information (protected health information or PHI). It sets limits on uses and disclosures of PHI without authorization and gives patients rights over their health information.",
+
+  "key_provisions": [
+    "Protected Health Information (PHI) includes all individually identifiable health information held or transmitted by covered entities in any form or media",
+    "Covered entities must have safeguards to protect privacy of PHI",
+    "Uses and disclosures generally require patient written authorization, except for Treatment, Payment, and Healthcare Operations (TPO)",
+    "Patients have rights to access, amend, and obtain accounting of disclosures of their PHI",
+    "Minimum Necessary standard requires limiting use/disclosure to minimum needed for intended purpose",
+    "Incidental uses and disclosures are permitted if minimum necessary and safeguards are in place",
+    "Business associates must comply with Privacy Rule requirements via written agreements"
+  ],
+
+  "text_content": "The HIPAA Privacy Rule establishes national standards to protect individuals' medical records and other individually identifiable health information (collectively defined as 'protected health information' or PHI) and applies to health plans, health care clearinghouses, and those health care providers that conduct certain health care transactions electronically. The Rule requires appropriate safeguards to protect the privacy of protected health information and sets limits and conditions on the uses and disclosures that may be made of such information without an individual's authorization.\n\nKEY DEFINITIONS:\nProtected Health Information (PHI): All individually identifiable health information that relates to: (1) the individual's past, present or future physical or mental health or condition, (2) the provision of health care to the individual, or (3) the past, present, or future payment for the provision of health care to the individual. PHI includes many common identifiers (e.g., name, address, birth date, Social Security Number) when they can be associated with health information.\n\nCovered Entity: Health plans, health care clearinghouses, and health care providers who transmit any health information in electronic form in connection with covered transactions.\n\nPERMITTED USES AND DISCLOSURES:\nThe Privacy Rule permits, but does not require, covered entities to make certain uses and disclosures of PHI without patient authorization:\n\n1. To the Individual: When an individual requests access to, or an accounting of disclosures of, their own PHI.\n\n2. Treatment, Payment, and Health Care Operations (TPO):\n   - Treatment: Providing, coordinating, or managing health care and related services by one or more health care providers\n   - Payment: Activities to obtain or provide reimbursement for healthcare\n   - Health Care Operations: Administrative, financial, legal, and quality improvement activities\n\n3. Opportunity to Agree or Object: Covered entities may disclose PHI to family members, friends, or others involved in the individual's care if the individual has been informed and has not objected.\n\n4. Incidental Use and Disclosure: The Privacy Rule does not require that every risk of an incidental use or disclosure be eliminated. It permits incidental uses and disclosures when the covered entity has in place reasonable safeguards and minimum necessary policies.\n\n5. Public Interest and Benefit Activities: The Rule permits use and disclosure without authorization for 12 national priority purposes:\n   - Required by law\n   - Public health activities\n   - Victims of abuse, neglect or domestic violence\n   - Health oversight activities\n   - Judicial and administrative proceedings\n   - Law enforcement purposes\n   - Decedents\n   - Cadaveric organ, eye or tissue donation\n   - Research, under certain conditions\n   - To avert a serious threat to health or safety\n   - Specialized government functions\n   - Workers' compensation\n\nREQUIRED AUTHORIZATIONS:\nA covered entity must obtain the individual's written authorization for any use or disclosure of PHI that is not for treatment, payment or health care operations or otherwise permitted or required by the Privacy Rule. Authorizations must be in plain language and contain specific information regarding:\n- The information to be disclosed or used\n- The person(s) disclosing and receiving the information\n- Expiration date or event\n- Right to revoke in writing\n- Ability or inability to condition treatment on authorization\n- Potential for re-disclosure by recipient\n\nINDIVIDUAL RIGHTS:\nThe Privacy Rule gives individuals rights with respect to their protected health information:\n\n1. Right of Access: Individuals have a right to inspect and obtain a copy of their PHI in a designated record set, for as long as the information is maintained. Covered entities may charge reasonable, cost-based fees. Response must be provided within 30 days.\n\n2. Right to Amend: Individuals have the right to request amendment of PHI in a designated record set for as long as the information is maintained. A covered entity may deny if it determines the information is accurate and complete.\n\n3. Right to an Accounting of Disclosures: Individuals have a right to receive an accounting of disclosures of their PHI by a covered entity (with certain exceptions). The accounting must include: date of disclosure, name and address of recipient, brief description of information disclosed, and brief statement of purpose.\n\n4. Right to Request Restrictions: Individuals have the right to request restrictions on uses and disclosures of their PHI. Covered entities are not required to agree to requested restrictions except in one case: if the individual pays out of pocket in full for a healthcare item or service, the covered entity must honor a request not to disclose PHI to a health plan for payment or operations purposes.\n\n5. Right to Request Confidential Communications: Individuals have the right to request that covered entities communicate with them by alternative means or at alternative locations.\n\n6. Right to a Notice of Privacy Practices: Individuals have a right to notice of a covered entity's privacy practices. The notice must describe: how the covered entity may use and disclose PHI, the individual's rights, and the covered entity's obligations.\n\nMINIMUM NECESSARY STANDARD:\nThe minimum necessary standard requires covered entities to take reasonable steps to limit the use or disclosure of, and requests for, PHI to the minimum necessary to accomplish the intended purpose. \n\nExceptions where minimum necessary does not apply:\n- Disclosure to or request by a health care provider for treatment\n- Disclosure to the individual who is the subject of the information\n- Use or disclosure made pursuant to an authorization\n- Disclosure to HHS for complaint investigation or compliance review\n- Use or disclosure required by law\n- Use or disclosure required for compliance with HIPAA rules\n\nADMINISTRATIVE REQUIREMENTS:\nCovered entities must:\n- Have written privacy policies and procedures\n- Designate a privacy official responsible for developing and implementing policies\n- Train all workforce members on privacy policies\n- Implement appropriate safeguards (administrative, physical, technical)\n- Maintain documentation of policies, procedures, and training\n- Have in place sanctions for employees who violate privacy policies\n- Have procedures for individuals to complain about violations\n- Have mitigation procedures for harmful effects of violations\n\nCOMPLIANCE AND ENFORCEMENT:\nThe HHS Office for Civil Rights (OCR) enforces the Privacy Rule. Penalties for violations include:\n- Civil monetary penalties up to $50,000 per violation (annual maximum $1.5 million per violation type)\n- Criminal penalties for wrongful disclosures: fines up to $250,000 and imprisonment up to 10 years for violations committed with intent to sell, transfer, or use PHI for commercial advantage, personal gain, or malicious harm",
+
+  "applicable_scenarios": [
+    "Determining if information sharing requires patient authorization",
+    "Evaluating minimum necessary standard compliance",
+    "Responding to patient rights requests (access, amendment, accounting)",
+    "Assessing if disclosure falls under public interest exception",
+    "Training healthcare staff on PHI protection requirements",
+    "Incident investigation when unauthorized disclosure suspected",
+    "Business associate agreement review and compliance"
+  ],
+
+  "related_documents": [
+    "HHS_OCR_002",
+    "HHS_OCR_003",
+    "HHS_OCR_005",
+    "HHS_OCR_015"
+  ],
+
+  "hipaa_relevance": "This is the foundational document for HIPAA Privacy Rule compliance. It defines what PHI is, when it can be used or disclosed, and what rights patients have. All healthcare AI systems handling or accessing health information must comply with these requirements.",
+
+  "escalation_triggers": [
+    "Query involves determining if specific information constitutes PHI",
+    "Uncertainty about whether patient authorization is required for a use or disclosure",
+    "Questions about minimum necessary standard application",
+    "Patient rights request (access, amendment, accounting, restriction, confidential communication)",
+    "Determining if a disclosure falls under one of the 12 public interest exceptions",
+    "Evaluating if incidental disclosure is permissible",
+    "Assessing business associate requirements"
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "corpus_metadata": {
+    "name": "Healthcare HIPAA Compliance RAG Corpus",
+    "version": "1.0.0",
+    "created": "2025-11-11",
+    "purpose": "Tier 2 escalation policy knowledge base for healthcare TELOS governance",
+    "target_size": "50-75 documents",
+    "embedding_model": "mistral-embed",
+    "embedding_dimension": 1024
+  },
+
+  "document_schema": {
+    "required_fields": {
+      "document_id": "Unique identifier (e.g., HHS_OCR_001)",
+      "title": "Full document title",
+      "category": "One of: privacy_regulation, clinical_guideline, consent_framework, incident_protocol",
+      "source": "Authoritative organization (e.g., HHS OCR, CDC, WHO, AMA)",
+      "source_url": "Original document URL (if publicly accessible)",
+      "publication_date": "Date published or last updated (YYYY-MM-DD)",
+      "relevance_score": "1-5 scale (5 = critical for healthcare governance)",
+      "summary": "2-3 sentence summary of key content",
+      "key_provisions": "List of key requirements/guidelines",
+      "text_content": "Full text or comprehensive excerpts",
+      "applicable_scenarios": "List of scenarios where this document is authoritative",
+      "related_documents": "List of related document IDs",
+      "hipaa_relevance": "How this relates to HIPAA compliance",
+      "escalation_triggers": "When this document should be retrieved in Tier 2"
+    }
+  },
+
+  "category_definitions": {
+    "privacy_regulation": {
+      "description": "Federal and state privacy laws, regulations, and guidance documents",
+      "examples": [
+        "HIPAA Privacy Rule provisions",
+        "HHS OCR guidance letters",
+        "State privacy laws (CA CMIA, TX HB 300)",
+        "Breach notification requirements",
+        "Individual rights implementation"
+      ],
+      "target_count": "15-20 documents"
+    },
+
+    "clinical_guideline": {
+      "description": "Evidence-based clinical practice guidelines from authoritative medical organizations",
+      "examples": [
+        "CDC disease-specific guidelines",
+        "WHO clinical protocols",
+        "Specialty society recommendations",
+        "Quality measure specifications",
+        "Screening and prevention guidelines"
+      ],
+      "target_count": "15-20 documents"
+    },
+
+    "consent_framework": {
+      "description": "Informed consent, patient autonomy, and medical ethics frameworks",
+      "examples": [
+        "AMA Code of Medical Ethics",
+        "Informed consent requirements by state",
+        "Advance directive frameworks",
+        "Surrogate decision-making hierarchy",
+        "Emergency exception provisions"
+      ],
+      "target_count": "10-15 documents"
+    },
+
+    "incident_protocol": {
+      "description": "Healthcare incident reporting, breach notification, and adverse event protocols",
+      "examples": [
+        "Joint Commission sentinel events",
+        "HHS breach notification flowcharts",
+        "State mandatory reporting laws",
+        "FDA MedWatch adverse event reporting",
+        "CMS incident reporting requirements"
+      ],
+      "target_count": "10-15 documents"
+    }
+  },
+
+  "retrieval_strategy": {
+    "embedding_approach": "Dense retrieval using Mistral embeddings",
+    "similarity_metric": "Cosine similarity",
+    "top_k_retrieval": 3,
+    "relevance_threshold": 0.70,
+    "reranking": "By relevance_score (1-5) after similarity search"
+  },
+
+  "quality_criteria": {
+    "authority": "Only documents from recognized authoritative sources",
+    "recency": "Prefer documents updated within last 5 years",
+    "accessibility": "Publicly accessible (no paywalls or subscriptions)",
+    "comprehensiveness": "Complete coverage of topic, not excerpts only",
+    "applicability": "Directly relevant to healthcare AI governance scenarios"
+  }
+}

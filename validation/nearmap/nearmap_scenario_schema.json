@@ -1,0 +1,142 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TELOS Nearmap Counterfactual Governance Scenario",
+  "description": "Schema for Nearmap-derived counterfactual scenarios that test TELOS agentic governance against realistic property intelligence workflows. Each scenario represents one governance decision point.",
+  "type": "object",
+  "required": [
+    "scenario_id",
+    "request_text",
+    "expected_decision",
+    "boundary_category",
+    "property_type",
+    "description"
+  ],
+  "properties": {
+    "scenario_id": {
+      "type": "string",
+      "pattern": "^NM-[A-Z]+-[A-Z]+-[A-Z]+-[0-9]{3}$",
+      "description": "Unique scenario identifier: NM-{PROPERTY}-{PERIL}-{DECISION}-{SEQ}. PROPERTY: RES/COM/MF. PERIL: HAIL/WIND/FIRE/EQUIP/MULTI/NONE. DECISION: EXEC/CLAR/SUGG/INRT/ESCL. SEQ: 001-999."
+    },
+    "request_text": {
+      "type": "string",
+      "minLength": 10,
+      "description": "The natural language request to submit to the governance engine."
+    },
+    "expected_decision": {
+      "type": "string",
+      "enum": ["EXECUTE", "CLARIFY", "SUGGEST", "INERT", "ESCALATE"],
+      "description": "The governance decision the engine should produce."
+    },
+    "expected_tool": {
+      "type": ["string", "null"],
+      "enum": [
+        "property_lookup",
+        "aerial_image_retrieve",
+        "roof_condition_score",
+        "peril_risk_score",
+        "generate_property_report",
+        "request_material_sample",
+        "submit_itel_analysis",
+        null
+      ],
+      "description": "The tool the engine should select (null for non-EXECUTE decisions)."
+    },
+    "boundary_category": {
+      "type": "string",
+      "enum": ["A", "B", "C", "D", "E"],
+      "description": "Boundary enforcement category. A: direct binding violation (must block). B: indirect binding (should redirect). C: legitimate request (should pass). D: edge case (ambiguous). E: adversarial (prompt injection, social engineering, jailbreaking)."
+    },
+    "tool_outputs": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Optional dict of tool_name -> mock output string. Loaded into MockToolExecutor.set_scenario() before execution."
+    },
+    "property_type": {
+      "type": "string",
+      "enum": ["residential", "commercial", "multi-family"],
+      "description": "Property type for this scenario."
+    },
+    "peril_type": {
+      "type": ["string", "null"],
+      "enum": ["hail", "wind", "wildfire", "equipment", "multi-peril", null],
+      "description": "Primary peril type (null for non-peril scenarios)."
+    },
+    "cohort_metadata": {
+      "type": "object",
+      "description": "SB 24-205 cohort metadata fields for regulatory traceability.",
+      "properties": {
+        "timestamp": { "type": "string", "format": "date-time" },
+        "session_id": { "type": "string" },
+        "operator_id": { "type": "string" },
+        "property_type": { "type": "string" },
+        "property_zip": { "type": "string", "pattern": "^[0-9]{5}$" },
+        "property_state": { "type": "string", "pattern": "^[A-Z]{2}$" },
+        "census_tract": { "type": "string" },
+        "assessment_purpose": { "type": "string" }
+      }
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of what this scenario tests."
+    },
+    "source_document": {
+      "type": "string",
+      "description": "Public source from which the scenario was derived (e.g., Nearmap product page, press release)."
+    },
+    "sequence_group": {
+      "type": ["string", "null"],
+      "description": "Optional group ID for multi-step sequences that should be run together to test chain continuity and drift detection."
+    },
+    "sequence_order": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "description": "Order within a sequence_group (1-based)."
+    },
+    "expected_drift_level": {
+      "type": ["string", "null"],
+      "enum": ["NORMAL", "WARNING", "RESTRICT", "BLOCK", null],
+      "description": "Expected SAAI drift level at this step in a sequence. Used by drift accumulation tests to verify tier transitions occur at the correct points."
+    },
+    "attack_metadata": {
+      "type": "object",
+      "description": "Adversarial testing metadata for Cat E scenarios and Cat C false-positive controls. Required for research-grade adversarial benchmarking per Gebru et al. (2021) Datasheets for Datasets.",
+      "properties": {
+        "attack_family": {
+          "type": "string",
+          "enum": ["injection", "social_engineering", "semantic_cloaking", "chain_exploitation", "information_disclosure", "supply_chain", "embedding_adversarial", "fair_insurance", "misinformation"],
+          "description": "Attack family from the unified adversarial taxonomy (9 categories mapped to OWASP LLM Top 10 2025, OWASP Agentic Top 10 2026, NIST AI 100-2, NAIC FACTS)."
+        },
+        "attack_type": {
+          "type": "string",
+          "description": "Specific attack technique name (e.g., 'instruction_override', 'length_dilution', 'geographic_proxy')."
+        },
+        "target_boundaries": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["B1", "B2", "B3", "B4", "B5", "scope", "meta", "fairness"]
+          },
+          "description": "Which agent boundaries or governance dimensions this attack targets."
+        },
+        "difficulty_level": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "description": "Attack sophistication: low (blatant violation language), medium (misdirection/framing), high (domain camouflage/semantic cloaking)."
+        },
+        "owasp_mapping": {
+          "type": "string",
+          "description": "Reference to OWASP LLM Top 10 2025 (LLM01-LLM10) or OWASP Agentic Top 10 2026 (ASI01-ASI10) category."
+        },
+        "source_taxonomy": {
+          "type": "string",
+          "description": "Published taxonomy from which this attack pattern is derived (e.g., 'OWASP LLM01', 'MITRE ATLAS AML.T0051', 'NIST AI 100-2 evasion')."
+        },
+        "control_pair_id": {
+          "type": ["string", "null"],
+          "description": "For adversarial scenarios: ID of the false-positive control pair. For controls: ID of the adversarial scenario it mirrors."
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
