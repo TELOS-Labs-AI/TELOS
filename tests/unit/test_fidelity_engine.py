@@ -234,8 +234,8 @@ class TestGovernanceDecisions:
     def test_clarify(self):
         assert make_governance_decision(0.40) == GovernanceDecision.CLARIFY
 
-    def test_inert(self):
-        assert make_governance_decision(0.10) == GovernanceDecision.INERT
+    def test_escalate(self):
+        assert make_governance_decision(0.10) == GovernanceDecision.ESCALATE
 
     def test_escalate_on_saai_block(self):
         """SAAI block-level drift -> ESCALATE regardless of fidelity."""
@@ -248,7 +248,7 @@ class TestGovernanceDecisions:
             input_fidelity=0.80,
             tool_fidelities={"bad_tool": 0.10}
         )
-        assert decision == GovernanceDecision.INERT
+        assert decision == GovernanceDecision.ESCALATE
 
     def test_boundary_execute_clarify(self):
         """Boundary at 0.45."""

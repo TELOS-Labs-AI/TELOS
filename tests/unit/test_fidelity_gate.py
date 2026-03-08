@@ -106,14 +106,14 @@ class TestFidelityGateDecisions:
         assert result.forwarded_to_llm is True
         assert result.input_blocked is False
 
-    def test_inert_decision_low_fidelity(self, pa_embedding, pa):
-        """Fidelity below suggest_threshold should produce INERT."""
+    def test_escalate_decision_low_fidelity(self, pa_embedding, pa):
+        """Fidelity below clarify_threshold should produce ESCALATE."""
         # Very low similarity -> low fidelity
         low_sim_emb = _embedding_with_similarity(pa_embedding, 0.30)
         gate = FidelityGate(embed_fn=_make_embed_fn(low_sim_emb))
         result = gate.check_fidelity("off-topic query", pa)
 
-        assert result.final_decision == ActionDecision.INERT
+        assert result.final_decision == ActionDecision.ESCALATE
         assert result.forwarded_to_llm is False
         assert result.input_blocked is True
 
@@ -134,7 +134,7 @@ class TestFidelityGateDecisions:
         assert result.final_decision == ActionDecision.EXECUTE
         assert result.input_fidelity == 1.0
 
-    def test_governance_response_on_inert(self, pa_embedding, pa):
+    def test_governance_response_on_escalate(self, pa_embedding, pa):
         """Blocked requests should include a governance response."""
         low_sim_emb = _embedding_with_similarity(pa_embedding, 0.30)
         gate = FidelityGate(embed_fn=_make_embed_fn(low_sim_emb))

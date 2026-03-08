@@ -36,8 +36,8 @@ Embedding Design:
     Calibrated against PA via normalize_mistral_fidelity():
       - On-topic (purpose=0.80): fidelity ~0.87 (EXECUTE)
       - Slight drift:            fidelity ~0.75-0.83 (CLARIFY)
-      - Moderate drift:          fidelity ~0.52-0.73 (CLARIFY/INERT)
-      - Heavy drift:             fidelity ~0.23-0.39 (INERT)
+      - Moderate drift:          fidelity ~0.52-0.73 (CLARIFY/ESCALATE)
+      - Heavy drift:             fidelity ~0.23-0.39 (ESCALATE)
       - Recovery:                fidelity ~0.92 (EXECUTE)
 """
 
@@ -210,7 +210,7 @@ def _generate_baseline_messages(count: int) -> list:
     All messages must match substring keys in conftest.py embedding maps
     (_ON_TOPIC_EMBEDDINGS or _SAAI_DRIFT_EMBEDDINGS) to produce valid
     fidelity scores. Messages that don't match fall to drift_default
-    and produce INERT.
+    and produce ESCALATE.
     """
     # These all match embedding keys in conftest.py
     templates = [
@@ -633,7 +633,7 @@ class TestSAAIRapidDriftToRestrict:
         property_embed_fn,
         property_tools,
     ):
-        """Individual turn decisions should degrade from EXECUTE to INERT."""
+        """Individual turn decisions should degrade from EXECUTE to ESCALATE."""
         trace = _build_forensic_trace(
             property_fidelity_gate, property_tool_gate, property_pa,
             property_action_chain, property_embed_fn, property_tools,
@@ -642,8 +642,8 @@ class TestSAAIRapidDriftToRestrict:
 
         decisions = [e["decision"] for e in trace]
         assert decisions[0] == "execute"
-        assert decisions[-1] == "inert", (
-            f"Last turn should be INERT, got {decisions[-1]} "
+        assert decisions[-1] == "escalate", (
+            f"Last turn should be ESCALATE, got {decisions[-1]} "
             f"(fidelity={trace[-1]['fidelity']:.3f})"
         )
 
@@ -721,7 +721,7 @@ class TestSAAIDriftToBlock:
             f"Final drift: {trace[-1]['drift']:.4f}"
         )
 
-    def test_final_turns_are_inert(
+    def test_final_turns_are_escalate(
         self,
         property_fidelity_gate,
         property_tool_gate,
@@ -730,17 +730,17 @@ class TestSAAIDriftToBlock:
         property_embed_fn,
         property_tools,
     ):
-        """The last 3 turns should produce INERT decisions (very low fidelity)."""
+        """The last 3 turns should produce ESCALATE decisions (very low fidelity)."""
         trace = _build_forensic_trace(
             property_fidelity_gate, property_tool_gate, property_pa,
             property_action_chain, property_embed_fn, property_tools,
             self.TURN_MESSAGES,
         )
 
-        inert_count = sum(1 for e in trace[-3:] if e["decision"] == "inert")
-        assert inert_count >= 2, (
-            f"Expected at least 2 INERT decisions in last 3 turns, "
-            f"got {inert_count}. Decisions: "
+        escalate_count = sum(1 for e in trace[-3:] if e["decision"] == "escalate")
+        assert escalate_count >= 2, (
+            f"Expected at least 2 ESCALATE decisions in last 3 turns, "
+            f"got {escalate_count}. Decisions: "
             f"{[e['decision'] for e in trace[-3:]]}"
         )
 

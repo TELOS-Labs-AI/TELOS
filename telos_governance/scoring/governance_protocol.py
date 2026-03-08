@@ -27,8 +27,8 @@ First Principles
    continuous governance, not just deploy-time testing. The 5-point
    protocol provides runtime monitoring at every stage of agent
    execution, with GovernanceSession maintaining the audit trail
-   that Article 72 compliance demands. Each GovernanceEvent is a
-   logged, reviewable governance decision.
+   designed to support Article 72 post-market monitoring requirements.
+   Each GovernanceEvent is a logged, reviewable governance decision.
 
 3. **SAAI Framework** (Watson and Hessami, 2026): The protocol implements
    SAAI's requirement for governance that is "continuous, not episodic"
@@ -115,8 +115,8 @@ class GovernanceEvent:
     Captures the full context of what was checked and what was decided,
     enabling audit trails and debugging. Each event is a governance
     "receipt" — mathematical justification for the decision, not just
-    the decision itself. This is what makes TELOS governance auditable
-    per EU AI Act Article 72 and SAAI auditability requirements.
+    the decision itself. This is designed to support auditability
+    requirements under EU AI Act Article 72 and the SAAI framework.
     """
     decision_point: DecisionPoint
     action_text: str
@@ -126,7 +126,7 @@ class GovernanceEvent:
     overridden: bool = False
     override_reason: Optional[str] = None
     timestamp: datetime = field(default_factory=utc_now)
-    # Contrastive suppression audit trail (Article 72 compliance)
+    # Contrastive suppression audit trail (designed to support Article 72, Schaake 2026-02-12)
     contrastive_suppressed: bool = False
     suppression_detail: Optional[str] = None
     # PA injection covariate (records whether PA was in model context during generation)
@@ -156,9 +156,7 @@ class GovernanceSession:
     def blocked_actions(self) -> int:
         return sum(
             1 for e in self.events
-            if e.result and e.result.decision in (
-                ActionDecision.INERT, ActionDecision.ESCALATE
-            )
+            if e.result and e.result.decision == ActionDecision.ESCALATE
         )
 
     @property

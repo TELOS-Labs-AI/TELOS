@@ -243,9 +243,7 @@ def _build_forensic_trace_entry(
         "sci_continuity": chain_step.continuity_score,
         "inherited_fidelity": chain_step.inherited_fidelity,
         "effective_fidelity": chain_step.effective_fidelity,
-        "boundary_triggered": result["decision"] in (
-            ActionDecision.ESCALATE, ActionDecision.INERT,
-        ),
+        "boundary_triggered": result["decision"] == ActionDecision.ESCALATE,
         "ieee7001_receipt": ieee_receipt,
         "governance_response": result["governance"].governance_response,
         "forwarded_to_llm": result["governance"].forwarded_to_llm,

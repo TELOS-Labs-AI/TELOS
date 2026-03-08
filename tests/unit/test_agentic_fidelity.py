@@ -389,12 +389,11 @@ class TestDecisionMapping:
         )
         assert decision == ActionDecision.CLARIFY
 
-    def test_below_clarify_is_inert(self):
-        """Fidelity below CLARIFY threshold -> INERT (SUGGEST tier removed).
+    def test_below_clarify_is_escalate(self):
+        """Fidelity below CLARIFY threshold -> ESCALATE.
 
-        Uses a low escalation_threshold so INERT fires for the 0.28-0.35 range
-        (previously SUGGEST). The escalation_threshold is the minimum below
-        which ESCALATE fires; above that, INERT fires.
+        In the 3-verdict model, anything below CLARIFY threshold
+        triggers ESCALATE (human review required).
         """
         engine = AgenticFidelityEngine(
             embed_fn=_make_embed_fn(_make_embedding([1, 0, 0])),
@@ -408,7 +407,7 @@ class TestDecisionMapping:
             chain_broken=False,
             tool_name=None,
         )
-        assert decision == ActionDecision.INERT
+        assert decision == ActionDecision.ESCALATE
 
     def test_boundary_override_to_escalate(self):
         """Boundary triggered -> ESCALATE regardless of fidelity."""
@@ -422,8 +421,8 @@ class TestDecisionMapping:
         assert decision == ActionDecision.ESCALATE
         assert human is True
 
-    def test_tool_blocked_override_to_inert(self):
-        """Tool blocked -> INERT regardless of fidelity."""
+    def test_tool_blocked_override_to_escalate(self):
+        """Tool blocked -> ESCALATE regardless of fidelity."""
         decision, human = self.engine._make_decision(
             effective_fidelity=0.95,
             boundary_triggered=False,
@@ -431,7 +430,7 @@ class TestDecisionMapping:
             chain_broken=False,
             tool_name=None,
         )
-        assert decision == ActionDecision.INERT
+        assert decision == ActionDecision.ESCALATE
 
     def test_chain_broken_override_to_clarify(self):
         """Chain broken -> CLARIFY regardless of fidelity."""

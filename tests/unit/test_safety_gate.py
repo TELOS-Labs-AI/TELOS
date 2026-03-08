@@ -229,7 +229,7 @@ class TestConfirmZone:
         return engine
 
     def test_non_execute_verdict_skips_confirmer(self):
-        """If MiniLM says CLARIFY/SUGGEST/INERT/ESCALATE, confirmer doesn't fire."""
+        """If MiniLM says CLARIFY/ESCALATE, confirmer doesn't fire."""
         pa = _make_pa_with_boundaries(["Do not violate boundaries"])
         # Embed fn that produces low purpose alignment → non-EXECUTE
         low_embed = _make_embed_fn(_make_embedding([0.0, 1.0, 0.0]))

@@ -196,7 +196,7 @@ class TestSessionTelemetry:
 
     def test_aggregate_statistics(self):
         session = SessionTelemetry(session_id="s1", agent_id="a1")
-        for fidelity, decision in [(0.90, "execute"), (0.70, "clarify"), (0.40, "inert")]:
+        for fidelity, decision in [(0.90, "execute"), (0.70, "clarify"), (0.40, "escalate")]:
             record = TelemetryRecord(
                 session_id="s1",
                 agent_id="a1",
@@ -214,7 +214,7 @@ class TestSessionTelemetry:
         assert agg["fidelity_max"] == 0.90
         assert agg["decision_counts"]["execute"] == 1
         assert agg["decision_counts"]["clarify"] == 1
-        assert agg["decision_counts"]["inert"] == 1
+        assert agg["decision_counts"]["escalate"] == 1
 
     def test_record_index_auto_increments(self):
         session = SessionTelemetry(session_id="s1")

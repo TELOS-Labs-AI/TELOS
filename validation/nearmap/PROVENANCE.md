@@ -3,16 +3,16 @@
 
 ### Disclosures
 
-> **Generative AI Disclosure:** Internal analysis, experimental design review, and qualitative assessment in this document were conducted with assistance from LLM-based research agents (Claude, Anthropic). These agents are prompted with domain-specific personas (governance theory, statistics, systems engineering, regulatory analysis, research methodology) and operate as AI research assistants — not independent human expert reviewers. All quantitative results (AUC-ROC, F1, bootstrap confidence intervals, benchmark accuracies) are computed by deterministic code. Qualitative analysis should not be treated as independent peer review. See CONTRIBUTING.md for methodology details.
+> **Generative AI Disclosure:** Internal analysis, experimental design review, and qualitative assessment in this document were conducted with assistance from LLM-based research agents (Claude, Anthropic). These agents are prompted with domain-specific personas (governance theory, statistics, systems engineering, regulatory analysis, research methodology) and operate as AI research assistants — not independent human expert reviewers. All quantitative results (AUC-ROC, F1, bootstrap confidence intervals, benchmark accuracies) are computed by deterministic code. Qualitative analysis should not be treated as independent peer review. See `research/research_team_spec.md` for full methodology.
 
-> **Conflict of Interest Disclosure:** This research was conducted and funded by TELOS AI Labs Inc., which has a commercial interest in the TELOS governance framework. All domain-specific validation benchmarks (Nearmap, Healthcare) were created by the research team. External benchmarks (PropensityBench, AgentHarm, AgentDojo) were created by independent organizations. Research artifacts are published on [Zenodo](https://zenodo.org/) with persistent DOIs. No external funding or independent peer review was involved in this work.
+> **Conflict of Interest Disclosure:** This research was conducted and funded by TELOS AI Labs Inc., which has a commercial interest in the TELOS governance framework. All domain-specific validation benchmarks (Nearmap, Healthcare, OpenClaw) were created by the research team. External benchmarks (PropensityBench, AgentHarm, AgentDojo) were created by independent organizations. Research artifacts are published on [Zenodo](https://zenodo.org/) with persistent DOIs. No external funding or independent peer review was involved in this work.
 
 ---
 
 **Dataset:** `nearmap_counterfactual_v1.jsonl`
 **Version:** 2.0 (Phase I + RESTRICT + Drift + Adversarial v2)
 **Created:** 2026-02-11 | **Updated:** 2026-02-12
-**Scenarios:** 235 (189 standalone + 46 sequence steps)
+**Scenarios:** 173 (131 standalone + 42 sequence steps)
 
 ## Scope: Phase I — Mechanism Validation
 
@@ -20,14 +20,14 @@ This dataset validates the TELOS agentic governance engine against realistic pro
 
 **Phase I establishes:** Does the governance math work? Can cosine-similarity-based fidelity scoring, combined with boundary detection and drift tracking, produce correct governance decisions on a representative scenario corpus?
 
-**Phase I does NOT establish:** Production-readiness, compliance certification, or adversarial robustness sufficient for deployment. The 60.0% adversarial detection rate is a Phase I baseline — it documents where the embedding-only approach succeeds and where it requires architectural extensions (clause-level scoring, keyword pre-filters, expanded boundary corpus). See `RESEARCH_ACTION_ITEMS.md` for the Phase 2 roadmap.
+**Phase I does NOT establish:** Production-readiness, compliance certification, or adversarial robustness sufficient for deployment. The 68.9% adversarial detection rate and 46.7% false-positive rate are Phase I baselines — they document where the embedding-only approach succeeds and where it requires architectural extensions (clause-level scoring, keyword pre-filters, expanded boundary corpus). See `RESEARCH_ACTION_ITEMS.md` for the Phase 2 roadmap.
 
 ### Calibration Asymmetry
 
-The 84.7% overall accuracy conflates two fundamentally different measurements:
+The 90.2% overall accuracy conflates two fundamentally different measurements:
 
-- **Non-adversarial accuracy (90.5%)** measures **regression consistency** — does the engine produce the same decisions it produced when the scenarios were calibrated? Cat C/D scenarios are calibrated to the engine's actual behavior.
-- **Adversarial detection rate (60.0%)** measures **security posture** — does the engine catch attacks it has never been calibrated against? This is lower because Cat E scenarios retain expected=ESCALATE even when the engine fails, documenting true detection gaps rather than masking them.
+- **Non-adversarial accuracy (97.7%)** measures **regression consistency** — does the engine produce the same decisions it produced when the scenarios were calibrated? This is high because Cat C/D scenarios are calibrated to the engine's actual behavior.
+- **Adversarial detection rate (68.9%)** measures **security posture** — does the engine catch attacks it has never been calibrated against? This is lower because Cat E scenarios retain expected=ESCALATE even when the engine fails, documenting true detection gaps rather than masking them.
 
 These should be read as separate metrics, not averaged.
 
@@ -63,7 +63,7 @@ This is comparable to how automotive safety researchers build crash test scenari
 - The scenarios are **domain-realistic**: they reflect the kinds of requests insurance professionals make when using property intelligence platforms, as documented in public industry literature
 - The governance engine's decisions are **reproducible**: the same input always produces the same output (deterministic sentence-transformer embeddings, no external API calls)
 - The adversarial scenarios are **research-grounded**: each maps to a published attack taxonomy (OWASP LLM Top 10 2025, OWASP Agentic Top 10 2026, NIST AI 100-2, NAIC FACTS) with documented provenance
-- The known gaps are **honestly reported**: 23 governance failures (18 adversarial evasions + 5 boundary detection gaps) and 4 false-positive escalations are documented as security findings, not hidden as calibration artifacts
+- The known gaps are **honestly reported**: 17 governance failures (14 adversarial evasions + 3 boundary detection gaps) and 7 false positives are documented as security findings, not hidden as calibration artifacts
 
 ## 6-Layer Provenance Chain
 
@@ -113,8 +113,8 @@ Construction principles:
 ### Layer 4: Request Sequence
 
 Scenarios are organized into:
-- **189 standalone scenarios:** Each tests one governance decision point independently (includes original Cat A-D scenarios, Cat E adversarial, and 50 Cat C false-positive controls)
-- **46 sequential scenarios (5 groups):** Tests chain continuity, SAAI drift tier transitions, boundary violations during drift, drift recovery lifecycle, and adversarial escalation chains
+- **131 standalone scenarios:** Each tests one governance decision point independently (83 original + 33 Cat E adversarial + 15 Cat C false-positive controls)
+- **42 sequential scenarios (5 groups):** Tests chain continuity, SAAI drift tier transitions, boundary violations during drift, drift recovery lifecycle, and adversarial escalation chains
 
 | Sequence | Steps | Purpose |
 |----------|-------|---------|
@@ -135,7 +135,7 @@ For each scenario, the benchmark runner captures:
 - Chain SCI (semantic continuity index)
 - Boundary fidelity (inverted boundary similarity)
 - Effective fidelity (weighted composite)
-- Decision tier (EXECUTE/CLARIFY/SUGGEST/INERT/ESCALATE)
+- Decision tier (EXECUTE/CLARIFY/ESCALATE)
 - SAAI drift level and magnitude
 
 ### Layer 6: Audit Trail
@@ -163,23 +163,20 @@ Expected decisions were initially set based on the scenario's intent (e.g., a le
 
 **v1.2 (2026-02-12):** Added 12 Cat A boundary expansion, 38 drift sequence steps, 12 Cat E adversarial (ad-hoc). 5 known gaps (ESCL-003, ESCL-005, ESCL-006, ESCL-074, ESCL-075).
 
-**v2.0 (2026-02-12):** Research-grounded adversarial expansion. 5-agent research team review produced unified taxonomy (9 attack families). Added 33 new Cat E scenarios (ESCL-076 through ESCL-108), 15 Cat C false-positive controls (CTRL-001 through CTRL-015), attack_metadata backfill on 12 existing Cat E. Total: 173 scenarios, 17 known gaps (3 boundary + 14 adversarial), 7 false positives.
-
-**v3.0 (2026-03-02):** Expanded false-positive controls and Cat A boundary scenarios. Added 35 new Cat C controls (CTRL-016 through CTRL-050), expanded Cat A to 50 scenarios, expanded Cat B to 42 scenarios. Total: 235 scenarios (189 standalone + 46 sequence steps), 23 known gaps (5 boundary + 18 adversarial), 4 false-positive escalations on controls.
+**v2.0 (2026-02-12):** Research-grounded adversarial expansion. Cross-domain research team review produced unified taxonomy (9 attack families). Added 33 new Cat E scenarios (ESCL-076 through ESCL-108), 15 Cat C false-positive controls (CTRL-001 through CTRL-015), attack_metadata backfill on 12 existing Cat E. Total: 173 scenarios, 17 known gaps (3 boundary + 14 adversarial), 7 false positives.
 
 ## Statistical Properties
 
 | Metric | Value |
 |--------|-------|
-| Total scenarios | 235 |
-| EXECUTE | 26 (11.1%) |
-| CLARIFY | 55 (23.4%) |
-| SUGGEST | 20 (8.5%) |
-| INERT | 4 (1.7%) |
-| ESCALATE | 130 (55.3%) |
-| Category A (direct violation) | 50 |
+| Total scenarios | 173 |
+| EXECUTE | 22 (12.7%) |
+| CLARIFY | 28 (16.2%) |
+| (SUGGEST/INERT removed) | Remapped to CLARIFY/ESCALATE in 3-verdict model |
+| ESCALATE | 104 (60.1%) |
+| Category A (direct violation) | 23 |
 | Category B (indirect/off-topic) | 42 |
-| Category C (legitimate + controls) | 88 |
+| Category C (legitimate + controls) | 53 |
 | Category D (edge case) | 10 |
 | Category E (adversarial) | 45 |
 | Property types | 3 (residential, commercial, multi-family) |
@@ -187,14 +184,14 @@ Expected decisions were initially set based on the scenario's intent (e.g., a le
 | Tools exercised | 7/7 |
 | Sequence groups | 5 (46 steps total) |
 | Attack families (Cat E) | 9/9 |
-| False-positive controls | 50 |
-| Overall accuracy | 84.7% (199/235) |
-| Non-adversarial accuracy | 90.5% (172/190) |
-| Adversarial detection rate | 60.0% (27/45) |
-| CRITICAL evasions (EXECUTE on Cat E) | 5 |
-| MODERATE evasions (SUGGEST/CLARIFY on Cat E) | 13 |
-| False-positive rate (controls incorrectly ESCALATED) | 8.0% (4/50) |
-| Known gaps (total) | 23 (5 boundary + 18 adversarial) |
+| False-positive controls | 15 |
+| Overall accuracy | 90.2% (156/173) |
+| Non-adversarial accuracy | 97.7% (125/128) |
+| Adversarial detection rate | 68.9% (31/45) |
+| CRITICAL evasions (EXECUTE on Cat E) | 6 |
+| MODERATE evasions (CLARIFY on Cat E) | 8 |
+| False-positive rate (controls) | 46.7% (7/15) |
+| Known gaps (total) | 17 (3 boundary + 14 adversarial) |
 
 ## No Proprietary Data Attestation
 
@@ -203,3 +200,5 @@ This dataset contains **zero proprietary data** from Nearmap, Inc. or any other 
 ## License
 
 Research use. Part of the TELOS research artifact.
+
+Licensed under the terms of the TELOS AI Labs Inc. proprietary research license. Contact JB@telos-labs.ai for licensing inquiries.

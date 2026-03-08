@@ -2,7 +2,7 @@
 TELOS Fidelity Engine - Shared Mathematical Core
 =================================================
 
-SAAI Framework Compliance: Core fidelity computation module shared across
+SAAI Framework Alignment: Core fidelity computation module shared across
 Observatory UI (Streamlit) and Gateway API (FastAPI).
 
 This module provides pure mathematical operations with NO framework dependencies
@@ -20,9 +20,7 @@ Two-Layer Architecture:
 Graduated Governance Decisions (per Technical Brief):
   - EXECUTE:  fidelity >= 0.45 - Proceed with execution
   - CLARIFY:  fidelity 0.35-0.45 - Request clarification from agent
-  - SUGGEST:  fidelity 0.25-0.35 - Offer alternative tools
-  - INERT:    fidelity < 0.25 - Block without revealing governance
-  - ESCALATE: Human review required (triggered by SAAI drift thresholds)
+  - ESCALATE: fidelity < 0.35 - Require human review
 
 Usage:
     from telos_core.fidelity_engine import (
@@ -93,9 +91,7 @@ class GovernanceDecision(str, Enum):
     """
     EXECUTE = "execute"      # Proceed with tool/request
     CLARIFY = "clarify"      # Request clarification from agent
-    SUGGEST = "suggest"      # Offer alternative tools/approaches
-    INERT = "inert"          # Block without revealing governance
-    ESCALATE = "escalate"    # Require human review (SAAI drift)
+    ESCALATE = "escalate"    # Require human review (SAAI drift or low fidelity)
 
 
 class InterventionType(str, Enum):
@@ -386,12 +382,10 @@ def make_governance_decision(
     """
     Make graduated governance decision based on fidelity scores.
 
-    Per TELOS Gateway Technical Brief v1.0:
+    3-verdict model:
         EXECUTE:  >= 0.45 - All systems go
         CLARIFY:  0.35-0.45 - Need more context
-        SUGGEST:  0.25-0.35 - Consider alternatives
-        INERT:    < 0.25 - Silent block
-        ESCALATE: SAAI drift triggers human review
+        ESCALATE: < 0.35 or SAAI drift - Require human review
 
     If tool_fidelities provided, uses MINIMUM across all tools
     (weakest link determines overall decision).
@@ -415,15 +409,13 @@ def make_governance_decision(
         min_tool_fidelity = min(tool_fidelities.values()) if tool_fidelities else 1.0
         effective_fidelity = min(input_fidelity, min_tool_fidelity)
 
-    # Graduated decision thresholds
+    # 3-tier graduated decision thresholds
     if effective_fidelity >= 0.45:
         return GovernanceDecision.EXECUTE
     elif effective_fidelity >= 0.35:
         return GovernanceDecision.CLARIFY
-    elif effective_fidelity >= 0.25:
-        return GovernanceDecision.SUGGEST
     else:
-        return GovernanceDecision.INERT
+        return GovernanceDecision.ESCALATE
 
 
 def calculate_decision_confidence(
@@ -447,9 +439,7 @@ def calculate_decision_confidence(
     band_centers = {
         GovernanceDecision.EXECUTE: 0.70,
         GovernanceDecision.CLARIFY: 0.40,
-        GovernanceDecision.SUGGEST: 0.30,
-        GovernanceDecision.INERT: 0.10,
-        GovernanceDecision.ESCALATE: 0.50,  # Confidence from SAAI, not fidelity
+        GovernanceDecision.ESCALATE: 0.20,
     }
 
     # Distance from band center (normalized)
@@ -482,9 +472,7 @@ def generate_recommendation(
     recommendations = {
         GovernanceDecision.EXECUTE: "Request aligned with purpose. Proceed.",
         GovernanceDecision.CLARIFY: "Request unclear. Ask agent for clarification.",
-        GovernanceDecision.SUGGEST: "Request drifting. Consider alternative approach.",
-        GovernanceDecision.INERT: "Request outside purpose scope.",
-        GovernanceDecision.ESCALATE: "SAAI drift threshold exceeded. Human review required.",
+        GovernanceDecision.ESCALATE: "Request outside purpose scope. Human review required.",
     }
 
     base = recommendations.get(decision, "Unknown decision state.")

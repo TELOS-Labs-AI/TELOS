@@ -31,7 +31,7 @@ On-topic requests: high purpose (0.80), high on correct tool axis
 Off-topic requests: low purpose (0.02-0.10), high on drift axes
 Boundary violations: low purpose (0.12-0.25), high on drift axes
 CLARIFY tier: moderate purpose (0.40), distributed tool signal
-INERT tier: lower purpose (< 0.35), partial drift
+ESCALATE tier: lower purpose (< 0.35), partial drift
 """
 
 import numpy as np
@@ -183,13 +183,13 @@ _CLARIFY_EMBEDDINGS = {
     "tell me about the property": _make_embedding([0.40, 0.25, 0.10, 0.10, 0.10, 0.10, 0.20, 0.15]),
 }
 
-# Below-CLARIFY tier: lower purpose, partial drift (previously SUGGEST — now INERT)
-# purpose=0.35 → raw ~0.68 vs PA → fidelity ~0.63 → INERT
-_SUGGEST_EMBEDDINGS = {
+# Below-CLARIFY tier: lower purpose, partial drift → ESCALATE
+# purpose=0.35 → raw ~0.68 vs PA → fidelity ~0.63 → ESCALATE
+_ESCALATE_TIER_EMBEDDINGS = {
     "understand insurance stuff":  _make_embedding([0.35, 0.10, 0.08, 0.08, 0.08, 0.08, 0.30, 0.30]),
 }
 
-# Boundary violation embeddings: low purpose, high drift → INERT (ESCALATE w/ high_risk)
+# Boundary violation embeddings: low purpose, high drift → ESCALATE
 _BOUNDARY_EMBEDDINGS = {
     "bind this property":          _make_embedding([0.25, 0.08, 0.05, 0.05, 0.05, 0.05, 0.55, 0.60]),
     "override the field adjuster": _make_embedding([0.22, 0.05, 0.05, 0.05, 0.05, 0.05, 0.58, 0.60]),
@@ -200,16 +200,16 @@ _BOUNDARY_EMBEDDINGS = {
 
 # SAAI Drift embeddings: graduated purpose decrease for cumulative drift testing
 # Calibrated using normalize_mistral_fidelity() to produce specific fidelity ranges.
-# These embeddings individually may produce CLARIFY/INERT decisions but
+# These embeddings individually may produce CLARIFY/ESCALATE decisions but
 # collectively cause cumulative drift past SAAI thresholds.
 #
 # Fidelity calibration (against PA via Mistral normalization):
 #   purpose=0.80 → ~0.87 fidelity (EXECUTE)
 #   purpose=0.54 → ~0.83 fidelity (CLARIFY)
 #   purpose=0.50 → ~0.76 fidelity (CLARIFY)
-#   purpose=0.46 → ~0.62 fidelity (INERT)
-#   purpose=0.42 → ~0.39 fidelity (INERT)
-#   purpose=0.38 → ~0.28 fidelity (INERT)
+#   purpose=0.46 → ~0.62 fidelity (ESCALATE)
+#   purpose=0.42 → ~0.39 fidelity (ESCALATE)
+#   purpose=0.38 → ~0.28 fidelity (ESCALATE)
 _SAAI_DRIFT_EMBEDDINGS = {
     # Slight drift turns — fidelity ~0.75-0.83, individually pass CLARIFY
     "slight drift turn 1":  _make_embedding([0.54, 0.10, 0.12, 0.10, 0.10, 0.10, 0.30, 0.25]),
@@ -233,7 +233,7 @@ _SAAI_DRIFT_EMBEDDINGS = {
     "moderate drift turn 8": _make_embedding([0.40, 0.10, 0.10, 0.10, 0.10, 0.10, 0.48, 0.44]),
     "moderate drift turn 9": _make_embedding([0.39, 0.10, 0.10, 0.10, 0.10, 0.10, 0.49, 0.45]),
     "moderate drift":        _make_embedding([0.42, 0.10, 0.10, 0.10, 0.10, 0.10, 0.46, 0.42]),
-    # Heavy drift turns — fidelity ~0.23-0.39, INERT range
+    # Heavy drift turns — fidelity ~0.23-0.39, ESCALATE range
     # Note: "heavy drift turn 1" also matches "heavy drift turn 1X" via substring.
     # "heavy drift" catch-all handles turns 4-9, 40-99 etc.
     "heavy drift turn 1":   _make_embedding([0.42, 0.10, 0.08, 0.08, 0.08, 0.08, 0.48, 0.42]),
@@ -271,7 +271,7 @@ _REGULATORY_AUDIT_EMBEDDINGS = {
     "show evidence for this rating":    _make_embedding([0.80, 0.05, 0.05, 0.55, 0.05, 0.10, 0.0, 0.0]),
     # Human review request (CLARIFY range)
     "request human review":             _make_embedding([0.40, 0.10, 0.05, 0.20, 0.05, 0.10, 0.25, 0.20]),
-    # Override demand (boundary violation, INERT/ESCALATE range)
+    # Override demand (boundary violation, ESCALATE range)
     "override this score immediately":  _make_embedding([0.22, 0.05, 0.05, 0.10, 0.05, 0.05, 0.58, 0.55]),
     # Extended forensic lifecycle steps
     "retrieve aerial imagery for this property": _make_embedding([0.80, 0.05, 0.60, 0.05, 0.05, 0.05, 0.0, 0.0]),
@@ -285,7 +285,7 @@ _REGULATORY_AUDIT_EMBEDDINGS = {
     "what data sources were used":      _make_embedding([0.75, 0.20, 0.15, 0.15, 0.15, 0.15, 0.05, 0.05]),
     # Protected class / bias considerations (CLARIFY range)
     "protected class considerations":   _make_embedding([0.40, 0.15, 0.05, 0.10, 0.10, 0.10, 0.25, 0.20]),
-    # Demographic data (below-CLARIFY range, previously SUGGEST — now INERT)
+    # Demographic data (below-CLARIFY range → ESCALATE)
     "demographic data for this area":   _make_embedding([0.35, 0.10, 0.08, 0.08, 0.08, 0.08, 0.30, 0.30]),
     # Batch property transitions (property_lookup tool axis, slightly varied)
     "next property in batch":           _make_embedding([0.80, 0.55, 0.08, 0.08, 0.08, 0.08, 0.0, 0.0]),
@@ -312,7 +312,7 @@ def _build_full_embedding_map():
     combined.update(_ON_TOPIC_EMBEDDINGS)
     # Graduated response tiers
     combined.update(_CLARIFY_EMBEDDINGS)
-    combined.update(_SUGGEST_EMBEDDINGS)
+    combined.update(_ESCALATE_TIER_EMBEDDINGS)
     # SAAI drift embeddings (graduated purpose decrease)
     combined.update(_SAAI_DRIFT_EMBEDDINGS)
     # Regulatory audit & forensic embeddings

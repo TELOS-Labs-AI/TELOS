@@ -11,119 +11,10 @@ Covers:
 
 import asyncio
 import json
-import sys
 import time
-from types import ModuleType
 from unittest.mock import MagicMock, patch
 
 import pytest
-
-
-# ============================================================================
-# Mock the adapter modules (not shipped in the public release)
-# ============================================================================
-
-def _install_adapter_mocks():
-    """Install mock modules for the governance adapter layer.
-
-    Only injects telos_adapters.agent.* sub-modules (not shipped in public
-    release).  The parent telos_adapters package is preserved so that other
-    test files importing telos_adapters.generic still resolve correctly.
-    """
-    # Ensure the real telos_adapters package is imported first so we don't
-    # clobber it.  If it hasn't been imported yet, import it now.
-    import telos_adapters as _real_adapters  # noqa: F401
-
-    # Create agent sub-package (not shipped in public release)
-    agent_pkg = ModuleType("telos_adapters.agent")
-    agent_pkg.__path__ = []
-
-    # GovernanceVerdict mock
-    governance_hook_mod = ModuleType("telos_adapters.agent.governance_hook")
-
-    class GovernanceVerdict:
-        def __init__(self, **kwargs):
-            for k, v in kwargs.items():
-                setattr(self, k, v)
-
-    governance_hook_mod.GovernanceVerdict = GovernanceVerdict
-
-    # IPCMessage mock
-    ipc_server_mod = ModuleType("telos_adapters.agent.ipc_server")
-
-    class IPCMessage:
-        def __init__(self, type, request_id, tool_name, action_text, args=None):
-            self.type = type
-            self.request_id = request_id
-            self.tool_name = tool_name
-            self.action_text = action_text
-            self.args = args or {}
-
-    ipc_server_mod.IPCMessage = IPCMessage
-
-    # Daemon mock — create_message_handler
-    daemon_mod = ModuleType("telos_adapters.agent.daemon")
-
-    class _VerdictResponse:
-        def __init__(self, type, data):
-            self.type = type
-            self.data = data
-
-    def create_message_handler(hook, codebase_policies=None, project_root=""):
-        """Minimal mock handler that enforces codebase policies."""
-        from telos_governance.codebase_policy import check_access
-
-        async def handler(msg):
-            if msg.type != "score":
-                return _VerdictResponse("error", {"message": "unknown type"})
-
-            file_path = msg.args.get("file_path", "")
-            rel_path = file_path
-            if project_root and file_path.startswith(project_root):
-                rel_path = file_path[len(project_root):].lstrip("/")
-
-            allowed, reason, matched = check_access(
-                msg.tool_name,
-                rel_path,
-                codebase_policies or [],
-                "",
-            )
-
-            if not allowed and reason == "unauthorized_write":
-                return _VerdictResponse("verdict", {
-                    "allowed": False,
-                    "decision": "escalate",
-                    "policy_violation": True,
-                    "policy_reason": reason,
-                    "policy_collection": matched.collection if matched else None,
-                    "policy_access_level": matched.access_level if matched else None,
-                    "human_required": True,
-                    "explanation": "CODEBASE POLICY VIOLATION: unauthorized write",
-                })
-
-            # Fall through to hook scoring (mocked)
-            verdict = hook.score_action(
-                tool_name=msg.tool_name,
-                action_text=msg.action_text,
-            )
-            return _VerdictResponse("verdict", {
-                "allowed": verdict.allowed,
-                "decision": verdict.decision,
-            })
-
-        return handler
-
-    daemon_mod.create_message_handler = create_message_handler
-
-    # Only inject the agent sub-modules; do NOT replace telos_adapters itself
-    _real_adapters.agent = agent_pkg
-    sys.modules["telos_adapters.agent"] = agent_pkg
-    sys.modules["telos_adapters.agent.governance_hook"] = governance_hook_mod
-    sys.modules["telos_adapters.agent.ipc_server"] = ipc_server_mod
-    sys.modules["telos_adapters.agent.daemon"] = daemon_mod
-
-
-_install_adapter_mocks()
 
 
 # ============================================================================
@@ -164,8 +55,8 @@ class TestCodebasePolicySigner:
 
         signer = CodebasePolicySigner.generate()
         policy = signer.sign_policy(
-            collection="example_project",
-            paths=["example_project/"],
+            collection="stewartbot",
+            paths=["stewartbot/"],
             access_level="read_write",
             ttl_hours=0,
         )
@@ -186,8 +77,8 @@ class TestCodebasePolicySigner:
         signer2 = CodebasePolicySigner.generate()
 
         policy = signer1.sign_policy(
-            collection="agent_workspace",
-            paths=["telos_adapters/agent/"],
+            collection="openclaw_workspace",
+            paths=["telos_adapters/openclaw/"],
             access_level="read_write",
             ttl_hours=0,
         )
@@ -236,18 +127,18 @@ class TestPathMatching:
             paths=["telos_governance/", "telos_core/"],
             access_level="read_only",
         )
-        policy_agent = signer.sign_policy(
-            collection="agent_workspace",
-            paths=["telos_adapters/agent/"],
+        policy_oc = signer.sign_policy(
+            collection="openclaw_workspace",
+            paths=["telos_adapters/openclaw/"],
             access_level="read_write",
         )
 
-        policies = [policy_gov, policy_agent]
-        project_root = "/path/to/project"
+        policies = [policy_gov, policy_oc]
+        project_root = "/opt/project"
 
         # Matches telos_governance policy
         matched = find_matching_policy(
-            "/path/to/project/telos_governance/config.py",
+            "/opt/project/telos_governance/config.py",
             policies, project_root,
         )
         assert matched is not None
@@ -255,23 +146,23 @@ class TestPathMatching:
 
         # Matches telos_core prefix in same policy
         matched = find_matching_policy(
-            "/path/to/project/telos_core/constants.py",
+            "/opt/project/telos_core/constants.py",
             policies, project_root,
         )
         assert matched is not None
         assert matched.collection == "telos_governance"
 
-        # Matches agent workspace policy
+        # Matches openclaw policy
         matched = find_matching_policy(
-            "/path/to/project/telos_adapters/agent/daemon.py",
+            "/opt/project/telos_adapters/openclaw/daemon.py",
             policies, project_root,
         )
         assert matched is not None
-        assert matched.collection == "agent_workspace"
+        assert matched.collection == "openclaw_workspace"
 
         # No match for README.md
         matched = find_matching_policy(
-            "/path/to/project/README.md",
+            "/opt/project/README.md",
             policies, project_root,
         )
         assert matched is None
@@ -412,7 +303,7 @@ class TestDaemonPolicyCheck:
 
     def _make_mock_hook(self):
         """Create a mock GovernanceHook returning a standard verdict."""
-        from telos_adapters.agent.governance_hook import GovernanceVerdict
+        from telos_adapters.openclaw.governance_hook import GovernanceVerdict
 
         hook = MagicMock()
         hook.score_action.return_value = GovernanceVerdict(
@@ -431,8 +322,8 @@ class TestDaemonPolicyCheck:
     def test_daemon_policy_check_escalate(self):
         """Write tool + read_only policy -> ESCALATE, hook.score_action NOT called."""
         from telos_governance.codebase_policy import CodebasePolicySigner
-        from telos_adapters.agent.daemon import create_message_handler
-        from telos_adapters.agent.ipc_server import IPCMessage
+        from telos_adapters.openclaw.daemon import create_message_handler
+        from telos_adapters.openclaw.ipc_server import IPCMessage
 
         signer = CodebasePolicySigner.generate()
         policy = signer.sign_policy(

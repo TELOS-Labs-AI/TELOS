@@ -370,7 +370,7 @@ class TestScenarioSchema:
 class TestDecisionAccuracy:
     """Verify governance decisions with two-gate architecture.
 
-    Thresholds updated 2026-03-01:
+    Thresholds updated post-calibration sprint (2026-03-01):
     - Overall accuracy: 84% (actual 84.7%, v1 was 82.6%)
     - EXECUTE accuracy: 85% (Gate 1 per-tool centroids)
     - ESCALATE accuracy: 75% (Gate 2 boundary detection)
@@ -381,8 +381,8 @@ class TestDecisionAccuracy:
 
         Two-gate architecture (v2) + calibration sprint:
         - v1 prior art: 82.6% (single composite score)
-        - Post-calibration (sug=0.28): 81.3%
-        - Final calibration: 84.7% (Cat A 74%→90%, OOD floor, exemplar tuning)
+        - Recalibration Phase C (sug=0.28): 81.3%
+        - Calibration sprint: 84.7% (Cat A 74%→90%, OOD floor, exemplar tuning)
         - Threshold set at 84% (0.7pp margin below actual)
         """
         acc = benchmark_results["aggregate"]["overall_accuracy"]
@@ -690,7 +690,7 @@ class TestCoverage:
     def test_all_decision_types_present(self, scenarios):
         from collections import Counter
         counts = Counter(s["expected_decision"] for s in scenarios)
-        for decision in ["EXECUTE", "CLARIFY", "INERT", "ESCALATE"]:
+        for decision in ["EXECUTE", "CLARIFY", "ESCALATE"]:
             assert counts.get(decision, 0) >= 3, (
                 f"Only {counts.get(decision, 0)} {decision} scenarios (minimum 3)"
             )

@@ -146,7 +146,7 @@ class TELOSDefenseLayer:
         pa: Optional pre-built AgenticPA. If None, creates safety PA.
         auto_block: If True, blocks tasks based on governance decisions.
         strict: Retained for API compatibility. Both strict and non-strict modes
-                block INERT and ESCALATE; CLARIFY is allowed in both modes.
+                block ESCALATE; CLARIFY is allowed in both modes.
                 Default True for safety benchmarks.
     """
 
@@ -303,13 +303,12 @@ class TELOSDefenseLayer:
     def _should_block(self, result: AgenticFidelityResult) -> bool:
         """Determine if a task should be blocked based on governance result.
 
-        Blocks INERT and ESCALATE in all modes. In strict mode (default for
-        safety benchmarks), only INERT and ESCALATE are blocked — CLARIFY
-        proceeds with verification context injected.
+        Blocks ESCALATE in all modes. CLARIFY proceeds with verification
+        context injected.
         """
         if not self.auto_block:
             return False
-        blocked_decisions = {ActionDecision.INERT, ActionDecision.ESCALATE}
+        blocked_decisions = {ActionDecision.ESCALATE}
         return result.decision in blocked_decisions
 
     def _generate_refusal(self, result: AgenticFidelityResult) -> str:

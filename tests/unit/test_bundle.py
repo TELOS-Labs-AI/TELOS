@@ -410,7 +410,7 @@ class TestManifestSerialization:
 # =============================================================================
 
 class TestRegulatoryManifestFields:
-    """Test the 7 regulatory manifest fields."""
+    """Test Schaake's 7 regulatory manifest fields."""
 
     def test_bundle_id_auto_generated(self, labs_key, deploy_key, license_key, config_data):
         builder = BundleBuilder(labs_key=labs_key, deployment_key=deploy_key)

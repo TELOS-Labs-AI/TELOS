@@ -20,7 +20,7 @@ Commands:
   telos intelligence export      -- Export telemetry for an agent
   telos intelligence export-encrypted -- Export encrypted telemetry
   telos intelligence clear       -- Clear telemetry data for an agent
-  telos agent init               -- Set up TELOS governance for an agent
+  telos agent init               -- Set up TELOS governance for OpenClaw
   telos agent status             -- Show governance daemon status
   telos agent monitor            -- Live governance monitoring
   telos agent history            -- Query governance decision history
@@ -59,7 +59,6 @@ _NO_COLOR = os.environ.get("NO_COLOR") is not None or os.environ.get("TERM") == 
 _DECISION_COLORS = {
     "execute": ("green", False),
     "clarify": ("yellow", False),
-    "inert": ("white", False),
     "escalate": ("red", False),
 }
 
@@ -333,15 +332,15 @@ def healthcare(config, run_all, fast, observe, output):
 
 @demo.command()
 @click.option("--config", "-c", default=None,
-              help="Config ID to run directly (e.g., agent_shell_exec).")
+              help="Config ID to run directly (e.g., openclaw_shell_exec).")
 @click.option("--all", "run_all", is_flag=True,
-              help="Run all 9 agent demos sequentially.")
+              help="Run all 9 OpenClaw demos sequentially.")
 @click.option("--fast", is_flag=True, help="Skip pauses between scenarios.")
 @click.option("--observe", is_flag=True, help="Observation mode — score without blocking.")
 @click.option("--list", "list_configs", is_flag=True,
-              help="List available agent configs and exit.")
-def agent_demo(config, run_all, fast, observe, list_configs):
-    """Launch autonomous agent governance demos (9 configs)."""
+              help="List available OpenClaw configs and exit.")
+def openclaw(config, run_all, fast, observe, list_configs):
+    """Launch OpenClaw autonomous agent governance demos (9 configs)."""
     import subprocess
 
     env = dict(os.environ)
@@ -353,44 +352,44 @@ def agent_demo(config, run_all, fast, observe, list_configs):
         env["NO_COLOR"] = "1"
 
     if list_configs:
-        demo_path = _find_demo_script("agent_launcher.py")
+        demo_path = _find_demo_script("openclaw_launcher.py")
         if demo_path is None:
-            click.echo(_style("Error: demos/agent_launcher.py not found", fg="red"))
+            click.echo(_style("Error: demos/openclaw_launcher.py not found", fg="red"))
             sys.exit(1)
         cmd = [sys.executable, str(demo_path), "--list"]
         sys.exit(subprocess.call(cmd, env=env))
 
     elif config:
         # Run specific config directly
-        demo_path = _find_demo_script("agent_live_demo.py")
+        demo_path = _find_demo_script("openclaw_live_demo.py")
         if demo_path is None:
-            click.echo(_style("Error: demos/agent_live_demo.py not found", fg="red"))
+            click.echo(_style("Error: demos/openclaw_live_demo.py not found", fg="red"))
             sys.exit(1)
 
         cmd = [sys.executable, str(demo_path), "--config", config]
-        click.echo(_style(f"Launching agent governance demo: {config}", fg="cyan"))
+        click.echo(_style(f"Launching OpenClaw demo: {config}", fg="cyan"))
         sys.exit(subprocess.call(cmd, env=env))
 
     elif run_all:
         # Run all 9 sequentially via launcher
-        demo_path = _find_demo_script("agent_launcher.py")
+        demo_path = _find_demo_script("openclaw_launcher.py")
         if demo_path is None:
-            click.echo(_style("Error: demos/agent_launcher.py not found", fg="red"))
+            click.echo(_style("Error: demos/openclaw_launcher.py not found", fg="red"))
             sys.exit(1)
 
-        click.echo(_style("Launching all 9 agent demos (90 scenarios) ...", fg="cyan"))
+        click.echo(_style("Launching all 9 OpenClaw demos (90 scenarios) ...", fg="cyan"))
         proc = subprocess.Popen([sys.executable, str(demo_path)], env=env, stdin=subprocess.PIPE)
         proc.communicate(input=b"10\n0\n")
         sys.exit(proc.returncode)
 
     else:
         # Interactive launcher
-        demo_path = _find_demo_script("agent_launcher.py")
+        demo_path = _find_demo_script("openclaw_launcher.py")
         if demo_path is None:
-            click.echo(_style("Error: demos/agent_launcher.py not found", fg="red"))
+            click.echo(_style("Error: demos/openclaw_launcher.py not found", fg="red"))
             sys.exit(1)
 
-        click.echo(_style("Launching agent governance demo menu ...", fg="cyan"))
+        click.echo(_style("Launching OpenClaw demo menu ...", fg="cyan"))
         sys.exit(subprocess.call([sys.executable, str(demo_path)], env=env))
 
 
@@ -851,7 +850,7 @@ def _run_score(request, config_path, output_json, verbose, sign=False, telemetry
     engine = AgenticFidelityEngine(
         embed_fn=embed_fn, pa=pa,
         violation_keywords=cfg.violation_keywords or None,
-        # confirmer_mode disconnected from scoring path (experiment conclusive)
+        # confirmer_mode disconnected from scoring path (dual-model experiment conclusive)
     )
     result = engine.score_action(request)
 
@@ -1160,7 +1159,7 @@ def benchmark():
 @benchmark.command("run")
 @click.option(
     "--benchmark-name", "-b",
-    type=click.Choice(["nearmap", "civic", "healthcare", "agent"], case_sensitive=False),
+    type=click.Choice(["nearmap", "civic", "healthcare", "openclaw"], case_sensitive=False),
     default="nearmap",
     help="Benchmark suite to run (default: nearmap).",
 )
@@ -1221,10 +1220,10 @@ def benchmark_run(benchmark_name, dataset, output, verbose, forensic, forensic_d
     deterministic, reproducible results.
 
     Benchmarks:
-      nearmap      235 scenarios, property intelligence (default)
+      nearmap      173 scenarios, property intelligence (default)
       civic        75 scenarios, civic services
       healthcare   280 scenarios, 7 clinical AI configs
-      agent        100 scenarios, autonomous agent governance (11 tool groups, 4 risk tiers)
+      openclaw     100 scenarios, autonomous agent governance (11 tool groups, 4 risk tiers)
 
     Use --model to select the embedding model:
       minilm   384-dimensional, fast, ~90MB (default)
@@ -1246,7 +1245,7 @@ def benchmark_run(benchmark_name, dataset, output, verbose, forensic, forensic_d
     Examples:
       telos benchmark run --verbose --forensic
       telos benchmark run -b healthcare -v
-      telos benchmark run -b agent --forensic -v
+      telos benchmark run -b openclaw --forensic -v
     """
     _run_benchmark(benchmark_name, dataset, output, verbose, forensic, forensic_dir, config, no_governance, model_name=model, backend=backend, confirmer=confirmer)
 
@@ -1261,7 +1260,7 @@ def _run_benchmark(benchmark_name, dataset, output, verbose, forensic, forensic_
         "nearmap": {"subdir": "nearmap", "dataset": "nearmap_counterfactual_v1.jsonl"},
         "civic": {"subdir": "civic", "dataset": "civic_counterfactual_v1.jsonl"},
         "healthcare": {"subdir": "healthcare", "dataset": "healthcare_counterfactual_v1.jsonl"},
-        "agent": {"subdir": "agent", "dataset": "agent_boundary_corpus_v1.jsonl"},
+        "openclaw": {"subdir": "openclaw", "dataset": "openclaw_boundary_corpus_v1.jsonl"},
     }
 
     entry = BENCHMARK_REGISTRY[benchmark_name.lower()]
@@ -1335,10 +1334,10 @@ def _run_benchmark(benchmark_name, dataset, output, verbose, forensic, forensic_
             click.echo("  " + _style("JSONL:", dim=True) + f" {output_files['jsonl']}")
             click.echo("  " + _style("CSV:", dim=True) + f"  {output_files['csv']}")
 
-    elif benchmark_name.lower() == "agent":
-        from validation.agent.run_agent_benchmark import (
+    elif benchmark_name.lower() == "openclaw":
+        from validation.openclaw.run_openclaw_benchmark import (
             load_scenarios,
-            load_agent_config,
+            load_openclaw_config,
             build_template,
             run_benchmark as _run_bench,
             print_summary,
@@ -1353,8 +1352,8 @@ def _run_benchmark(benchmark_name, dataset, output, verbose, forensic, forensic_
             + _style(" scenarios", dim=True)
         )
 
-        click.echo(_style("Loading agent configuration...", dim=True))
-        oc_config = load_agent_config()
+        click.echo(_style("Loading OpenClaw configuration...", dim=True))
+        oc_config = load_openclaw_config()
         oc_template = build_template(oc_config)
         click.echo(
             _style("Config: ", dim=True)
@@ -1364,7 +1363,7 @@ def _run_benchmark(benchmark_name, dataset, output, verbose, forensic, forensic_
 
         confirmer_label = " +confirmer" if confirmer else ""
         backend_label = f", backend={backend}" if backend != "auto" else ""
-        click.echo(_style(f"Running agent benchmark (model: {model_name or 'minilm'}{backend_label}{confirmer_label})...", dim=True))
+        click.echo(_style(f"Running OpenClaw benchmark (model: {model_name or 'minilm'}{backend_label}{confirmer_label})...", dim=True))
         results = _run_bench(
             scenarios, oc_template,
             verbose=verbose,
@@ -2344,17 +2343,17 @@ def update_check():
 
 
 # =============================================================================
-# Agent commands (governed agent management)
+# Agent commands (OpenClaw governance)
 # =============================================================================
 
 @main.group()
 def agent():
-    """Manage TELOS governance for agents."""
+    """Manage TELOS governance for OpenClaw agents."""
     pass
 
 
-def _agent_detect() -> dict:
-    """Detect agent platform installation. Returns info dict."""
+def _openclaw_detect() -> dict:
+    """Detect OpenClaw installation. Returns info dict."""
     from pathlib import Path
     import shutil
 
@@ -2365,15 +2364,15 @@ def _agent_detect() -> dict:
         "binary": None,
     }
 
-    agent_dir = Path.home() / ".telos" / "agent"
-    if agent_dir.is_dir():
+    openclaw_dir = Path.home() / ".openclaw"
+    if openclaw_dir.is_dir():
         info["installed"] = True
-        info["config_dir"] = str(agent_dir)
-        hooks_dir = agent_dir / "hooks"
+        info["config_dir"] = str(openclaw_dir)
+        hooks_dir = openclaw_dir / "hooks"
         if hooks_dir.is_dir():
             info["hooks_dir"] = str(hooks_dir)
 
-    binary = shutil.which("telos-agent")
+    binary = shutil.which("openclaw")
     if binary:
         info["installed"] = True
         info["binary"] = binary
@@ -2391,7 +2390,7 @@ def _daemon_ipc(msg_type: str, socket_path=None, **kwargs):
     import uuid
     from pathlib import Path
 
-    sock_path = socket_path or str(Path.home() / ".telos" / "agent" / "hooks" / "telos.sock")
+    sock_path = socket_path or str(Path.home() / ".openclaw" / "hooks" / "telos.sock")
     if not Path(sock_path).exists():
         return None
 
@@ -2419,7 +2418,7 @@ def _daemon_ipc(msg_type: str, socket_path=None, **kwargs):
 
 @agent.command("init")
 @click.option("--detect/--no-detect", default=True,
-              help="Auto-detect agent platform installation.")
+              help="Auto-detect OpenClaw installation.")
 @click.option("--preset", "-p",
               type=click.Choice(["strict", "balanced", "permissive"],
                                 case_sensitive=False),
@@ -2428,11 +2427,11 @@ def _daemon_ipc(msg_type: str, socket_path=None, **kwargs):
 @click.option("--output", "-o", type=click.Path(), default=None,
               help="Output path for config file.")
 def agent_init(detect, preset, output):
-    """Set up TELOS governance for an agent.
+    """Set up TELOS governance for an OpenClaw agent.
 
-    Auto-detects agent platform installation, copies the governance
+    Auto-detects OpenClaw installation, copies the governance
     configuration template, and shows next steps for enabling
-    the governance hook.
+    the governance hook plugin.
 
     \b
     Examples:
@@ -2443,13 +2442,13 @@ def agent_init(detect, preset, output):
     from pathlib import Path
     import shutil
 
-    # Step 1: Detect agent platform
+    # Step 1: Detect OpenClaw
     if detect:
-        click.echo(_style("Step 1: Detecting agent platform...", bold=True))
-        info = _agent_detect()
+        click.echo(_style("Step 1: Detecting OpenClaw...", bold=True))
+        info = _openclaw_detect()
         if info["installed"]:
             check = _style("\u2713", fg="green") if not _NO_COLOR else "+"
-            click.echo(f"  {check} Agent platform detected")
+            click.echo(f"  {check} OpenClaw detected")
             if info["config_dir"]:
                 click.echo(
                     "    " + _style(f"Config: {info['config_dir']}", dim=True)
@@ -2460,7 +2459,7 @@ def agent_init(detect, preset, output):
                 )
         else:
             click.echo(
-                "  " + _style("Agent platform not detected", fg="yellow")
+                "  " + _style("OpenClaw not detected", fg="yellow")
                 + _style(
                     " (config will be ready when installed)", dim=True
                 )
@@ -2474,19 +2473,19 @@ def agent_init(detect, preset, output):
     )
 
     template_path = (
-        Path(__file__).resolve().parent.parent / "templates" / "agent.yaml"
+        Path(__file__).resolve().parent.parent / "templates" / "openclaw.yaml"
     )
     if not template_path.exists():
         _echo_error(
-            f"Agent template not found: {template_path}\n"
-            + _style("Ensure TELOS is installed correctly.", dim=True)
+            f"OpenClaw template not found: {template_path}\n"
+            + _style("Ensure telos is installed correctly.", dim=True)
         )
         raise SystemExit(1)
 
     if output:
         dest = Path(output)
     else:
-        dest = Path.home() / ".config" / "telos" / "agent.yaml"
+        dest = Path.home() / ".config" / "telos" / "openclaw.yaml"
 
     if dest.exists():
         click.echo(
@@ -2518,7 +2517,7 @@ def agent_init(detect, preset, output):
             "red",
         ),
         "balanced": (
-            "Fail-closed, ESCALATE/INERT blocked. Recommended for most users.",
+            "Fail-closed, ESCALATE blocked. Recommended for most users.",
             "green",
         ),
         "permissive": (
@@ -2541,7 +2540,7 @@ def agent_init(detect, preset, output):
     click.echo(
         "  2. Start the daemon:\n     "
         + _style(
-            f"python -m telos_governance.daemon --preset {preset}",
+            f"python -m telos_adapters.openclaw.daemon --preset {preset}",
             fg="cyan",
         )
     )
@@ -2572,7 +2571,7 @@ def agent_status(output_json):
     Example: telos agent status
     """
     import json as json_mod
-    from telos_governance.daemon.watchdog import Watchdog
+    from telos_adapters.openclaw.watchdog import Watchdog
 
     watchdog = Watchdog()
     health = watchdog.health_check()
@@ -2656,7 +2655,7 @@ def agent_status(output_json):
     if not health["running"]:
         _hint(
             "telos agent init    Set up governance\n"
-            "       python -m telos_governance.daemon    Start daemon"
+            "       python -m telos_adapters.openclaw.daemon    Start daemon"
         )
         raise SystemExit(1)
 
@@ -2683,7 +2682,7 @@ def agent_monitor(interval, count):
       telos agent monitor --count 10         Stop after 10 refreshes
     """
     import time as _time
-    from telos_governance.daemon.watchdog import Watchdog
+    from telos_adapters.openclaw.watchdog import Watchdog
 
     watchdog = Watchdog()
     if not watchdog.is_running():
@@ -2691,7 +2690,7 @@ def agent_monitor(interval, count):
             "Governance daemon is not running.\n"
             + _style("Start with: ", dim=True)
             + _style(
-                "python -m telos_governance.daemon", fg="cyan"
+                "python -m telos_adapters.openclaw.daemon", fg="cyan"
             )
         )
         raise SystemExit(1)
@@ -2768,7 +2767,7 @@ def agent_monitor(interval, count):
               help="Number of entries to show (default: 20).")
 @click.option("--filter-decision",
               type=click.Choice(
-                  ["EXECUTE", "CLARIFY", "INERT", "ESCALATE"],
+                  ["EXECUTE", "CLARIFY", "ESCALATE"],
                   case_sensitive=False,
               ),
               default=None,
@@ -2792,7 +2791,7 @@ def agent_history(limit, filter_decision, filter_group, output_json):
     import json as json_mod
     from pathlib import Path
 
-    log_dir = Path.home() / ".telos" / "agent" / "hooks"
+    log_dir = Path.home() / ".openclaw" / "hooks"
     log_files = sorted(log_dir.glob("telos-audit-*.jsonl"), reverse=True)
 
     if not log_files:
@@ -2916,7 +2915,7 @@ def agent_test(scenario, output_json):
       telos agent test --json                Machine-readable output
     """
     import json as json_mod
-    from telos_governance.daemon.watchdog import Watchdog
+    from telos_adapters.openclaw.watchdog import Watchdog
 
     watchdog = Watchdog()
     if not watchdog.is_running():
@@ -2924,7 +2923,7 @@ def agent_test(scenario, output_json):
             "Governance daemon is not running.\n"
             + _style("Start first: ", dim=True)
             + _style(
-                "python -m telos_governance.daemon", fg="cyan"
+                "python -m telos_adapters.openclaw.daemon", fg="cyan"
             )
         )
         raise SystemExit(1)
@@ -3103,11 +3102,11 @@ def agent_block_policy(preset, output_json):
       telos agent block-policy --json        Machine-readable output
     """
     import json as json_mod
-    from telos_governance.daemon.governance_hook import (
+    from telos_adapters.openclaw.governance_hook import (
         GovernancePreset,
         BLOCKING_DECISIONS,
     )
-    from telos_governance.daemon.action_classifier import TOOL_GROUP_RISK_MAP
+    from telos_adapters.openclaw.action_classifier import TOOL_GROUP_RISK_MAP
 
     presets_to_show = (
         [preset] if preset else ["strict", "balanced", "permissive"]
@@ -3199,7 +3198,7 @@ def agent_block_policy(preset, output_json):
 
 @agent.command("configure-notifications")
 @click.option("--config", "-c", default=None,
-              help="Path to agent.yaml to update.")
+              help="Path to openclaw.yaml to update.")
 def agent_configure_notifications(config):
     """Interactive setup for ESCALATE verdict notifications.
 
@@ -3209,20 +3208,20 @@ def agent_configure_notifications(config):
     \b
     Examples:
       telos agent configure-notifications
-      telos agent configure-notifications -c templates/agent.yaml
+      telos agent configure-notifications -c templates/openclaw.yaml
     """
     import yaml
 
     # Find or specify config file
     if not config:
-        from telos_governance.daemon.config_loader import AgentConfigLoader
-        loader = AgentConfigLoader()
+        from telos_adapters.openclaw.config_loader import OpenClawConfigLoader
+        loader = OpenClawConfigLoader()
         try:
             config = loader.discover_config_path()
         except Exception:
             config = click.prompt(
-                "Path to agent.yaml",
-                default="templates/agent.yaml",
+                "Path to openclaw.yaml",
+                default="templates/openclaw.yaml",
             )
 
     click.echo(_style("TELOS Notification Configuration", bold=True))
@@ -3326,7 +3325,7 @@ def _resolve_escalation(escalation_id: str, approved: bool, socket_path=None):
     from pathlib import Path
 
     sock_path = socket_path or str(
-        Path.home() / ".telos" / "agent" / "hooks" / "telos.sock"
+        Path.home() / ".openclaw" / "hooks" / "telos.sock"
     )
 
     try:
@@ -3489,7 +3488,7 @@ def service():
               default="balanced",
               help="Governance preset (default: balanced).")
 @click.option("--config", "-c", type=click.Path(), default=None,
-              help="Path to agent.yaml config.")
+              help="Path to openclaw.yaml config.")
 def service_install(preset, config):
     """Install TELOS governance as a system service.
 
@@ -3521,7 +3520,7 @@ def service_install(preset, config):
         args_lines = [
             f"        <string>{python_path}</string>",
             "        <string>-m</string>",
-            "        <string>telos_governance.daemon</string>",
+            "        <string>telos_adapters.openclaw.daemon</string>",
             "        <string>--preset</string>",
             f"        <string>{preset}</string>",
         ]
@@ -3529,7 +3528,7 @@ def service_install(preset, config):
             args_lines.append("        <string>--config</string>")
             args_lines.append(f"        <string>{config}</string>")
 
-        log_dir = Path.home() / ".telos" / "agent" / "hooks"
+        log_dir = Path.home() / ".openclaw" / "hooks"
         plist_content = (
             '<?xml version="1.0" encoding="UTF-8"?>\n'
             '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"'
@@ -3587,16 +3586,16 @@ def service_install(preset, config):
             raise SystemExit(1)
 
         module_cmd = (
-            f"{python_path} -m telos_governance.daemon"
+            f"{python_path} -m telos_adapters.openclaw.daemon"
             f" --preset {preset}"
         )
         if config:
             module_cmd += f" --config {config}"
 
-        log_dir = Path.home() / ".telos" / "agent" / "hooks"
+        log_dir = Path.home() / ".openclaw" / "hooks"
         unit_content = (
             "[Unit]\n"
-            "Description=TELOS Governance Daemon\n"
+            "Description=TELOS Governance Daemon for OpenClaw\n"
             "After=network.target\n"
             "\n"
             "[Service]\n"
@@ -3714,7 +3713,7 @@ def pa():
     """TKeys PA signing — cryptographic activation for governance.
 
     \b
-    The TELOS governance engine is INERT by default. These commands
+    The TELOS governance engine is inert by default. These commands
     manage the TKey signing ceremony: the customer cryptographically
     signs their PA configuration, proving authorship and acceptance.
 
@@ -4090,13 +4089,13 @@ def pa_construct(config, key, verbose):
 
     \b
     Examples:
-      telos pa construct agent.yaml
-      telos pa construct agent.yaml --key ~/.telos/keys/customer.key -v
+      telos pa construct openclaw.yaml
+      telos pa construct openclaw.yaml --key ~/.telos/keys/customer.key -v
     """
     import numpy as np
     from telos_governance.config import load_config
     from telos_governance.pa_constructor import PAConstructor
-    from telos_governance.adapters.tool_semantics import get_all_definitions, get_risk_weight
+    from telos_governance.tool_semantics import get_all_definitions, get_risk_weight
 
     cfg = load_config(config)
 
@@ -4249,14 +4248,14 @@ def pa_inspect(config, tool, test):
 
     \b
     Examples:
-      telos pa inspect agent.yaml
-      telos pa inspect agent.yaml --tool fs_read_file
-      telos pa inspect agent.yaml --test "Read file in project workspace: src/main.py"
+      telos pa inspect openclaw.yaml
+      telos pa inspect openclaw.yaml --tool fs_read_file
+      telos pa inspect openclaw.yaml --test "Read file in project workspace: src/main.py"
     """
     import numpy as np
     from telos_governance.config import load_config
     from telos_governance.pa_constructor import PAConstructor
-    from telos_governance.adapters.tool_semantics import get_all_definitions, get_risk_weight
+    from telos_governance.tool_semantics import get_all_definitions, get_risk_weight
 
     cfg = load_config(config)
 
@@ -4482,7 +4481,7 @@ def audit():
 @click.option("--json", "output_json", is_flag=True,
               help="Output summary as JSON instead of table.")
 @click.option("--verdict", default=None,
-              help="Filter by verdict (EXECUTE, CLARIFY, INERT, ESCALATE).")
+              help="Filter by verdict (EXECUTE, CLARIFY, ESCALATE).")
 @click.option("--tool", "tool_filter", default=None,
               help="Filter by tool name (case-insensitive).")
 @click.option("--session", default=None,

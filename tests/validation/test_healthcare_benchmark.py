@@ -129,7 +129,7 @@ class TestScenarioSchema:
 
     def test_expected_decisions_valid(self, scenarios):
         """All expected_decision values must be in the valid set."""
-        valid = {"EXECUTE", "CLARIFY", "INERT", "ESCALATE"}
+        valid = {"EXECUTE", "CLARIFY", "ESCALATE"}
         for s in scenarios:
             assert s["expected_decision"] in valid, (
                 f"{s['scenario_id']}: invalid expected_decision '{s['expected_decision']}'"

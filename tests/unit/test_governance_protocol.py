@@ -174,7 +174,7 @@ class TestGovernanceSession:
         session.add_event(GovernanceEvent(
             decision_point=DecisionPoint.PRE_ACTION,
             action_text="blocked request",
-            result=_make_result(ActionDecision.INERT, 0.30),
+            result=_make_result(ActionDecision.ESCALATE, 0.30),
         ))
         session.add_event(GovernanceEvent(
             decision_point=DecisionPoint.PRE_ACTION,
@@ -182,7 +182,7 @@ class TestGovernanceSession:
             result=_make_result(ActionDecision.ESCALATE, 0.10),
         ))
         assert session.total_actions == 3
-        assert session.blocked_actions == 2  # INERT + ESCALATE
+        assert session.blocked_actions == 2  # ESCALATE + ESCALATE
         assert session.escalated_actions == 1
 
     def test_average_fidelity(self):
@@ -209,7 +209,7 @@ class TestGovernanceSession:
         session.add_event(GovernanceEvent(
             decision_point=DecisionPoint.PRE_ACTION,
             action_text="b",
-            result=_make_result(ActionDecision.INERT, 0.55),
+            result=_make_result(ActionDecision.ESCALATE, 0.55),
         ))
         assert session.min_fidelity == pytest.approx(0.55)
 
@@ -305,7 +305,6 @@ class TestGovernanceProtocol:
 
         assert protocol.should_proceed(_make_result(ActionDecision.EXECUTE)) is True
         assert protocol.should_proceed(_make_result(ActionDecision.CLARIFY)) is True
-        assert protocol.should_proceed(_make_result(ActionDecision.INERT)) is False
         assert protocol.should_proceed(_make_result(ActionDecision.ESCALATE)) is False
 
     def test_should_proceed_monitoring_mode(self):
@@ -313,7 +312,6 @@ class TestGovernanceProtocol:
         protocol = ConcreteGovernanceProtocol(engine=engine, auto_block=False)
 
         # Monitoring mode: everything proceeds
-        assert protocol.should_proceed(_make_result(ActionDecision.INERT)) is True
         assert protocol.should_proceed(_make_result(ActionDecision.ESCALATE)) is True
 
     def test_on_hooks_delegate_to_check(self):

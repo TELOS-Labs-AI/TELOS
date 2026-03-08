@@ -1,5 +1,5 @@
 """
-Tests for PA Constructor -- Two-Gate Tool-Grounded Governance.
+Tests for PA Constructor — Two-Gate Tool-Grounded Governance.
 
 Validates:
     1. Gate 1: Legitimate tool calls score > 0.70 against their tool's centroid
@@ -7,7 +7,7 @@ Validates:
     3. Gate 2: Boundary violations still detected regardless of Gate 1 pass
     4. Deterministic output (same inputs = same PA, critical for signing)
     5. Missing tool definitions don't crash (graceful fallback)
-    6. All 36 tools have definitions (no gaps)
+    6. All 46 tools have definitions (no gaps)
     7. Per-tool centroids are L2-normalized
     8. Combined centroid is L2-normalized
     9. Provenance field populated for every definition
@@ -28,14 +28,14 @@ from telos_governance.tool_semantics import (
 from telos_governance.pa_constructor import PAConstructor
 
 
-# --- Test Fixtures ---
+# ─── Test Fixtures ───
 
 def _deterministic_embed_fn(text: str) -> np.ndarray:
     """Deterministic embedding for testing.
 
     Uses hash-based pseudo-random vector so that identical text always
     produces identical embeddings, and different text produces different
-    embeddings. NOT semantically meaningful -- for structural tests only.
+    embeddings. NOT semantically meaningful — for structural tests only.
     """
     rng = np.random.RandomState(hash(text) % (2**31))
     vec = rng.randn(384).astype(np.float32)
@@ -75,12 +75,12 @@ def minimal_pa_args():
     )
 
 
-# --- Tool Semantics Tests ---
+# ─── Tool Semantics Tests ───
 
 class TestToolSemantics:
     """Tests for the canonical tool definitions registry."""
 
-    def test_all_tools_defined(self):
+    def test_all_46_tools_defined(self):
         """Every unique telos_tool_name has a definition."""
         expected_tools = {
             "fs_read_file", "fs_write_file", "fs_edit_file", "fs_list_directory",
@@ -94,13 +94,13 @@ class TestToolSemantics:
             "memory_store", "memory_retrieve", "memory_search",
             "ui_display", "ui_prompt",
             "nodes_delegate", "nodes_coordinate",
-            "agent_skill_install", "agent_skill_execute",
-            "agent_config_modify", "agent_instance_create",
+            "openclaw_skill_install", "openclaw_skill_execute",
+            "openclaw_config_modify", "openclaw_agent_create",
             "research_audit_load", "research_audit_rescore",
-            "research_audit_sweep", "research_audit_inspect",
-            "research_audit_stats", "research_audit_timeline",
-            "research_audit_compare", "research_audit_validate",
-            "research_audit_annotate", "research_audit_report",
+            "research_audit_validate", "research_audit_compare",
+            "research_audit_inspect", "research_audit_report",
+            "research_audit_sweep", "research_audit_annotate",
+            "research_audit_timeline", "research_audit_stats",
         }
         actual_tools = set(TOOL_DEFINITIONS.keys())
         missing = expected_tools - actual_tools
@@ -143,11 +143,10 @@ class TestToolSemantics:
             )
 
     def test_tool_group_coverage(self):
-        """All 11 tool groups are represented."""
+        """All 10 OpenClaw tool groups are represented."""
         expected_groups = {
             "fs", "runtime", "web", "messaging", "automation",
-            "sessions", "memory", "ui", "nodes", "agent_management",
-            "research",
+            "sessions", "memory", "ui", "nodes", "openclaw",
         }
         actual_groups = {defn.tool_group for defn in TOOL_DEFINITIONS.values()}
         missing = expected_groups - actual_groups
@@ -188,7 +187,7 @@ class TestToolSemantics:
         assert get_risk_weight("unknown") == 0.5
 
 
-# --- PA Constructor Tests ---
+# ─── PA Constructor Tests ───
 
 class TestPAConstructor:
     """Tests for the PA Constructor building process."""
@@ -278,9 +277,9 @@ class TestPAConstructor:
         assert pa.purpose_embedding is not None
 
 
-# --- Gate 1 Centroid Quality Tests ---
+# ─── Gate 1 Centroid Quality Tests ───
 # These use deterministic embeddings, so they validate STRUCTURE not SEMANTICS.
-# Semantic quality (cosine > 0.70) requires real MiniLM embeddings -- tested
+# Semantic quality (cosine > 0.70) requires real MiniLM embeddings — tested
 # in integration tests with OnnxEmbeddingProvider.
 
 class TestGate1Centroids:
@@ -302,7 +301,7 @@ class TestGate1Centroids:
         all_same = all(
             np.allclose(centroids[0], c) for c in centroids[1:]
         )
-        assert not all_same, "All tool centroids are identical -- something is wrong"
+        assert not all_same, "All tool centroids are identical — something is wrong"
 
     def test_exemplar_count_per_tool(self, constructor, minimal_pa_args):
         """Verify each tool centroid is built from expected exemplar count."""
@@ -312,11 +311,11 @@ class TestGate1Centroids:
             expected_count = 1 + len(defn.legitimate_exemplars)  # desc + exemplars
             assert expected_count >= 6, (
                 f"{name}: only {expected_count} embeddings for centroid "
-                f"(need 6+ for stable centroids)"
+                f"(Karpathy recommends 6+ for stable centroids)"
             )
 
 
-# --- Integration Placeholder Tests ---
+# ─── Integration Placeholder Tests ───
 
 class TestIntegrationPlaceholders:
     """Placeholder tests that require real embeddings (OnnxEmbeddingProvider).
@@ -325,17 +324,17 @@ class TestIntegrationPlaceholders:
     Run with: pytest -m integration tests/integration/test_pa_constructor.py
     """
 
-    @pytest.mark.skip(reason="Requires OnnxEmbeddingProvider -- run as integration test")
+    @pytest.mark.skip(reason="Requires OnnxEmbeddingProvider — run as integration test")
     def test_gate1_legitimate_call_scores_above_070(self):
         """A legitimate Read action should score > 0.70 against Read centroid."""
         pass
 
-    @pytest.mark.skip(reason="Requires OnnxEmbeddingProvider -- run as integration test")
+    @pytest.mark.skip(reason="Requires OnnxEmbeddingProvider — run as integration test")
     def test_gate1_wrong_tool_scores_lower(self):
         """A Read action should score lower against Bash centroid than Read centroid."""
         pass
 
-    @pytest.mark.skip(reason="Requires OnnxEmbeddingProvider -- run as integration test")
+    @pytest.mark.skip(reason="Requires OnnxEmbeddingProvider — run as integration test")
     def test_gate2_boundary_violation_detected(self):
         """Boundary violations detected regardless of Gate 1 pass."""
         pass

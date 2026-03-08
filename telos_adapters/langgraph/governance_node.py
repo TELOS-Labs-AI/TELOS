@@ -26,7 +26,7 @@ Regulatory traceability:
     - EU AI Act Art. 14: interrupt() implements mandatory human oversight
     - NIST AI 600-1 (MEASURE): Agentic thresholds are documented, versioned,
       centralized governance parameters (imported from telos_core.constants)
-    - OWASP LLM Top 10 (LLM08): EXECUTE/CLARIFY/INERT/ESCALATE taxonomy
+    - OWASP LLM Top 10 (LLM08): EXECUTE/CLARIFY/ESCALATE taxonomy
       constrains agent autonomy proportionally to alignment confidence
 """
 
@@ -154,7 +154,7 @@ class TelosGovernanceGate:
     CRITICAL: Tool selection uses TIGHTER thresholds than semantic alignment.
     - EXECUTE: >= 0.85 (vs 0.70 for conversational green zone)
     - CLARIFY: 0.50-0.84 (verify intent before acting)
-    - INERT/ESCALATE: < 0.50 (no match)
+    - ESCALATE: < 0.50 (no match, require human review)
 
     Usage:
         gate = TelosGovernanceGate(embed_fn=my_embedding_function)
@@ -354,7 +354,7 @@ class TelosGovernanceGate:
                 agentic_decision = ActionDecision.ESCALATE
                 reason = f"Very low fidelity ({fidelity:.2f}) in high-risk context"
             else:
-                agentic_decision = ActionDecision.INERT
+                agentic_decision = ActionDecision.ESCALATE
                 reason = f"Very low fidelity ({fidelity:.2f}) - outside purpose"
 
             result["action_decision"] = agentic_decision.value
@@ -402,10 +402,10 @@ class TelosGovernanceGate:
                 result["escalated"] = True
                 return result
 
-            # INERT: No match (< 0.50) - don't execute, don't hallucinate
-            if agentic_decision == ActionDecision.INERT:
+            # ESCALATE (non-high-risk): No match (< 0.50) - don't execute
+            if agentic_decision == ActionDecision.ESCALATE:
                 result["approved"] = False
-                result["approval_source"] = "blocked_inert"
+                result["approval_source"] = "blocked_escalate"
                 result["reason"] = reason
                 return result
 

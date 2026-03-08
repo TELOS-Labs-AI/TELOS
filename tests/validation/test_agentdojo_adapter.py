@@ -119,7 +119,7 @@ class TestTELOSInjectionDefense:
         defense = TELOSInjectionDefense(embed_fn=_deterministic_embed_fn)
         defense.engine = MagicMock(spec=AgenticFidelityEngine)
         defense.engine.score_action.return_value = _make_mock_result(
-            decision=ActionDecision.INERT,
+            decision=ActionDecision.ESCALATE,
             effective_fidelity=0.20,
             purpose_fidelity=0.20,
         )
@@ -183,7 +183,7 @@ class TestTELOSInjectionDefense:
         defense.engine.score_action.return_value = _make_mock_result(
             purpose_fidelity=0.30,
             effective_fidelity=0.30,
-            decision=ActionDecision.INERT,
+            decision=ActionDecision.ESCALATE,
         )
         defense.engine.reset_chain = MagicMock()
 
@@ -265,7 +265,7 @@ class TestAgentDojoBenchmarkResults:
         assert results.attack_success_rate == pytest.approx(0.1)
 
     def test_perfect_defense(self):
-        """Perfect defense = 100% security rate, 0% ASR."""
+        """Perfect defense = 100% security rate, 0% observed ASR."""
         results = AgentDojoBenchmarkResults(
             security_tasks=50, attacks_blocked=50, attacks_succeeded=0,
         )

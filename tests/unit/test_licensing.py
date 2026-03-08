@@ -391,7 +391,7 @@ class TestFileIO:
 
 
 # =============================================================================
-# Review #14 fields (regulatory manifest requirements)
+# Review #14 fields (Schaake P0 + Benioff)
 # =============================================================================
 
 class TestReview14Fields:

@@ -16,7 +16,7 @@ Composite formula:
 First Principles
 -----------------
 1. **Ostrom's Graduated Sanctions** (Design Principle 5, "Governing the
-   Commons", 1990): The EXECUTE/CLARIFY/INERT/ESCALATE decision
+   Commons", 1990): The EXECUTE/CLARIFY/ESCALATE decision
    ladder implements graduated sanctions — responses proportional to the
    severity of drift. Minor misalignment gets clarification; boundary
    violations get escalation. This avoids the binary allow/deny trap that
@@ -164,7 +164,7 @@ class BoundaryCheckResult(NamedTuple):
     """Structured result from boundary checking.
 
     Replaces the brittle 5-tuple return from _check_boundaries().
-    Named fields prevent positional unpacking bugs.
+    Named fields prevent positional unpacking bugs (Karpathy, 2026-02-12).
     """
     violation_score: float          # Max normalized violation similarity (0-1)
     triggered: bool                 # Whether a boundary was triggered
@@ -276,7 +276,7 @@ class AgenticFidelityEngine:
                 engine instance. When None, uses production defaults from
                 constants.py. See: analysis/governance_optimizer.py
             confirmer_mode: Deprecated — safety gate disconnected from scoring
-                path (experiment conclusive). The _confirm_with_secondary()
+                path (dual-model experiment conclusive). The _confirm_with_secondary()
                 method is retained as a research utility but is no longer
                 called in the scoring cascade. This param is accepted but
                 ignored for backward compatibility.
@@ -344,7 +344,7 @@ class AgenticFidelityEngine:
             tool_args.get('telos_tool_name') if tool_args else None
         )
         if tool_centroids and telos_tool_name_for_gate1:
-            # Gate 1: score against per-tool centroid (daemon path
+            # Gate 1: score against per-tool centroid (OpenClaw daemon path
             # provides telos_tool_name via action_classifier → tool_args)
             purpose_fidelity, purpose_sub_qualified = self._score_tool_selection(
                 action_embedding, telos_tool_name_for_gate1
@@ -409,7 +409,7 @@ class AgenticFidelityEngine:
         # Use SetFit as a parallel legitimacy signal for composite modulation.
         # Gated on classifier.composite_boost — only domains that opt in
         # (via manifest or config) get the modulation. Healthcare keeps
-        # strict clinical boundaries; governed agents benefit from relaxed penalty
+        # strict clinical boundaries; OpenClaw benefits from relaxed penalty
         # for verified legitimate requests.
         setfit_legitimacy = boundary_result.setfit_score
         if setfit_legitimacy is None and self._setfit_classifier and action_text:
@@ -615,7 +615,7 @@ class AgenticFidelityEngine:
         that MiniLM missed, the confirmer signals an override.
 
         Asymmetric: can only escalate (upgrade EXECUTE → ESCALATE), never
-        de-escalate. This is a core safety requirement — the confirmer
+        de-escalate. This is the Bengio safety requirement — the confirmer
         adds a one-way safety ratchet.
 
         The confirmer uses raw cosine similarity (not normalized fidelity)
@@ -854,7 +854,7 @@ class AgenticFidelityEngine:
         # This prevents weak tool matches (off-topic requests that happen to
         # weakly resemble some tool centroid) from inflating the score past
         # verdict thresholds. Configurable via Phase C sweep.
-        # Rule: "if tool_score >= gate1_floor: use max, else: purpose_score"
+        # Design rule: "if tool_score >= gate1_floor: use max, else: purpose_score"
         gate1_floor = getattr(self.pa, 'gate1_floor', 0.50)
         if tool_score >= gate1_floor and tool_score > purpose_score:
             return tool_score, True
@@ -968,7 +968,7 @@ class AgenticFidelityEngine:
         contrastive_suppressed = False
         worst_boundary = None
         # Track margin data for the triggering boundary (not worst-scoring boundary)
-        # to ensure audit trail accuracy.
+        # to ensure audit trail accuracy (Karpathy, 2026-02-13).
         trigger_safe_sim = None
         trigger_margin = None
         # Track worst boundary margin for suppression reporting
@@ -1227,15 +1227,15 @@ class AgenticFidelityEngine:
         overrides take precedence (boundary > tool > chain), then
         threshold-based graduated response on effective fidelity.
 
-        The escalation ladder — EXECUTE > CLARIFY > INERT >
-        ESCALATE — maps directly to Ostrom's principle that sanctions
+        The escalation ladder — EXECUTE > CLARIFY > ESCALATE
+        — maps directly to Ostrom's principle that sanctions
         should start mild and increase only as violations persist or
         severity warrants. This avoids the "nuclear option" problem
         where binary allow/deny creates adversarial dynamics.
 
         Hard overrides:
         - Boundary violation (hard) -> ESCALATE (human review required)
-        - Tool blocked -> INERT (acknowledge limitation)
+        - Tool blocked -> ESCALATE (blocked tool requires review)
         - Chain broken -> CLARIFY (verify intent before continuing)
 
         Otherwise, threshold-based on effective fidelity.
@@ -1251,12 +1251,12 @@ class AgenticFidelityEngine:
             return ActionDecision.ESCALATE, human_required
 
         if tool_blocked:
-            return ActionDecision.INERT, human_required
+            return ActionDecision.ESCALATE, human_required
 
         # NOTE: chain_broken no longer a hard override here.
         # Moved to post-threshold check below — chain break only
-        # DOWNGRADES (EXECUTE -> CLARIFY), never UPGRADES (INERT -> CLARIFY).
-        # A prompt injection at fidelity 0.15 must stay INERT regardless
+        # DOWNGRADES (EXECUTE -> CLARIFY), never UPGRADES (ESCALATE -> CLARIFY).
+        # A prompt injection at fidelity 0.15 must stay ESCALATE regardless
         # of chain state.
 
         # Check if tool requires confirmation
@@ -1288,11 +1288,9 @@ class AgenticFidelityEngine:
             decision = ActionDecision.CLARIFY if chain_broken else ActionDecision.EXECUTE
         elif effective_fidelity >= clarify_thresh:
             decision = ActionDecision.CLARIFY
-        elif effective_fidelity < self.pa.escalation_threshold:
+        else:
             decision = ActionDecision.ESCALATE
             human_required = True
-        else:
-            decision = ActionDecision.INERT
 
         return decision, human_required
 

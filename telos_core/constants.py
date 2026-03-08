@@ -138,11 +138,8 @@ Agentic: Close match — verify intent before proceeding.
 Fidelity 0.70-0.84 means plausible match but worth confirming.
 """
 
-AGENTIC_SUGGEST_THRESHOLD = 0.50
-"""
-Agentic: Vague match — offer purpose-aligned alternatives.
-Fidelity 0.50-0.69 means the request may be partially aligned.
-"""
+
+# SUGGEST threshold removed — 3-verdict model: EXECUTE >= 0.85, CLARIFY >= 0.70, ESCALATE < 0.70
 
 # --- SentenceTransformer Agentic Thresholds ---
 # Calibrated for all-MiniLM-L6-v2 (384-dim) composite fidelity scores.
@@ -164,15 +161,9 @@ SentenceTransformer Agentic: Close match — verify intent before proceeding.
 Composite 0.35-0.44 captures medium on-topic scores (~0.370-0.415).
 """
 
-ST_AGENTIC_SUGGEST_THRESHOLD = 0.28
-"""
-SentenceTransformer Agentic: Vague match — offer purpose-aligned alternatives.
-Composite 0.28-0.34 captures low on-topic and boundary cases.
-Below 0.28: ESCALATE (human review) or INERT (acknowledge limitation).
-Calibrated from 0.25→0.28: improves Cat A +2pp, Cat E +4.4pp,
-overall +0.9pp while maintaining Cat B >= 90%. Wilson 95% CI (75.8%, 85.7%)
-includes 82% target.
-"""
+
+# ST_AGENTIC_SUGGEST_THRESHOLD removed — 3-verdict model.
+# Below ST_AGENTIC_CLARIFY_THRESHOLD (0.35): ESCALATE (human review).
 
 BOUNDARY_MARGIN_THRESHOLD = 0.05
 """

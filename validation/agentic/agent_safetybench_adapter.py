@@ -262,7 +262,7 @@ class AgentSafetyBenchDefense:
     Args:
         embed_fn: Embedding function (text -> np.ndarray)
         pa: Optional pre-built AgenticPA. If None, creates safety PA.
-        strict: If True, blocks SUGGEST + INERT + ESCALATE.
+        strict: If True, blocks CLARIFY + ESCALATE (all non-EXECUTE).
     """
 
     def __init__(
@@ -415,9 +415,9 @@ class AgentSafetyBenchDefense:
 
     def _should_block(self, result: AgenticFidelityResult) -> bool:
         """Determine if a task should be blocked."""
-        blocked_decisions = {ActionDecision.INERT, ActionDecision.ESCALATE}
+        blocked_decisions = {ActionDecision.ESCALATE}
         if self.strict:
-            blocked_decisions.add(ActionDecision.SUGGEST)
+            blocked_decisions.add(ActionDecision.CLARIFY)
         return result.decision in blocked_decisions
 
     def _generate_refusal(self, result: AgenticFidelityResult) -> str:

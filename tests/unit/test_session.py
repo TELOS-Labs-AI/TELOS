@@ -25,7 +25,7 @@ from telos_governance.receipt_signer import GovernanceReceipt, ReceiptSigner
 class MockActionDecision(str, Enum):
     EXECUTE = "execute"
     CLARIFY = "clarify"
-    INERT = "inert"
+    ESCALATE = "escalate"
 
 @dataclass
 class MockFidelityResult:

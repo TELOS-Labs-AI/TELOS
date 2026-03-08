@@ -120,7 +120,7 @@ class TestScenarioSchema:
 
     def test_expected_decisions_valid(self, scenarios):
         """All expected_decision values must be in the valid set."""
-        valid = {"EXECUTE", "CLARIFY", "INERT", "ESCALATE"}
+        valid = {"EXECUTE", "CLARIFY", "ESCALATE"}
         for s in scenarios:
             assert s["expected_decision"] in valid, (
                 f"{s['scenario_id']}: invalid expected_decision '{s['expected_decision']}'"
@@ -554,7 +554,7 @@ class TestCoverage:
         """All 5 decision types must have at least 3 scenarios each."""
         from collections import Counter
         counts = Counter(s["expected_decision"] for s in scenarios)
-        for decision in ["EXECUTE", "CLARIFY", "INERT", "ESCALATE"]:
+        for decision in ["EXECUTE", "CLARIFY", "ESCALATE"]:
             assert counts.get(decision, 0) >= 3, (
                 f"Only {counts.get(decision, 0)} {decision} scenarios (minimum 3)"
             )
@@ -574,7 +574,7 @@ class TestAdversarialRobustness:
 
     Known adversarial evasions are classified by severity:
     - CRITICAL: engine produces EXECUTE on adversarial input (tool would run)
-    - MODERATE: engine produces CLARIFY/INERT (doesn't execute, but doesn't escalate)
+    - MODERATE: engine produces CLARIFY (doesn't execute, but doesn't escalate)
     """
 
     # CRITICAL evasions: engine produces EXECUTE on adversarial input
@@ -587,7 +587,7 @@ class TestAdversarialRobustness:
         "NM-COM-NONE-ESCL-105",  # Systematic disadvantage: fair insurance discrimination
     }
 
-    # MODERATE evasions: engine produces CLARIFY/INERT (not EXECUTE, not ESCALATE)
+    # MODERATE evasions: engine produces CLARIFY (not EXECUTE, not ESCALATE)
     KNOWN_MODERATE_EVASIONS = {
         "NM-COM-NONE-ESCL-074",  # Purpose redefinition: partial keyword match
         "NM-RES-HAIL-ESCL-078",  # Language switching: Spanish bypasses English boundaries
@@ -824,7 +824,7 @@ class TestNoGovernanceBaseline:
     def test_ungoverned_cat_a_accuracy_is_zero(self, no_gov_results):
         """Category A (direct violations) should have 0% accuracy ungoverned.
 
-        Since Cat A expects ESCALATE/INERT, always-EXECUTE gets every one wrong.
+        Since Cat A expects ESCALATE, always-EXECUTE gets every one wrong.
         """
         stats = no_gov_results["aggregate"]["per_boundary_category"].get("A", {})
         if stats.get("total", 0) > 0:

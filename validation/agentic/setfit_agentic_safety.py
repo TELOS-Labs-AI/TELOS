@@ -60,7 +60,7 @@ import numpy as np
 # Resolve project root
 # ---------------------------------------------------------------------------
 SCRIPT_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = SCRIPT_DIR.parent.parent  # telos/
+PROJECT_ROOT = SCRIPT_DIR.parent.parent  # project root
 
 ASB_DATA_PATH = (
     SCRIPT_DIR / "external" / "agent_safetybench" / "released_data.json"

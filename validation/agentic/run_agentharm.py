@@ -323,7 +323,7 @@ def run_huggingface(output_path: str = None, verbose: bool = False, embeddings: 
     # --- Run benign tasks ---
     print("Phase 2: Benign task preservation (should pass all)")
     print("-" * 50)
-    # Use non-strict mode for benign — SUGGEST should pass
+    # Use non-strict mode for benign — CLARIFY should pass
     benign_defense = TELOSDefenseLayer(embed_fn=embed_fn, strict=False)
     benign_results = benign_defense.run_benchmark(benign_tasks)
 

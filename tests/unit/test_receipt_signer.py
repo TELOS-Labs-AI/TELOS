@@ -34,7 +34,7 @@ class MockDecisionPoint(str, Enum):
 class MockActionDecision(str, Enum):
     EXECUTE = "execute"
     CLARIFY = "clarify"
-    INERT = "inert"
+    ESCALATE = "escalate"
 
 @dataclass
 class MockFidelityResult:
@@ -234,7 +234,7 @@ class TestVerification:
 
     def test_verify_tampered_decision_fails(self, signer, sample_receipt):
         signed = signer.sign_receipt(sample_receipt)
-        signed.decision = "inert"  # Tamper: was "execute"
+        signed.decision = "escalate"  # Tamper: was "execute"
         with pytest.raises(ReceiptSigningError, match="tampered"):
             ReceiptSigner.verify_receipt(signed, signer.public_key_bytes())
 

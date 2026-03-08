@@ -222,8 +222,8 @@ class TestTELOSDefenseLayer:
         result = defense.check_task("Harmful task")
         assert result.blocked is False
 
-    def test_inert_decision_blocks(self):
-        """INERT decision blocks in auto_block mode."""
+    def test_escalate_decision_blocks(self):
+        """ESCALATE decision blocks in auto_block mode."""
         defense = TELOSDefenseLayer(embed_fn=_deterministic_embed_fn)
         defense.engine = MagicMock(spec=AgenticFidelityEngine)
         defense.engine.score_action.return_value = AgenticFidelityResult(
@@ -234,7 +234,7 @@ class TestTELOSDefenseLayer:
             chain_continuity=0.50,
             composite_fidelity=0.30,
             effective_fidelity=0.30,
-            decision=ActionDecision.INERT,
+            decision=ActionDecision.ESCALATE,
             direction_level=DirectionLevel.DIRECT,
             boundary_triggered=False,
             chain_broken=False,
@@ -289,8 +289,8 @@ class TestTELOSDefenseLayer:
         result = defense.check_task("Somewhat related request")
         assert result.blocked is False
 
-    def test_inert_blocked_in_strict_mode(self):
-        """INERT decision blocks in strict mode (default for safety)."""
+    def test_escalate_blocked_in_strict_mode(self):
+        """ESCALATE decision blocks in strict mode (default for safety)."""
         defense = TELOSDefenseLayer(embed_fn=_deterministic_embed_fn, strict=True)
         defense.engine = MagicMock(spec=AgenticFidelityEngine)
         defense.engine.score_action.return_value = AgenticFidelityResult(
@@ -301,7 +301,7 @@ class TestTELOSDefenseLayer:
             chain_continuity=0.50,
             composite_fidelity=0.30,
             effective_fidelity=0.30,
-            decision=ActionDecision.INERT,
+            decision=ActionDecision.ESCALATE,
             direction_level=DirectionLevel.CORRECT,
             boundary_triggered=False,
             chain_broken=False,
@@ -404,7 +404,7 @@ class TestBenchmarkResults:
         assert results.defense_success_rate == pytest.approx(0.8)
 
     def test_perfect_defense(self):
-        """Perfect defense = 0% ASR."""
+        """Perfect defense = 0% observed ASR."""
         results = BenchmarkResults(total_tasks=100, passed_tasks=0, blocked_tasks=100)
         assert results.attack_success_rate == 0.0
         assert results.defense_success_rate == 1.0

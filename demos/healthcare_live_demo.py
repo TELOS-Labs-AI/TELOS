@@ -503,7 +503,7 @@ def main(config_id: str, output_dir: Optional[str] = None):
             _cascade_halt = "L1"
         elif _setfit_triggered:
             _cascade_halt = "L1.5"
-        elif decision in (ActionDecision.INERT, ActionDecision.ESCALATE):
+        elif decision == ActionDecision.ESCALATE:
             _cascade_halt = "fidelity"
         else:
             _cascade_halt = "none"
@@ -534,7 +534,7 @@ def main(config_id: str, output_dir: Optional[str] = None):
 
         boundary_hit = (
             boundary_violation
-            and decision.value in ("escalate", "inert")
+            and decision.value == "escalate"
         )
         if boundary_hit:
             boundary_tag = _c("VIOLATION ({})".format(matched_boundary_name[:30]), "red")
@@ -568,7 +568,7 @@ def main(config_id: str, output_dir: Optional[str] = None):
         _flow_line(allowed)
 
         if OBSERVE_MODE and would_block:
-            obs_label = "WOULD BLOCK" if decision.value == "inert" else "WOULD ESCALATE"
+            obs_label = "WOULD ESCALATE"
             print("  {}".format(_c("  OBSERVATION: {} \u2014 LLM NOT called in enforcement mode".format(obs_label), "yellow")))
 
         _pause(1.0)
@@ -707,7 +707,7 @@ def main(config_id: str, output_dir: Optional[str] = None):
             previous_fidelity=prev_fid,
         )
         if would_block and not OBSERVE_MODE:
-            i_level = InterventionLevel.HARD_BLOCK if decision == ActionDecision.INERT else InterventionLevel.ESCALATE
+            i_level = InterventionLevel.ESCALATE
             trigger = "boundary_violation" if boundary_violation else "hard_block" if raw_sim < SIMILARITY_BASELINE else "basin_exit"
             trace.record_intervention(
                 turn_number=num,
@@ -716,7 +716,7 @@ def main(config_id: str, output_dir: Optional[str] = None):
                 fidelity_at_trigger=purpose_f,
                 controller_strength=min(DEFAULT_K_ATTRACTOR * (1.0 - purpose_f), 1.0),
                 semantic_band=_zone_label(purpose_f).lower(),
-                action_taken="block" if decision == ActionDecision.INERT else "escalate",
+                action_taken="escalate",
             )
         if llm_response:
             trace.record_response(
@@ -817,7 +817,7 @@ def main(config_id: str, output_dir: Optional[str] = None):
     print()
     print(_c("  Blocked requests (audit trail):", "dim"))
     for r in receipts:
-        if r.decision in (ActionDecision.INERT, ActionDecision.ESCALATE):
+        if r.decision == ActionDecision.ESCALATE:
             note = r.note or "outside agent scope"
             short_req = r.request[:50] + "..." if len(r.request) > 50 else r.request
             print("    #{:<3d} {}  \"{}\" \u2014 {}".format(
@@ -827,8 +827,7 @@ def main(config_id: str, output_dir: Optional[str] = None):
     # ── Section 4: Summary ──────────────────────────────────────────
     n_allowed = sum(1 for r in receipts if r.decision in (
         ActionDecision.EXECUTE, ActionDecision.CLARIFY))
-    n_blocked = sum(1 for r in receipts if r.decision in (
-        ActionDecision.INERT, ActionDecision.ESCALATE))
+    n_blocked = sum(1 for r in receipts if r.decision == ActionDecision.ESCALATE)
     n_tool_calls = sum(1 for r in receipts if r.tool_called)
     avg_gov = total_gov_ms / len(receipts) if receipts else 0
 

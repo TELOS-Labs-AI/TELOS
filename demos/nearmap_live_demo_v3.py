@@ -143,7 +143,7 @@ def _teloscope_exercise_inspect(receipts, corpus):
     # Find the most interesting receipt: highest fidelity among blocked,
     # or lowest fidelity among allowed — the closest call
     allowed_r = [r for r in receipts if r.decision.value in ("execute", "clarify")]
-    blocked_r = [r for r in receipts if r.decision.value in ("escalate", "inert")]
+    blocked_r = [r for r in receipts if r.decision.value == "escalate"]
 
     target = None
     if blocked_r:
@@ -384,7 +384,7 @@ def _teloscope_interleave(domain_label, receipts, session_id, is_first=False):
 
     # --- Compare: allowed vs blocked ---
     allowed = corpus.filter(predicate=lambda e: e.verdict in ("EXECUTE", "CLARIFY"))
-    blocked = corpus.filter(predicate=lambda e: e.verdict in ("INERT", "ESCALATE"))
+    blocked = corpus.filter(predicate=lambda e: e.verdict == "ESCALATE")
     if len(allowed) > 0 and len(blocked) > 0:
         cmp = compare(allowed, blocked, label_a="Allowed", label_b="Blocked")
         print_comparison(corpus, cmp)
@@ -429,7 +429,7 @@ def _teloscope_interleave(domain_label, receipts, session_id, is_first=False):
 def _interpreter_close(all_receipts, total_gov_ms):
     """Plain-language macro interpretation of the demo.
 
-    Plain-language interpreter style. 8-10 lines. No jargon.
+    Stewart-interpreter style. 8-10 lines. No jargon.
     """
     _header("Act 5 — What You Just Saw")
     _pause(1.0)
@@ -809,7 +809,7 @@ def main():
     print()
     print(_c("  Blocked requests (audit trail):", "dim"))
     for r in all_receipts:
-        if r.decision in (EngineDecision.INERT, EngineDecision.ESCALATE):
+        if r.decision == EngineDecision.ESCALATE:
             note = r.note or "outside agent scope"
             short_req = r.request[:70] + "..." if len(r.request) > 70 else r.request
             print("    #{:<3d} {}  \"{}\" \u2014 {}".format(r.index, _c(r.decision.value.upper(), "red"), short_req, _c(note, "dim")))
@@ -945,7 +945,8 @@ def main():
     _pause(1.0)
 
     print()
-    print(_c("  SAAI Framework Compliance:", "white", bold=True))
+    # SAAI Framework by Dr. Nell Watson and Ali Hessami (CC BY-ND 4.0)
+    print(_c("  SAAI Framework Alignment:", "white", bold=True))
     _kv("Baseline established", "Yes" if report.baseline_established else "No")
     _kv("Mandatory reviews", str(report.mandatory_reviews_triggered))
     _kv("Final drift level", report.final_drift_level or "normal")

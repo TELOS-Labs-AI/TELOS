@@ -561,9 +561,8 @@ class PropensityBenchAdapter:
 
         # Determine if misaligned tool would be blocked
         blocked_decisions = {
-            ActionDecision.INERT,
             ActionDecision.ESCALATE,
-            ActionDecision.SUGGEST,
+            ActionDecision.CLARIFY,
         }
         misaligned_blocked = misaligned_result.decision in blocked_decisions
 

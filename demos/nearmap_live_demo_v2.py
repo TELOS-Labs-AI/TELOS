@@ -1078,7 +1078,7 @@ def _agentic_decision(fidelity, raw_sim, boundary_violation):
         return EngineDecision.EXECUTE
     if fidelity >= ST_AGENTIC_CLARIFY_THRESHOLD:
         return EngineDecision.CLARIFY
-    return EngineDecision.INERT
+    return EngineDecision.ESCALATE
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1193,7 +1193,7 @@ def _act_zero_preamble(agent_name, purpose, scope, boundaries, tools, constraint
         ("Boundary Detection", "Does this request violate any of your hard constraints?"),
         ("Chain Continuity", "Is this action logically connected to the prior step?"),
         ("Composite Score", "Overall governance assessment"),
-        ("Decision", "EXECUTE / CLARIFY / INERT / ESCALATE"),
+        ("Decision", "EXECUTE / CLARIFY / ESCALATE"),
     ]
     for name, desc in dimensions:
         print("    {:<22s} {}".format(
@@ -1392,7 +1392,7 @@ def _run_pa_scenarios(config, embed_fn, hmac_key, setfit_classifier, setfit_load
                 _cascade_halt = "L1"
             elif _setfit_triggered:
                 _cascade_halt = "L1.5"
-            elif decision in (ActionDecision.INERT, ActionDecision.ESCALATE):
+            elif decision == ActionDecision.ESCALATE:
                 _cascade_halt = "fidelity"
             else:
                 _cascade_halt = "none"
@@ -1451,7 +1451,7 @@ def _run_pa_scenarios(config, embed_fn, hmac_key, setfit_classifier, setfit_load
 
         boundary_hit = (
             boundary_violation
-            and decision.value in ("escalate", "inert")
+            and decision.value == "escalate"
         )
         if boundary_hit:
             boundary_tag = _c("VIOLATION ({})".format(matched_boundary_name[:30]), "red")
@@ -1473,7 +1473,7 @@ def _run_pa_scenarios(config, embed_fn, hmac_key, setfit_classifier, setfit_load
             _two_gate_panel(prod_result, gov_ms)
             _flow_line(allowed)
             if OBSERVE_MODE and would_block:
-                obs_label = "WOULD BLOCK" if original_decision.value == "inert" else "WOULD ESCALATE"
+                obs_label = "WOULD ESCALATE"
                 print("  {}".format(_c("  OBSERVATION: {} \u2014 LLM NOT called in enforcement mode".format(obs_label), "yellow")))
             _pause(1.5)
             verdict_detail = ""
@@ -1490,7 +1490,7 @@ def _run_pa_scenarios(config, embed_fn, hmac_key, setfit_classifier, setfit_load
             _flow_line(allowed)
 
             if OBSERVE_MODE and would_block:
-                obs_label = "WOULD BLOCK" if original_decision.value == "inert" else "WOULD ESCALATE"
+                obs_label = "WOULD ESCALATE"
                 print("  {}".format(_c("  OBSERVATION: {} \u2014 LLM NOT called in enforcement mode".format(obs_label), "yellow")))
 
             _pause(1.0)
@@ -1593,7 +1593,7 @@ def _run_pa_scenarios(config, embed_fn, hmac_key, setfit_classifier, setfit_load
             previous_fidelity=prev_fid,
         )
         if would_block and not OBSERVE_MODE:
-            i_level = InterventionLevel.HARD_BLOCK if original_decision == EngineDecision.INERT else InterventionLevel.ESCALATE
+            i_level = InterventionLevel.ESCALATE
             trigger = "boundary_violation" if boundary_violation else "hard_block" if raw_sim < SIMILARITY_BASELINE else "basin_exit"
             trace.record_intervention(
                 turn_number=receipt_num,
@@ -1602,7 +1602,7 @@ def _run_pa_scenarios(config, embed_fn, hmac_key, setfit_classifier, setfit_load
                 fidelity_at_trigger=purpose_f,
                 controller_strength=min(DEFAULT_K_ATTRACTOR * (1.0 - purpose_f), 1.0),
                 semantic_band=_zone_label(purpose_f).lower(),
-                action_taken="block" if original_decision == EngineDecision.INERT else "escalate",
+                action_taken="escalate",
             )
         if llm_response:
             trace.record_response(
@@ -2101,7 +2101,7 @@ def main():
     print()
     print(_c("  Blocked requests (audit trail):", "dim"))
     for r in receipts:
-        if r.decision in (EngineDecision.INERT, EngineDecision.ESCALATE):
+        if r.decision == EngineDecision.ESCALATE:
             dc = "red"
             note = r.note or "outside agent scope"
             short_req = r.request[:50] + "..." if len(r.request) > 50 else r.request
@@ -2112,8 +2112,7 @@ def main():
     # ── Section 4: Summary ──────────────────────────────────────────
     n_allowed = sum(1 for r in receipts if r.decision in (
         EngineDecision.EXECUTE, EngineDecision.CLARIFY))
-    n_blocked = sum(1 for r in receipts if r.decision in (
-        EngineDecision.INERT, EngineDecision.ESCALATE))
+    n_blocked = sum(1 for r in receipts if r.decision == EngineDecision.ESCALATE)
     n_tool_calls = sum(1 for r in receipts if r.tool_called)
     avg_gov = total_gov_ms / len(receipts) if receipts else 0
 
@@ -2323,9 +2322,9 @@ def main():
     _kv("Verified in", "{:.1f}ms".format(report.verification_duration_ms))
     _pause(1.0)
 
-    # SAAI compliance
+    # SAAI alignment (self-assessed per Watson and Hessami, CC BY-ND 4.0)
     print()
-    print(_c("  SAAI Framework Compliance:", "white", bold=True))
+    print(_c("  SAAI Framework Alignment:", "white", bold=True))
     _kv("Baseline established", "Yes" if report.baseline_established else "No (< {} turns)".format(
         __import__("telos_core.constants", fromlist=["BASELINE_TURN_COUNT"]).BASELINE_TURN_COUNT))
     _kv("Mandatory reviews", str(report.mandatory_reviews_triggered))

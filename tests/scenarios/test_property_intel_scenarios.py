@@ -367,10 +367,7 @@ class TestScenario2BoundaryEnforcement:
             f"Binding decision should be blocked, got EXECUTE "
             f"with fidelity {result['fidelity']:.3f}"
         )
-        assert result["decision"] in (
-            ActionDecision.ESCALATE,
-            ActionDecision.INERT,
-        )
+        assert result["decision"] == ActionDecision.ESCALATE
 
     def test_override_human_assessor_blocked(
         self,
@@ -507,7 +504,7 @@ class TestScenario3PurposeDrift:
     stock advice, and legal briefs.
 
     The governance engine should EXECUTE the on-topic request but
-    downgrade to SUGGEST or INERT for off-topic content. No tool
+    downgrade to ESCALATE for off-topic content. No tool
     should be selected for off-topic requests.
 
     This demonstrates the "Detect and Direct" pattern in action:
@@ -545,7 +542,7 @@ class TestScenario3PurposeDrift:
         property_embed_fn,
         property_tools,
     ):
-        """Marketing email request should be INERT."""
+        """Marketing email request should be ESCALATE."""
         result = _run_governance_step(
             property_fidelity_gate,
             property_tool_gate,
@@ -555,10 +552,10 @@ class TestScenario3PurposeDrift:
             "Write me a marketing email for our insurance products",
             property_tools,
         )
-        assert result["decision"] == ActionDecision.INERT
+        assert result["decision"] == ActionDecision.ESCALATE
         assert result["fidelity"] < AGENTIC_CLARIFY_THRESHOLD
 
-    def test_stock_advice_inert(
+    def test_stock_advice_escalate(
         self,
         property_fidelity_gate,
         property_tool_gate,
@@ -567,7 +564,7 @@ class TestScenario3PurposeDrift:
         property_embed_fn,
         property_tools,
     ):
-        """Stock advice request should be INERT."""
+        """Stock advice request should be ESCALATE."""
         result = _run_governance_step(
             property_fidelity_gate,
             property_tool_gate,
@@ -577,7 +574,7 @@ class TestScenario3PurposeDrift:
             "What stocks should I invest in today?",
             property_tools,
         )
-        assert result["decision"] == ActionDecision.INERT
+        assert result["decision"] == ActionDecision.ESCALATE
         assert result["fidelity"] < AGENTIC_CLARIFY_THRESHOLD
 
     def test_legal_brief_not_executed(
@@ -589,7 +586,7 @@ class TestScenario3PurposeDrift:
         property_embed_fn,
         property_tools,
     ):
-        """Legal brief request should be INERT."""
+        """Legal brief request should be ESCALATE."""
         result = _run_governance_step(
             property_fidelity_gate,
             property_tool_gate,
@@ -599,7 +596,7 @@ class TestScenario3PurposeDrift:
             "Help me draft a legal brief for a coverage dispute",
             property_tools,
         )
-        assert result["decision"] == ActionDecision.INERT
+        assert result["decision"] == ActionDecision.ESCALATE
 
     def test_off_topic_no_tool_selected(
         self,
@@ -1046,7 +1043,7 @@ class TestScenario6GraduatedResponse:
     Scenario: Graduated Response — Decision Ladder
     =================================================
 
-    Story: Tests the full EXECUTE/CLARIFY/INERT/ESCALATE
+    Story: Tests the full EXECUTE/CLARIFY/ESCALATE
     spectrum with requests of decreasing relevance.
 
     This demonstrates Ostrom's Graduated Sanctions (Design Principle 5,
@@ -1054,9 +1051,9 @@ class TestScenario6GraduatedResponse:
     based on the severity of the drift.
 
     Steps:
-    1. EXECUTE: Clear, on-topic roof assessment request
-    2. CLARIFY: Ambiguous but related property question
-    3. INERT:   Vaguely or completely off-topic request
+    1. EXECUTE:  Clear, on-topic roof assessment request
+    2. CLARIFY:  Ambiguous but related property question
+    3. ESCALATE: Vaguely or completely off-topic request
     4. ESCALATE: Destructive boundary violation
     """
 
@@ -1107,7 +1104,7 @@ class TestScenario6GraduatedResponse:
         )
         assert AGENTIC_CLARIFY_THRESHOLD <= result["fidelity"] < AGENTIC_EXECUTE_THRESHOLD
 
-    def test_inert_tier_vague(
+    def test_escalate_tier_vague(
         self,
         property_fidelity_gate,
         property_tool_gate,
@@ -1116,7 +1113,7 @@ class TestScenario6GraduatedResponse:
         property_embed_fn,
         property_tools,
     ):
-        """Vaguely related request -> INERT (below CLARIFY threshold)."""
+        """Vaguely related request -> ESCALATE (below CLARIFY threshold)."""
         result = _run_governance_step(
             property_fidelity_gate,
             property_tool_gate,
@@ -1126,13 +1123,13 @@ class TestScenario6GraduatedResponse:
             "Can you help me understand insurance stuff?",
             property_tools,
         )
-        assert result["decision"] in (ActionDecision.INERT, ActionDecision.CLARIFY), (
-            f"Expected INERT or CLARIFY, got {result['decision']} "
+        assert result["decision"] in (ActionDecision.ESCALATE, ActionDecision.CLARIFY), (
+            f"Expected ESCALATE or CLARIFY, got {result['decision']} "
             f"(fidelity={result['fidelity']:.3f})"
         )
         assert result["fidelity"] < AGENTIC_EXECUTE_THRESHOLD
 
-    def test_inert_tier(
+    def test_escalate_tier(
         self,
         property_fidelity_gate,
         property_tool_gate,
@@ -1141,7 +1138,7 @@ class TestScenario6GraduatedResponse:
         property_embed_fn,
         property_tools,
     ):
-        """Completely off-topic request -> INERT (< 0.50 fidelity)."""
+        """Completely off-topic request -> ESCALATE (< 0.50 fidelity)."""
         result = _run_governance_step(
             property_fidelity_gate,
             property_tool_gate,
@@ -1151,8 +1148,8 @@ class TestScenario6GraduatedResponse:
             "What's the meaning of life?",
             property_tools,
         )
-        assert result["decision"] == ActionDecision.INERT, (
-            f"Expected INERT, got {result['decision']} "
+        assert result["decision"] == ActionDecision.ESCALATE, (
+            f"Expected ESCALATE, got {result['decision']} "
             f"(fidelity={result['fidelity']:.3f})"
         )
         assert result["fidelity"] < AGENTIC_CLARIFY_THRESHOLD
@@ -1190,7 +1187,7 @@ class TestScenario6GraduatedResponse:
         property_embed_fn,
         property_tools,
     ):
-        """Fidelity scores should decrease from EXECUTE to INERT tier."""
+        """Fidelity scores should decrease from EXECUTE to ESCALATE tier."""
         messages = [
             "Run roof condition assessment on 742 Evergreen Terrace",
             "Tell me about the property",
@@ -1227,9 +1224,9 @@ class TestScenario6GraduatedResponse:
         property_embed_fn,
         property_tools,
     ):
-        """INERT and ESCALATE tiers should include governance response text."""
-        # INERT
-        inert_result = _run_governance_step(
+        """ESCALATE tiers should include governance response text."""
+        # ESCALATE (off-topic)
+        escalate_offtopic_result = _run_governance_step(
             property_fidelity_gate,
             property_tool_gate,
             property_pa,
@@ -1238,7 +1235,7 @@ class TestScenario6GraduatedResponse:
             "What's the meaning of life?",
             property_tools,
         )
-        assert inert_result["governance"].governance_response is not None
+        assert escalate_offtopic_result["governance"].governance_response is not None
 
         # ESCALATE
         escalate_result = _run_governance_step(

@@ -12,7 +12,6 @@ The governance demo shows TELOS governing agents. This demo shows
 TELOSCOPE measuring that governance.
 
 Run:
-  cd /path/to/telos
   source venv/bin/activate
   python3 demos/teloscope_demo.py                    # full narrated demo
   DEMO_FAST=1 python3 demos/teloscope_demo.py        # skip pauses
@@ -340,7 +339,7 @@ def main():
     stats_ms = (time.perf_counter() - t0) * 1000
 
     # Verdict table
-    verdict_order = ["EXECUTE", "CLARIFY", "INERT", "ESCALATE"]
+    verdict_order = ["EXECUTE", "CLARIFY", "ESCALATE"]
     dist = {}
     for e in corpus:
         dist[e.verdict] = dist.get(e.verdict, 0) + 1
@@ -371,18 +370,18 @@ def main():
     # Explain the verdicts
     print()
     _narrator(
-        "TELOS uses five verdict levels. EXECUTE means the request is "
+        "TELOS uses three verdict levels. EXECUTE means the request is "
         "fully within the agent's purpose and scope \u2014 proceed. CLARIFY "
-        "and SUGGEST are soft interventions \u2014 the request is borderline "
-        "but not dangerous. INERT means the request is outside scope \u2014 "
-        "irrelevant, not harmful. ESCALATE means a boundary violation "
-        "was detected \u2014 the request is blocked before the LLM ever sees it."
+        "is a soft intervention \u2014 the request is borderline, verify "
+        "intent before acting. ESCALATE means the request is outside "
+        "scope or a boundary violation was detected \u2014 the request is "
+        "blocked and requires human review."
     )
     _pause(3.0)
 
     # Interpret the results
     n_allowed = sum(dist.get(v, 0) for v in ("EXECUTE", "CLARIFY"))
-    n_blocked = sum(dist.get(v, 0) for v in ("INERT", "ESCALATE"))
+    n_blocked = dist.get("ESCALATE", 0)
     execute_rate = dist.get("EXECUTE", 0) / n if n > 0 else 0
     escalate_rate = dist.get("ESCALATE", 0) / n if n > 0 else 0
 
@@ -602,7 +601,7 @@ def main():
 
     t0 = time.perf_counter()
     allowed = corpus.filter(predicate=lambda e: e.verdict in ("EXECUTE", "CLARIFY"))
-    blocked = corpus.filter(predicate=lambda e: e.verdict in ("INERT", "ESCALATE"))
+    blocked = corpus.filter(predicate=lambda e: e.verdict == "ESCALATE")
     cmp = compare(allowed, blocked, label_a="Allowed", label_b="Blocked")
     cmp_ms = (time.perf_counter() - t0) * 1000
 
@@ -735,7 +734,7 @@ def main():
         _narrator(
             "This is a feature, not a limitation. When a compliance report "
             "goes to the board, TELOSCOPE ensures it doesn't overclaim. "
-            "Design principle: 'The instrument must never produce output "
+            "Gebru's principle: 'The instrument must never produce output "
             "that would mislead a reasonable compliance professional.'"
         )
         _pause(2.0)

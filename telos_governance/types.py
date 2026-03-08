@@ -34,15 +34,13 @@ class ActionDecision(str, Enum):
     """
     Action decisions for TELOS governance.
 
-    Agentic thresholds are TIGHTER than conversational:
+    3-verdict model:
     - EXECUTE: fidelity >= 0.85 - High confidence, proceed
-    - CLARIFY: fidelity 0.70-0.84 - Close match, verify first (absorbs former SUGGEST range)
-    - INERT: fidelity < 0.70 - No match, acknowledge limitation
-    - ESCALATE: fidelity < 0.70 + high_risk - Require human review
+    - CLARIFY: fidelity 0.70-0.84 - Close match, verify first
+    - ESCALATE: fidelity < 0.70 - Require human review
     """
     EXECUTE = "execute"
     CLARIFY = "clarify"
-    INERT = "inert"
     ESCALATE = "escalate"
 
 

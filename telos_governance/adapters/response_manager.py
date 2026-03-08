@@ -17,15 +17,205 @@ For each user request:
 Uses REAL governance math with SIMULATED tool execution.
 """
 
+import hashlib
 import logging
 import time
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Dict, List, Optional, Any
 
 from telos_governance.agent_templates import AgenticTemplate
 from telos_governance.mock_tools import MockToolExecutor
 
 logger = logging.getLogger(__name__)
+
+
+class AgentCommissioningState(str, Enum):
+    """Formal agent commissioning lifecycle.
+
+    State machine:
+        UNCOMMISSIONED → BASELINE_COLLECTION → COMMISSIONED → RETIRED
+
+    The agent MUST be commissioned before SAAI drift monitoring activates.
+    Commissioning requires:
+    1. PA signature hash recorded (Ed25519 signed config)
+    2. Baseline collection complete (50 turns, CV stable)
+    3. Formal commissioning event emitted to audit trail
+
+    Per SAAI framework: drift monitoring without baseline is meaningless.
+    The 50-turn warmup is a first-class tracked lifecycle event, not a
+    silent internal detail.
+    """
+    UNCOMMISSIONED = "uncommissioned"
+    BASELINE_COLLECTION = "baseline_collection"
+    COMMISSIONED = "commissioned"
+    RETIRED = "retired"
+
+
+@dataclass
+class CommissioningRecord:
+    """Immutable record of an agent commissioning event."""
+    agent_id: str
+    pa_signature_hash: str  # SHA-256 of Ed25519 PA signature
+    commissioned_at: float  # Unix timestamp
+    baseline_fidelity: float  # Mean fidelity from baseline collection
+    baseline_std: float  # Std dev from baseline
+    baseline_turns: int  # Number of turns in baseline
+    state: AgentCommissioningState = AgentCommissioningState.COMMISSIONED
+
+    def to_audit_event(self) -> Dict[str, Any]:
+        """Format as audit trail event."""
+        return {
+            "event_type": "agent_commissioned",
+            "agent_id": self.agent_id,
+            "pa_signature_hash": self.pa_signature_hash,
+            "commissioned_at": self.commissioned_at,
+            "baseline_fidelity": round(self.baseline_fidelity, 4),
+            "baseline_std": round(self.baseline_std, 4),
+            "baseline_turns": self.baseline_turns,
+            "state": self.state.value,
+        }
+
+
+class AgentCommissioningManager:
+    """Manages the formal agent commissioning lifecycle.
+
+    Tracks state transitions and emits audit events for each phase.
+    SAAI drift monitoring only activates after COMMISSIONED state.
+    """
+
+    def __init__(self, agent_id: str = "default"):
+        self._agent_id = agent_id
+        self._state = AgentCommissioningState.UNCOMMISSIONED
+        self._pa_signature_hash: Optional[str] = None
+        self._commissioning_record: Optional[CommissioningRecord] = None
+        self._retired_at: Optional[float] = None
+
+    @property
+    def state(self) -> AgentCommissioningState:
+        return self._state
+
+    @property
+    def is_commissioned(self) -> bool:
+        return self._state == AgentCommissioningState.COMMISSIONED
+
+    @property
+    def commissioning_record(self) -> Optional[CommissioningRecord]:
+        return self._commissioning_record
+
+    def begin_baseline_collection(self, pa_signature_hash: str) -> Dict[str, Any]:
+        """Transition UNCOMMISSIONED → BASELINE_COLLECTION.
+
+        Args:
+            pa_signature_hash: SHA-256 hash of the Ed25519 PA signature.
+
+        Returns:
+            Audit event dict.
+        """
+        if self._state != AgentCommissioningState.UNCOMMISSIONED:
+            return {"error": f"Cannot begin baseline from state {self._state.value}"}
+
+        self._state = AgentCommissioningState.BASELINE_COLLECTION
+        self._pa_signature_hash = pa_signature_hash
+
+        event = {
+            "event_type": "baseline_collection_started",
+            "agent_id": self._agent_id,
+            "pa_signature_hash": pa_signature_hash,
+            "timestamp": time.time(),
+        }
+        logger.info(f"Agent {self._agent_id}: baseline collection started")
+        return event
+
+    def commission(
+        self,
+        baseline_fidelity: float,
+        baseline_std: float,
+        baseline_turns: int,
+    ) -> Dict[str, Any]:
+        """Transition BASELINE_COLLECTION → COMMISSIONED.
+
+        Called when baseline is stable (CV < threshold).
+
+        Returns:
+            Commissioning audit event dict.
+        """
+        if self._state != AgentCommissioningState.BASELINE_COLLECTION:
+            return {"error": f"Cannot commission from state {self._state.value}"}
+
+        self._state = AgentCommissioningState.COMMISSIONED
+        self._commissioning_record = CommissioningRecord(
+            agent_id=self._agent_id,
+            pa_signature_hash=self._pa_signature_hash or "",
+            commissioned_at=time.time(),
+            baseline_fidelity=baseline_fidelity,
+            baseline_std=baseline_std,
+            baseline_turns=baseline_turns,
+        )
+
+        event = self._commissioning_record.to_audit_event()
+        logger.info(
+            f"Agent {self._agent_id}: COMMISSIONED "
+            f"(baseline={baseline_fidelity:.4f}, turns={baseline_turns})"
+        )
+        return event
+
+    def retire(self, reason: str = "") -> Dict[str, Any]:
+        """Transition COMMISSIONED → RETIRED.
+
+        Returns:
+            Retirement audit event dict.
+        """
+        if self._state != AgentCommissioningState.COMMISSIONED:
+            return {"error": f"Cannot retire from state {self._state.value}"}
+
+        self._state = AgentCommissioningState.RETIRED
+        self._retired_at = time.time()
+
+        event = {
+            "event_type": "agent_retired",
+            "agent_id": self._agent_id,
+            "retired_at": self._retired_at,
+            "reason": reason,
+            "total_baseline_fidelity": (
+                self._commissioning_record.baseline_fidelity
+                if self._commissioning_record else None
+            ),
+        }
+        logger.info(f"Agent {self._agent_id}: RETIRED ({reason})")
+        return event
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialize for persistence."""
+        return {
+            "agent_id": self._agent_id,
+            "state": self._state.value,
+            "pa_signature_hash": self._pa_signature_hash,
+            "commissioning_record": (
+                self._commissioning_record.to_audit_event()
+                if self._commissioning_record else None
+            ),
+            "retired_at": self._retired_at,
+        }
+
+    def restore(self, state: Dict[str, Any]) -> None:
+        """Restore from persisted snapshot."""
+        if not state:
+            return
+        self._agent_id = state.get("agent_id", self._agent_id)
+        self._state = AgentCommissioningState(state.get("state", "uncommissioned"))
+        self._pa_signature_hash = state.get("pa_signature_hash")
+        self._retired_at = state.get("retired_at")
+        record = state.get("commissioning_record")
+        if record:
+            self._commissioning_record = CommissioningRecord(
+                agent_id=record.get("agent_id", self._agent_id),
+                pa_signature_hash=record.get("pa_signature_hash", ""),
+                commissioned_at=record.get("commissioned_at", 0),
+                baseline_fidelity=record.get("baseline_fidelity", 0),
+                baseline_std=record.get("baseline_std", 0),
+                baseline_turns=record.get("baseline_turns", 0),
+            )
 
 
 class AgenticDriftTracker:
@@ -267,7 +457,6 @@ class AgenticDriftTracker:
 _TOKEN_BUDGETS = {
     "EXECUTE": 600,
     "CLARIFY": 400,
-    "INERT": 250,
     "ESCALATE": 250,
 }
 
@@ -549,7 +738,7 @@ class AgenticResponseManager:
                 violation_keywords=getattr(template, 'violation_keywords', None),
                 setfit_classifier=setfit_cls,
                 threshold_config=self._threshold_config,
-                # confirmer_mode disconnected from scoring path (experiment conclusive)
+                # confirmer_mode disconnected from scoring path (dual-model experiment conclusive)
             )
 
             self._engine_cache[template.id] = engine
@@ -591,7 +780,7 @@ class AgenticResponseManager:
         _gov_dir = os.path.dirname(os.path.abspath(__file__))
         _project_root = os.path.dirname(_gov_dir)
 
-        # Domain-specific: extract domain from template_id (e.g., "governed_agent" -> "governed")
+        # Domain-specific: extract domain from template_id (e.g., "openclaw_governed" -> "openclaw")
         # Only load domain-specific models — no cross-domain fallback
         domain = template_id.split("_")[0] if "_" in template_id else template_id
         candidates = [
@@ -689,11 +878,11 @@ class AgenticResponseManager:
                 f"the specific limitation without exposing internal governance "
                 f"details. Suggest how the user might rephrase their request."
             )
-        else:  # INERT
+        else:  # ESCALATE fallback
             decision_block = (
-                f"GOVERNANCE DECISION: INERT — the request is outside your scope.\n"
-                f"Politely explain that this is not within your area. Briefly "
-                f"describe what you can help with instead."
+                f"GOVERNANCE DECISION: ESCALATE — the request is outside your scope.\n"
+                f"Explain firmly but politely that you cannot proceed. This request "
+                f"requires human review. Suggest how the user might rephrase."
             )
 
         return (
@@ -822,10 +1011,10 @@ class AgenticResponseManager:
         Lightweight post-generation fidelity check.
 
         Ensures the LLM response is semantically related to the agent's
-        purpose. Skips check for ESCALATE/INERT (refusals are intentionally
+        purpose. Skips check for ESCALATE (refusals are intentionally
         low-fidelity to purpose). Returns True on any error (accept response).
         """
-        if decision in ("ESCALATE", "INERT"):
+        if decision == "ESCALATE":
             return True
 
         if not self._embed_fn:
@@ -887,7 +1076,7 @@ class AgenticResponseManager:
         engine = self._get_engine(template)
         if engine is None:
             # Fallback: no engine available (embeddings failed to load)
-            result.decision = "INERT"
+            result.decision = "ESCALATE"
             result.decision_explanation = "Governance engine unavailable."
             result.response_text = (
                 "The governance engine is not available. "
@@ -1061,11 +1250,11 @@ class AgenticResponseManager:
 
 
         else:
-            # INERT -- very low fidelity
+            # ESCALATE -- very low fidelity
             result.response_text = (
-                f"I appreciate the question, but this falls outside my scope. "
+                f"This request requires human review. It falls outside my scope. "
                 f"I'm a {template.name} focused on: {template.purpose}. "
-                f"I cannot assist with unrelated topics."
+                f"I cannot assist with unrelated topics without human approval."
             )
 
         # --- LLM response generation (Steward pattern) ---

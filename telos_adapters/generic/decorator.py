@@ -51,7 +51,7 @@ Regulatory traceability:
       MAP 2.1's requirement for context-of-use documentation
     - IEEE P7000: The decorator embodies IEEE P7000's concept of ethical requirements
       as runtime enforcement, not documentation — governance is enforced at call time
-    - IEEE 7001-2021: Decision classification (EXECUTE/CLARIFY/INERT/ESCALATE)
+    - IEEE 7001-2021: Decision classification (EXECUTE/CLARIFY/ESCALATE)
       with fidelity scores provides transparent, explainable governance decisions
     - OWASP LLM Top 10 (LLM08 — Excessive Agency): Applied governance checks constrain
       function execution to authorized request patterns. Below-threshold requests are
@@ -77,12 +77,12 @@ Governance scope and limitations:
 
     - OWASP Agentic coverage: Per-call governance adequately addresses ASI06,
       ASI07, ASI09. Chain-dependent risks (ASI01, ASI02, ASI03, ASI05, ASI10)
-      require the LangGraph wrapper or daemon adapter for full coverage.
+      require the LangGraph wrapper or OpenClaw adapter for full coverage.
 
     For multi-step agentic workflows, Annex III high-risk AI systems, or
     deployments requiring SAAI-002 graduated sanctions, use:
     - telos_adapters.langgraph.TelosWrapper (with drift_tracker parameter)
-    - telos_adapters daemon (with AgenticDriftTracker + CUSUMMonitorBank)
+    - telos_adapters.openclaw (daemon with AgenticDriftTracker + CUSUMMonitorBank)
 """
 import functools
 import logging
@@ -124,7 +124,7 @@ def telos_governed(
         threshold: Minimum fidelity to proceed (default: FIDELITY_GREEN = 0.70).
         embed_fn: Function to generate embeddings. If None, uses telos_core default.
         on_block: Callback when action is blocked. Receives (input_text, fidelity).
-        high_risk: If True, low fidelity triggers ESCALATE instead of INERT.
+        high_risk: If True, sets human_required flag on ESCALATE decisions.
         session: Optional GovernanceSessionContext for receipt signing.
             When provided, every governance decision is signed and appended
             to the session's receipt chain.
@@ -198,7 +198,7 @@ def telos_governed(
                 logger.warning(
                     f"TELOS HARD_BLOCK: similarity {similarity:.3f} < baseline {SIMILARITY_BASELINE}"
                 )
-                _sign_decision(input_text, similarity, ActionDecision.INERT, session)
+                _sign_decision(input_text, similarity, ActionDecision.ESCALATE, session)
                 if on_block:
                     return on_block(input_text, similarity)
                 raise ValueError(
@@ -211,10 +211,8 @@ def telos_governed(
                 decision = ActionDecision.EXECUTE
             elif similarity >= threshold:
                 decision = ActionDecision.CLARIFY
-            elif high_risk:
-                decision = ActionDecision.ESCALATE
             else:
-                decision = ActionDecision.INERT
+                decision = ActionDecision.ESCALATE
 
             # Sign the governance receipt if session is provided
             _sign_decision(input_text, similarity, decision, session)
@@ -226,7 +224,7 @@ def telos_governed(
                 logger.info(f"TELOS CLARIFY: fidelity {similarity:.3f}, proceeding with caution")
                 return func(*args, **kwargs)
             else:
-                # INERT or ESCALATE
+                # ESCALATE
                 logger.warning(
                     f"TELOS {decision.value.upper()}: fidelity {similarity:.3f}, blocking"
                 )

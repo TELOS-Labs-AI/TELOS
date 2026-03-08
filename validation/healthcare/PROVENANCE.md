@@ -3,7 +3,7 @@
 **Dataset:** `healthcare_counterfactual_v1.jsonl`
 **Version:** 1.0 (Phase I — Multi-Config Mechanism Validation)
 **Created:** 2026-02-16
-**Scenarios:** 280 across 7 clinical AI configurations
+**Scenarios:** ~315 across 7 clinical AI configurations
 **Configurations:** 7 (ambient_doc, call_center, coding, diagnostic_ai, patient_facing, predictive, therapeutic)
 
 ## Zero-PHI Attestation
@@ -217,7 +217,7 @@ The following results would weaken or falsify the research hypothesis *before ru
 | `healthcare_patient_facing` | Patient-facing AI (MyChart, Epic ART) | 8 | 7 | ~45 |
 | `healthcare_predictive` | Predictive clinical AI (ESM, COMPOSER) | 7 | 6 | ~45 |
 | `healthcare_therapeutic` | Therapeutic knowledge base (UpToDate, Epic CDS) | 8 | 8 | ~45 |
-| **Total** | | **55** | **49** | **280** |
+| **Total** | | **55** | **49** | **~315** |
 
 Each configuration defines a distinct agent with its own purpose statement, scope, tool palette, and hard boundary set. The governance engine must correctly contextualize every request against the appropriate configuration's constraints.
 
@@ -291,7 +291,7 @@ For each scenario, the benchmark runner captures:
 - Chain SCI (semantic continuity index)
 - Boundary fidelity (inverted boundary similarity against config-specific boundaries)
 - Effective fidelity (weighted composite)
-- Decision tier (EXECUTE/CLARIFY/SUGGEST/INERT/ESCALATE)
+- Decision tier (EXECUTE/CLARIFY/ESCALATE)
 - SAAI drift level and magnitude
 - Config ID used for evaluation
 
@@ -319,7 +319,7 @@ Expected decisions were initially set based on the scenario's intent (e.g., a le
 
 | Metric | Value |
 |--------|-------|
-| Total scenarios | 280 |
+| Total scenarios | ~315 |
 | Configurations | 7 |
 | Tools across all configs | 55 |
 | Boundaries across all configs | 49 |
@@ -343,13 +343,15 @@ This dataset contains **zero proprietary data** from any healthcare AI vendor, h
 
 Research use. Part of the TELOS research artifact.
 
+Licensed under the terms of the TELOS AI Labs Inc. proprietary research license. Contact JB@telos-labs.ai for licensing inquiries.
+
 ---
 
 ### Disclosures
 
-> **Generative AI Disclosure:** Internal analysis, experimental design review, and qualitative assessment in this document were conducted with assistance from LLM-based research agents (Claude, Anthropic). These agents are prompted with domain-specific personas (governance theory, statistics, systems engineering, regulatory analysis, research methodology) and operate as AI research assistants — not independent human expert reviewers. All quantitative results (AUC-ROC, F1, bootstrap confidence intervals, benchmark accuracies) are computed by deterministic code. Qualitative analysis should not be treated as independent peer review. See CONTRIBUTING.md for methodology details.
+> **Generative AI Disclosure:** Internal analysis, experimental design review, and qualitative assessment in this document were conducted with assistance from LLM-based research agents (Claude, Anthropic). These agents are prompted with domain-specific personas (governance theory, statistics, systems engineering, regulatory analysis, research methodology) and operate as AI research assistants — not independent human expert reviewers. All quantitative results (AUC-ROC, F1, bootstrap confidence intervals, benchmark accuracies) are computed by deterministic code. Qualitative analysis should not be treated as independent peer review. See `research/research_team_spec.md` for full methodology.
 
-> **Conflict of Interest Disclosure:** This research was conducted and funded by TELOS AI Labs Inc., which has a commercial interest in the TELOS governance framework. All domain-specific validation benchmarks (Nearmap, Healthcare) were created by the research team. External benchmarks (PropensityBench, AgentHarm, AgentDojo) were created by independent organizations. Research artifacts are published on [Zenodo](https://zenodo.org/) with persistent DOIs. No external funding or independent peer review was involved in this work.
+> **Conflict of Interest Disclosure:** This research was conducted and funded by TELOS AI Labs Inc., which has a commercial interest in the TELOS governance framework. All domain-specific validation benchmarks (Nearmap, Healthcare, OpenClaw) were created by the research team. External benchmarks (PropensityBench, AgentHarm, AgentDojo) were created by independent organizations. Research artifacts are published on [Zenodo](https://zenodo.org/) with persistent DOIs. No external funding or independent peer review was involved in this work.
 
 ---
 

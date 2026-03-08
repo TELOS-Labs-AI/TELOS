@@ -145,7 +145,7 @@ class TestAgenticTurnResult:
 
 class TestTokenBudgets:
     def test_all_tiers_have_budgets(self):
-        for tier in ("EXECUTE", "CLARIFY", "INERT", "ESCALATE"):
+        for tier in ("EXECUTE", "CLARIFY", "ESCALATE"):
             assert tier in _TOKEN_BUDGETS
             assert _TOKEN_BUDGETS[tier] > 0
 
@@ -241,21 +241,21 @@ class TestProcessRequestEscalate:
 
 
 # ---------------------------------------------------------------------------
-# process_request — INERT
+# process_request — ESCALATE (low fidelity)
 # ---------------------------------------------------------------------------
 
-class TestProcessRequestInert:
-    def test_inert_response(self):
+class TestProcessRequestEscalateLowFidelity:
+    def test_escalate_low_fidelity_response(self):
         engine_result = _make_engine_result(
-            decision=ActionDecision.INERT,
+            decision=ActionDecision.ESCALATE,
             effective_fidelity=0.30,
         )
         manager = _make_manager_with_mock_engine(engine_result)
         template = _make_template()
 
         result = manager.process_request("What's the weather?", template, 1)
-        assert result.decision == "INERT"
-        assert "outside" in result.response_text.lower() or "scope" in result.response_text.lower()
+        assert result.decision == "ESCALATE"
+        assert "outside" in result.response_text.lower() or "scope" in result.response_text.lower() or "boundar" in result.response_text.lower() or "escalat" in result.response_text.lower()
 
 
 # ---------------------------------------------------------------------------
@@ -307,25 +307,12 @@ class TestBuildAgenticSystemPrompt:
         assert "CLARIFY" in prompt
         assert "clarification" in prompt.lower() or "clarify" in prompt.lower()
 
-    def test_inert_prompt(self):
-        prompt = self.manager._build_agentic_system_prompt(
-            self.template, "INERT"
-        )
-        assert "INERT" in prompt
-        assert "scope" in prompt.lower()
-
     def test_escalate_prompt(self):
         prompt = self.manager._build_agentic_system_prompt(
             self.template, "ESCALATE"
         )
         assert "ESCALATE" in prompt
-        assert "boundaries" in prompt.lower() or "boundary" in prompt.lower()
-
-    def test_inert_prompt(self):
-        prompt = self.manager._build_agentic_system_prompt(
-            self.template, "INERT"
-        )
-        assert "INERT" in prompt
+        assert "boundaries" in prompt.lower() or "boundary" in prompt.lower() or "scope" in prompt.lower()
 
     def test_prompt_includes_template_identity(self):
         prompt = self.manager._build_agentic_system_prompt(
@@ -359,9 +346,9 @@ class TestCheckResponseFidelity:
             "I cannot help", self.template, "ESCALATE"
         ) is True
 
-    def test_inert_always_passes(self):
+    def test_escalate_always_passes(self):
         assert self.manager._check_response_fidelity(
-            "Outside my scope", self.template, "INERT"
+            "Outside my scope", self.template, "ESCALATE"
         ) is True
 
     def test_identical_embedding_passes(self):
@@ -515,8 +502,8 @@ class TestResetChain:
 # ---------------------------------------------------------------------------
 
 class TestEngineUnavailable:
-    def test_no_engine_returns_inert(self):
-        """If engine can't be created, returns INERT with error message."""
+    def test_no_engine_returns_escalate(self):
+        """If engine can't be created, returns ESCALATE with error message."""
         manager = AgenticResponseManager()
         manager._initialized = True
         manager._embed_fn = None  # No embeddings
@@ -525,5 +512,5 @@ class TestEngineUnavailable:
 
         template = _make_template()
         result = manager.process_request("query data", template, 1)
-        assert result.decision == "INERT"
+        assert result.decision == "ESCALATE"
         assert "governance engine" in result.response_text.lower()
