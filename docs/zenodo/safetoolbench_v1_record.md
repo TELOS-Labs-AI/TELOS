@@ -109,7 +109,7 @@ Engine version: TELOS v4.0.0-hardened. Embedding model: sentence-transformers/al
 
 - **SafeToolBench paper:** https://arxiv.org/abs/2509.07315
 - **SafeToolBench repository:** https://github.com/gair-nlp/SafeToolBench
-- **TELOS repository:** https://github.com/telos-ai-labs/telos
+- **TELOS repository:** https://github.com/TELOS-Labs-AI/telos
 - **AgentHarm validation (companion):** https://zenodo.org/records/18564855
 - **AgentDojo validation (companion):** https://zenodo.org/records/18565869
 - **Berkeley CLTC Agentic AI Standards Profile:** https://cltc.berkeley.edu/publication/agentic-ai-risk-management-standards-profile

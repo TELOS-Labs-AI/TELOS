@@ -24,10 +24,17 @@ import pytest
 # ============================================================================
 
 def _install_adapter_mocks():
-    """Install mock modules for the governance adapter layer."""
-    # Create mock module hierarchy
-    adapters_pkg = ModuleType("telos_adapters")
-    adapters_pkg.__path__ = []
+    """Install mock modules for the governance adapter layer.
+
+    Only injects telos_adapters.agent.* sub-modules (not shipped in public
+    release).  The parent telos_adapters package is preserved so that other
+    test files importing telos_adapters.generic still resolve correctly.
+    """
+    # Ensure the real telos_adapters package is imported first so we don't
+    # clobber it.  If it hasn't been imported yet, import it now.
+    import telos_adapters as _real_adapters  # noqa: F401
+
+    # Create agent sub-package (not shipped in public release)
     agent_pkg = ModuleType("telos_adapters.agent")
     agent_pkg.__path__ = []
 
@@ -108,7 +115,8 @@ def _install_adapter_mocks():
 
     daemon_mod.create_message_handler = create_message_handler
 
-    sys.modules["telos_adapters"] = adapters_pkg
+    # Only inject the agent sub-modules; do NOT replace telos_adapters itself
+    _real_adapters.agent = agent_pkg
     sys.modules["telos_adapters.agent"] = agent_pkg
     sys.modules["telos_adapters.agent.governance_hook"] = governance_hook_mod
     sys.modules["telos_adapters.agent.ipc_server"] = ipc_server_mod

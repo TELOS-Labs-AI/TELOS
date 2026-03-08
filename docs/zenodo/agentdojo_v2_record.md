@@ -118,7 +118,7 @@ Engine version: TELOS v4.0.0-hardened. Embedding model: sentence-transformers/al
 
 - **AgentDojo paper:** https://arxiv.org/abs/2406.13352
 - **AgentDojo repository:** https://github.com/ethz-spylab/agentdojo
-- **TELOS repository:** https://github.com/telos-ai-labs/telos
+- **TELOS repository:** https://github.com/TELOS-Labs-AI/telos
 - **AgentHarm validation (companion):** https://zenodo.org/records/18564855
 - **AgentDojo v1.0.0 (this record, previous version):** https://zenodo.org/records/18565869
 - **Berkeley CLTC Agentic AI Standards Profile:** https://cltc.berkeley.edu/publication/agentic-ai-risk-management-standards-profile

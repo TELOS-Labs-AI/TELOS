@@ -19,7 +19,7 @@ TELOS development began in January 2025, driven by three first principles:
 
 1. **Transparency** - Every governance decision must be observable and explainable
 2. **Auditability** - Complete records of system behavior must be maintained
-3. **Human-in-the-Loop Agency** - Human authority must be architecturally guaranteed, not assumed
+3. **Human-in-the-Loop Agency** - Human authority must be architecturally enforced, not assumed
 
 These principles preceded any external framework assessment. When the Safer Agentic AI (SAAI) Framework was published by Dr. Nell Watson and Ali Hessami in January 2026, we mapped TELOS against it and confirmed 88% alignment with requirements we had already implemented.
 

@@ -198,4 +198,4 @@ fi
 
 TELOS AI Labs Inc.
 - JB@telos-labs.ai
-- https://github.com/telos-ai-labs/telos
+- https://github.com/TELOS-Labs-AI/telos

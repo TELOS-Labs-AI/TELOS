@@ -89,8 +89,8 @@ class BetaCompletion:
                 </p>
                 <p style="color: #e0e0e0; font-size: 18px; margin: 0;">
                     <span style="color: #F4D03F;">GitHub:</span>
-                    <a href="https://github.com/telos-ai-labs/telos" target="_blank" style="color: #27ae60; text-decoration: none;">
-                        github.com/telos-ai-labs/telos
+                    <a href="https://github.com/TELOS-Labs-AI/telos" target="_blank" style="color: #27ae60; text-decoration: none;">
+                        github.com/TELOS-Labs-AI/telos
                     </a>
                 </p>
             </div>
@@ -104,7 +104,7 @@ class BetaCompletion:
         col1, col2, col3 = st.columns([1, 1, 1])
         with col2:
             st.markdown("""
-            <a href="https://github.com/telos-ai-labs/telos" target="_blank" style="text-decoration: none;">
+            <a href="https://github.com/TELOS-Labs-AI/telos" target="_blank" style="text-decoration: none;">
                 <div style="
                     background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
                     border: 2px solid #F4D03F;

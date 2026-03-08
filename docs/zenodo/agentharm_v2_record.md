@@ -106,7 +106,7 @@ Engine version: TELOS v4.0.0-hardened. Embedding model: sentence-transformers/al
 
 - **AgentHarm paper:** https://arxiv.org/abs/2410.09024
 - **AgentHarm repository:** https://github.com/GraySwanAI/AgentHarm
-- **TELOS repository:** https://github.com/telos-ai-labs/telos
+- **TELOS repository:** https://github.com/TELOS-Labs-AI/telos
 - **AgentDojo validation (companion):** https://zenodo.org/records/18565869
 - **AgentHarm v1.0.0 (this record, previous version):** https://zenodo.org/records/18564855
 - **Berkeley CLTC Agentic AI Standards Profile:** https://cltc.berkeley.edu/publication/agentic-ai-risk-management-standards-profile

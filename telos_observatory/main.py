@@ -1028,7 +1028,7 @@ def render_tabs_and_content(has_beta_consent, state_manager, sidebar_actions,
 <div style="text-align: center; margin: 20px auto 0 auto; padding-top: 15px; border-top: 1px solid rgba(244, 208, 63, 0.3);">
     <p style="color: #e0e0e0; font-size: 16px; line-height: 1.6;">
         <strong>TELOS AI Labs Inc.</strong> |
-        <a href="https://github.com/telos-ai-labs/telos" style="color: #F4D03F;" target="_blank">GitHub</a> |
+        <a href="https://github.com/TELOS-Labs-AI/telos" style="color: #F4D03F;" target="_blank">GitHub</a> |
         <a href="mailto:JB@telos-labs.ai" style="color: #F4D03F;" target="_blank">JB@telos-labs.ai</a> |
         <a href="https://forms.gle/xR6gRxQnyLSMJmeT9" style="color: #F4D03F;" target="_blank">Request a Live Demo</a>
     </p>

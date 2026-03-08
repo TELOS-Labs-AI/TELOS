@@ -5,8 +5,8 @@
 [![Governance DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18009153.svg)](https://doi.org/10.5281/zenodo.18009153)
 [![SB 243 DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18370504.svg)](https://doi.org/10.5281/zenodo.18370504)
 [![XSTest DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18370603.svg)](https://doi.org/10.5281/zenodo.18370603)
-[![Attacks](https://img.shields.io/badge/scenarios-4%2C018-blue)](https://github.com/telos-ai-labs/telos)
-[![ASR](https://img.shields.io/badge/attack%20success%20rate-0%25-brightgreen)](https://github.com/telos-ai-labs/telos)
+[![Attacks](https://img.shields.io/badge/scenarios-4%2C018-blue)](https://github.com/TELOS-Labs-AI/telos)
+[![ASR](https://img.shields.io/badge/attack%20success%20rate-0%25-brightgreen)](https://github.com/TELOS-Labs-AI/telos)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](https://www.apache.org/licenses/LICENSE-2.0)
 
 Official validation data for TELOS AI governance framework.
@@ -136,7 +136,7 @@ Generated locally by running the validation scripts (not tracked in repository):
 
 ## Related Repositories
 
-- **[TELOS](https://github.com/telos-ai-labs/telos)** - Public TELOS repository with published validation data and documentation
+- **[TELOS](https://github.com/TELOS-Labs-AI/telos)** - Public TELOS repository with published validation data and documentation
 
 ---
 

@@ -93,7 +93,7 @@ all = [
 [project.urls]
 Homepage = "https://telos-labs.ai"
 Documentation = "https://docs.telos-labs.ai"
-Repository = "https://github.com/telos-ai-labs/telos"
+Repository = "https://github.com/TELOS-Labs-AI/telos"
 
 [tool.setuptools.packages.find]
 include = [
@@ -116,7 +116,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --tb=short"
+addopts = "-v --tb=short --import-mode=importlib"
 pythonpath = ["."]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",

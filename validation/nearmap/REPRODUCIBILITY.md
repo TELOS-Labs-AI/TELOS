@@ -320,7 +320,7 @@ Because MiniLM produces 384-dim embeddings (vs Mistral's 1024-dim), cosine simil
 ### Step 1: Clone the repository
 
 ```bash
-git clone https://github.com/telos-ai-labs/telos.git
+git clone https://github.com/TELOS-Labs-AI/telos.git
 cd telos
 ```
 

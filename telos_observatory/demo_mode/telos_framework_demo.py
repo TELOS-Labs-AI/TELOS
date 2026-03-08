@@ -97,7 +97,7 @@ Click **Start Demo** below, or select your starting point from the tabs above.
 
 ---
 
-**TELOS AI Labs Inc.** | [GitHub](https://github.com/telos-ai-labs/telos) | [JB@telos-labs.ai](mailto:JB@telos-labs.ai) | [Request a Live Demo](https://forms.gle/xR6gRxQnyLSMJmeT9)"""
+**TELOS AI Labs Inc.** | [GitHub](https://github.com/TELOS-Labs-AI/telos) | [JB@telos-labs.ai](mailto:JB@telos-labs.ai) | [Request a Live Demo](https://forms.gle/xR6gRxQnyLSMJmeT9)"""
 
 
 def get_demo_system_prompt():
@@ -297,4 +297,4 @@ Want to see the agentic governance system running live? We provide direct access
 
 ---
 
-**[Request a live demo](https://forms.gle/xR6gRxQnyLSMJmeT9)** | [GitHub](https://github.com/telos-ai-labs/telos) | [JB@telos-labs.ai](mailto:JB@telos-labs.ai)"""
+**[Request a live demo](https://forms.gle/xR6gRxQnyLSMJmeT9)** | [GitHub](https://github.com/TELOS-Labs-AI/telos) | [JB@telos-labs.ai](mailto:JB@telos-labs.ai)"""

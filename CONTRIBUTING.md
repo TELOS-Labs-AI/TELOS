@@ -12,7 +12,7 @@ This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDU
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/telos-ai-labs/telos.git
+   git clone https://github.com/TELOS-Labs-AI/telos.git
    cd telos
    ```
 
@@ -56,7 +56,7 @@ pytest tests/test_fidelity_math.py -v
 
 ### Reporting Bugs
 
-1. Check if the bug has already been reported in [Issues](https://github.com/telos-ai-labs/telos/issues)
+1. Check if the bug has already been reported in [Issues](https://github.com/TELOS-Labs-AI/telos/issues)
 2. If not, create a new issue with:
    - Clear, descriptive title
    - Steps to reproduce
@@ -145,7 +145,7 @@ TELOS is a research project. If you're contributing research:
 
 ## Questions?
 
-- Open an [Issue](https://github.com/telos-ai-labs/telos/issues) with the `question` label
+- Open an [Issue](https://github.com/TELOS-Labs-AI/telos/issues) with the `question` label
 - Review the [Whitepaper](docs/TELOS_Whitepaper_v3.0.md) for mathematical foundations
 - Contact: contact@telos-labs.ai
 

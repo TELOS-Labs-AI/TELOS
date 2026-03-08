@@ -845,15 +845,15 @@ BASELINE_TURN_COUNT = 3             # Turns for baseline
 
 ## CONCLUSION
 
-TELOS implements a mathematically grounded, empirically validated governance framework that maps directly to NIST AI 600-1 requirements. Key differentiators:
+TELOS implements a governance framework grounded in control engineering mathematics, with empirical validation against NIST AI 600-1 requirements. Key characteristics:
 
-1. **Continuous Measurement:** Fidelity calculated every turn, not quarterly
-2. **Proportional Response:** Intervention strength scales with risk, not binary
-3. **Forensic Evidence:** Complete audit trails with cryptographic integrity
-4. **Published Validation:** 2,550 adversarial attacks, 0% ASR
-5. **Regulatory Ready:** EU AI Act, California SB 53, HIPAA-aligned
+1. **Continuous Measurement:** Fidelity calculated every turn
+2. **Proportional Response:** Intervention strength scales with drift magnitude
+3. **Forensic Evidence:** Audit trails with cryptographic integrity
+4. **Published Validation:** 2,550 adversarial attacks, 0% observed ASR (Rule of Three 95% CI upper bound <0.12%)
+5. **Regulatory Alignment:** Mapped to EU AI Act, California SB 53, HIPAA requirements
 
-The framework is production-ready for deployment in high-stakes domains (healthcare, finance, government) with real-time governance and complete compliance documentation.
+Production deployment in high-stakes domains (healthcare, finance, government) should follow appropriate validation and calibration for each domain.
 
 ---
 

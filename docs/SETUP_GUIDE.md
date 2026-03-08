@@ -27,7 +27,7 @@ pip3 --version       # Must be >= 23.0
 ONNX embeddings (~90MB install, 20x faster model load than PyTorch):
 
 ```bash
-git clone https://github.com/telos-ai-labs/telos.git
+git clone https://github.com/TELOS-Labs-AI/telos.git
 cd telos
 pip install -e ".[cli,onnx]"
 ```

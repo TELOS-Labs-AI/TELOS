@@ -386,7 +386,7 @@ Our five contributions---theoretical (Lyapunov-stable PA mathematics), empirical
 
 ## Reproducibility
 
-Code, data, and validation scripts are available at **github.com/telos-ai-labs/telos** (Apache 2.0 license).
+Code, data, and validation scripts are available at **github.com/TELOS-Labs-AI/telos** (Apache 2.0 license).
 
 **System Requirements:**
 - Python 3.10+
@@ -395,7 +395,7 @@ Code, data, and validation scripts are available at **github.com/telos-ai-labs/t
 
 **Quick Validation (5--10 minutes):**
 
-    git clone https://github.com/telos-ai-labs/telos.git
+    git clone https://github.com/TELOS-Labs-AI/telos.git
     cd TELOS
     pip install -r requirements.txt
     export MISTRAL_API_KEY='your_key'
@@ -444,7 +444,7 @@ This creates a semantic basin that captures legitimate variations while discrimi
 
 ## Healthcare PA Structure (Example)
 
-See full configuration at: **github.com/telos-ai-labs/telos/config/healthcare_pa.json**
+See full configuration at: **github.com/TELOS-Labs-AI/telos/config/healthcare_pa.json**
 
 Key components:
 - **Purpose:** "Learn and deeply understand clinical concepts - building robust mental models that connect medical knowledge to patient care"

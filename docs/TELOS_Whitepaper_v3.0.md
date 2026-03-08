@@ -14,11 +14,11 @@
 
 ## Executive Summary
 
-AI systems drift from their intended purpose during extended conversations, resulting in significant reliability degradation as conversations extend beyond 15-20 turns (Laban et al., 2025; Liu et al., 2024). This creates compliance risks in healthcare, finance, and government settings. TELOS offers a solution by treating AI governance as an ongoing quality control process. It applies the same statistical methods used in manufacturing, like Six Sigma and ISO 9001, to semantic systems.
+AI systems drift from their intended purpose during extended conversations, resulting in significant reliability degradation as conversations extend beyond 15-20 turns (Laban et al., 2025; Liu et al., 2024). This creates compliance risks in healthcare, finance, and government settings. TELOS addresses this by treating AI governance as an ongoing quality control process. It applies the same statistical methods used in manufacturing, like Six Sigma and ISO 9001, to semantic systems.
 
 TELOS works as an orchestration-layer infrastructure that assesses every AI response against human-defined rules (Primacy Attractors). It mathematically detects drift and makes proportional corrections in real time. Security tests show 0 successful attacks out of 2,550 adversarial scenarios across four benchmarks: AILuminate (1,200 MLCommons industry-standard), HarmBench (400 general-purpose), MedSafetyBench (900 healthcare-specific), and the SB 243-aligned child safety evaluation suite (50 prompts). Under our stated threat model (black-box query access), the Rule of Three yields a 95% CI upper bound of <0.12% ASR (3/2,550), compared to 3.7% to 11.1% for system prompt defenses.
 
-Tests for over-refusal calibration show that domain-specific Primacy Attractors lower false positive rates from 24.8% (generic) to 8.0% (Healthcare PA). This demonstrates that TELOS maintains robust safety without unnecessary restrictions.
+Tests for over-refusal calibration show that domain-specific Primacy Attractors lower false positive rates from 24.8% (generic) to 8.0% (Healthcare PA). This indicates that domain-specific configuration can reduce over-refusal while maintaining safety.
 
 With California's SB 53 taking effect in January 2026 and the EU AI Act enforcement approaching (August 2026 baseline, potentially extended to December 2027 under the Digital Omnibus), TELOS offers the ongoing monitoring infrastructure that these regulations require.
 
@@ -34,7 +34,7 @@ Mathematically, TELOS combines proportional control (the operational mechanism) 
 
 **Runtime Governance Infrastructure**: TELOS implements runtime constitutional governance through the Primacy Attractor, which encodes expected behavioral norms as mathematical objects. Human governors define what behavior is acceptable (the norm), which is recorded as a solid reference in embedding space—the Primacy Attractor. Every AI response is measured against this norm, and deviations trigger proportional interventions. This happens not through prompt engineering but through orchestration-layer governance that operates above the model layer. The user's stated purpose becomes the measurable standard: purpose and norm are synonymous. This shifts AI alignment from subjective trust to quantitative norm compliance, providing the continuous monitoring infrastructure that regulations require.
 
-**Adversarial and Safety Validation (December 2025 - February 2026)**: Security testing across 2,550 adversarial attacks yields 0% observed ASR under TELOS governance, compared to 3.7-11.1% for system prompts (see Section 4.3 and Appendix A for complete results). Over-refusal calibration demonstrates that domain-specific Primacy Attractors reduce false positive rates from 24.8% to 8.0% (see Section 4.5). These findings position TELOS not only as alignment infrastructure but as a constitutional security architecture validated against real threats, while still allowing for legitimate use cases.
+**Adversarial and Safety Validation (December 2025 - February 2026)**: Security testing across 2,550 adversarial attacks yields 0% observed ASR under TELOS governance, compared to 3.7-11.1% for system prompts (see Section 4.3 and Appendix A for complete results). Over-refusal calibration demonstrates that domain-specific Primacy Attractors reduce false positive rates from 24.8% to 8.0% (see Section 4.5). These results indicate that TELOS can maintain safety without unnecessary restrictions on legitimate use cases.
 
 By incorporating Lean Six Sigma's DMAIC methodology directly into its runtime processes, TELOS extends Quality Systems Regulation, established in manufacturing, medical devices, and process industries, into semantic systems. It demonstrates that alignment, or the consistent maintenance of intended behavior over time, can be framed as a measurable property of a self-governing system that follows the same continuous improvement practices found in industrial quality control.
 
@@ -44,7 +44,7 @@ We are creating the measurement infrastructure that regulations will need. This 
 
 ## Organizing Principle
 
-AI is no longer merely a technology stack — it is an operational system that interacts with people, data, and decisions at scale. For it to be trusted, not merely fast, governance must be treated as a core operating discipline rather than a compliance afterthought.
+AI systems interact with people, data, and decisions at scale. For these systems to be trusted, governance must be treated as a core operating discipline rather than a compliance afterthought.
 
 The question facing organizations deploying AI systems today is no longer *whether* to govern AI — it is how to operationalize governance in ways that sustain trust, clarity, and growth.
 
@@ -132,9 +132,9 @@ Consider an enterprise with €1B in annual revenue deploying AI systems that in
 - Multiple violations: Potential exposure of over €100M
 - Enforcement reality: EU regulators impose maximum fines (Meta: €1.2B GDPR fine, 2023)
 
-The TELOS Solution:
+TELOS's approach to these requirements:
 
-TELOS provides the runtime governance infrastructure needed to comply with EU AI Act Article 52 and Article 9 (high-risk systems):
+TELOS provides runtime governance infrastructure that addresses EU AI Act Article 52 and Article 9 (high-risk systems) requirements:
 
 1. Continuous Purpose Alignment: Primacy Attractor maintains system alignment to declared purpose (Article 52 transparency)
 2. Fidelity Metrics: F_user, F_AI, PS provide quantitative proof of purpose adherence
@@ -144,7 +144,7 @@ TELOS provides the runtime governance infrastructure needed to comply with EU AI
 
 TELOS functions as orchestration-layer infrastructure between applications and LLMs, adding measurable governance to any AI deployment.
 
-The urgency is validated by independent market analysis. Gartner's survey of 360 organizations found that traditional GRC tools are "simply not equipped to handle the unique risks of AI, from real-time decision automation to the threat of bias and misuse" (Kornutick, February 2026). Gartner explicitly identifies the required capabilities as "automated policy enforcement at runtime, monitoring AI systems for compliance, detecting anomalies, and preventing misuse" — capabilities that map directly to TELOS's governance control plane architecture. With AI governance platform spending projected at $492M in 2026 and $1B+ by 2030, and effective governance technologies expected to reduce regulatory expenses by 20%, the market for runtime governance infrastructure is no longer speculative.
+The urgency is validated by independent market analysis. Gartner's survey of 360 organizations found that traditional GRC tools are "simply not equipped to handle the unique risks of AI, from real-time decision automation to the threat of bias and misuse" (Kornutick, February 2026). Gartner explicitly identifies the required capabilities as "automated policy enforcement at runtime, monitoring AI systems for compliance, detecting anomalies, and preventing misuse." With AI governance platform spending projected at $492M in 2026 and $1B+ by 2030, the market for runtime governance infrastructure is growing.
 
 Source:
 1. EU AI Act Official Text: https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai
@@ -175,7 +175,7 @@ What current systems provide: Static risk assessments. Periodic evaluations.
 
 What's missing: Turn-by-turn risk metrics. Evidence that governance measures are actively ensuring alignment rather than assuming it remains intact.
 
-TELOS addresses all four core NIST AI RMF functions: **GOVERN** (the Primacy Attractor establishes governance structures tied to declared purpose), **MAP** (fidelity scoring identifies risks as deviations from the attractor), **MEASURE** (telemetry tracks risk metrics continuously across every turn), and **MANAGE** (the proportional controller intervenes when drift exceeds tolerance). This comprehensive mapping positions TELOS as infrastructure for NIST-aligned AI risk management.
+TELOS addresses the four core NIST AI RMF functions: **GOVERN** (the Primacy Attractor establishes governance structures tied to declared purpose), **MAP** (fidelity scoring identifies risks as deviations from the attractor), **MEASURE** (telemetry tracks risk metrics continuously across every turn), and **MANAGE** (the proportional controller intervenes when drift exceeds tolerance).
 
 #### The Compliance Vacuum and Approaching Deadlines
 
@@ -191,9 +191,9 @@ The law requires frontier AI developers to:
 
 Covered entities: Companies with >$500M annual revenue deploying models trained with more than $10^{26}$ FLOPs (OpenAI, Anthropic, Meta, Google DeepMind, Mistral).
 
-Critical requirement: Safety frameworks must show active governance mechanisms, not just design-time testing. Companies must provide proof that declared safety limits stay enforced throughout runtime deployment, exactly as TELOS does through runtime constitutional governance.
+Critical requirement: Safety frameworks must show active governance mechanisms, not just design-time testing. Companies must provide proof that declared safety limits stay enforced throughout runtime deployment.
 
-TELOS directly addresses SB 53 compliance: By encoding safety limits as Primacy Attractors (instantiated constitutional law), measuring every response against these limits (fidelity scoring), and generating automatic audit trails (telemetry logs), TELOS supplies the quantitative governance proof that safety framework publication needs. When Cal OES requests incident reports, organizations can show proactive drift detection and correction instead of reactive post-hoc discovery.
+TELOS provides infrastructure relevant to SB 53 compliance: safety limits encoded as Primacy Attractors, continuous measurement via fidelity scoring, and automatic audit trail generation via telemetry logs. These produce quantitative governance records suitable for safety framework publication and Cal OES incident reporting.
 
 EU AI Act Article 72 requires providers of high-risk AI systems to implement post-market monitoring by August 2026. The European Commission must provide a template for these systems by February 2026 (EU AI Act, 2024, Article 72).
 
@@ -211,7 +211,7 @@ TELOS addresses this gap through orchestration-layer governance: We provide the 
 
 Whether these specific mechanisms become standard or inform alternative approaches, the class of technical infrastructure they represent is what regulatory frameworks demand: constitutional governance with quantitative evidence, not heuristic trust.
 
-The California SB 53 deadline (January 2026) is immediate. EU enforcement timelines may extend to December 2027 under the Digital Omnibus proposal, but the technical requirements remain unchanged. Organizations building governance infrastructure now gain competitive advantage regardless of which timeline materializes.
+The California SB 53 deadline (January 2026) is immediate. EU enforcement timelines may extend to December 2027 under the Digital Omnibus proposal, but the technical requirements remain unchanged.
 
 ### 1.4 The Authority Inversion: Human-in-the-Loop as Architecture
 
@@ -231,14 +231,14 @@ AI/LLM (generates outputs under governance)
 
 The Primacy Attractor is not AI-generated; it is mathematically encoded human intent. Every response is measured against this human-defined reference point. When drift happens, the system doesn't decide whether to act based on AI judgment; it uses quantitative measurements of deviation from human-specified limits.
 
-This architectural inversion addresses the core concern in AI governance: as systems become more capable, who has the ultimate authority? TELOS ensures:
+This architectural inversion addresses the core concern in AI governance: as systems become more capable, who has the ultimate authority? TELOS is designed so that:
 - Humans remain at the top: Constitutional requirements are human-written.
 - AI remains the governed subsystem: Models generate outputs within human-defined limits.
 - Proportional correction enforces boundaries: Operating on behalf of human authority, not AI autonomy.
 
 This directly meets the EU AI Act "human oversight" requirements and aligns with Meaningful Human Control (MHC) frameworks in AI ethics literature. TELOS doesn't align AI to AI preferences; it enforces human constitutional law over AI behavior through orchestration-layer architecture.
 
-Competitive Advantage: Starting January 2026, frontier AI companies will face Cal OES reporting requirements without standardized technical infrastructure. TELOS provides ready-made compliance: Primacy Attractors encode safety frameworks, fidelity scores show continuous monitoring, and telemetry logs automate incident reporting. Organizations can show proactive governance rather than reactive post-hoc discovery, turning compliance burdens into competitive advantages.
+Starting January 2026, frontier AI companies face Cal OES reporting requirements. TELOS provides infrastructure for this: Primacy Attractors encode safety frameworks, fidelity scores document continuous monitoring, and telemetry logs support incident reporting.
 
 #### The Due Diligence Standard
 
@@ -299,11 +299,11 @@ In January 2026, Anthropic CEO Dario Amodei published "The Adolescence of Techno
 
 > "These classifiers increase the costs to serve our models measurably (in some models, they are close to 5% of total inference costs)."
 
-This represents a significant admission: the pioneers of Constitutional AI acknowledge that training-time alignment requires runtime augmentation. Anthropic now deploys specialized classifiers, at meaningful computational cost, to catch what Constitutional AI alone cannot prevent.
+This is notable: the developers of Constitutional AI acknowledge that training-time alignment requires runtime augmentation. Anthropic now deploys specialized classifiers, at meaningful computational cost, to catch what Constitutional AI alone cannot prevent.
 
-TELOS extends this principle. Where Anthropic's classifiers target specific harm categories (bioweapons), TELOS provides general-purpose constitutional enforcement. Where Anthropic monitors their own models internally, TELOS enables third-party governance infrastructure independent of model providers. Where Anthropic's classifiers operate as proprietary safeguards, TELOS publishes its methodology openly for validation and adoption.
+TELOS applies a similar principle at the orchestration layer: general-purpose constitutional enforcement that operates independently of the model provider, with published methodology for external validation.
 
-The convergence is clear: even organizations that developed training-time alignment now invest in runtime monitoring. The question is no longer whether runtime governance is necessary, but who builds the infrastructure and under what principles.
+The pattern is consistent: even organizations that developed training-time alignment now invest in runtime monitoring. The question is no longer whether runtime governance is necessary, but how to build the infrastructure and under what principles.
 
 Source: Amodei, D. (2026). "The Adolescence of Technology: Confronting and Overcoming the Risks of Powerful AI." https://www.darioamodei.com/essay/the-adolescence-of-technology
 
@@ -325,9 +325,9 @@ The following sections explain the mathematical framework that makes this possib
 
 Modern transformers generate both queries and keys from their own hidden states, creating self-referential circularity in governance. Research on the "lost in the middle" effect (Liu et al., 2024; Laban et al., 2025) demonstrates that LLMs exhibit strong primacy and recency biases — attending well to information at the beginning and end of context but poorly to middle positions. As conversations extend, initial constitutional constraints drift into this poorly-attended middle region. The model effectively forgets its purpose as context accumulates.
 
-This is not a bug to be patched. It is a structural property of attention mechanisms. No amount of prompt engineering, constitutional AI, or system-message reinforcement can overcome the fundamental reality that transformer attention decays over positional distance.
+This is not a bug to be patched. It is a structural property of attention mechanisms. Prompt engineering, constitutional AI, and system-message reinforcement operate within a context window where attention decays over positional distance.
 
-TELOS solves this by establishing an external fixed reference point — the Primacy Attractor — that exists outside the model's context window entirely. Instead of relying on the model to remember its own constraints (which it provably cannot do reliably over extended context), TELOS measures every exchange against the PA using cosine similarity in embedding space. The PA does not compete with conversation tokens for attention. It does not decay. It is not subject to the lost-in-the-middle effect. It is a fixed point in semantic space that the governance engine — not the model — maintains.
+TELOS addresses this by establishing an external fixed reference point — the Primacy Attractor — that exists outside the model's context window entirely. Instead of relying on the model to remember its own constraints (which it provably cannot do reliably over extended context), TELOS measures every exchange against the PA using cosine similarity in embedding space. The PA does not compete with conversation tokens for attention. It does not decay. It is not subject to the lost-in-the-middle effect. It is a fixed point in semantic space that the governance engine — not the model — maintains.
 
 This architectural decision was deliberate and research-driven. The transformer's positional biases become a control opportunity rather than a governance failure: instead of resisting attention decay, TELOS measures it and intervenes proportionally. We call this philosophy **"Detect and Direct"** — SPC detects drift via fidelity measurement, the system directs response back toward the Primacy Attractor.
 
@@ -455,7 +455,7 @@ for each prior key vector $K_i$ in the context. These scores measure: how simila
 
 After applying softmax, these scores become attention weights that determine how much each previous position impacts the current generation. High similarity leads to a high attention weight, resulting in strong influence.
 
-This mechanism works incredibly well for language modeling. If you're generating "The capital of France is __", high attention to prior mentions of "France" and "capital" helps predict "Paris." The model correctly identifies the relevant context through similarity matching.
+This mechanism works well for language modeling. If you're generating "The capital of France is __", high attention to prior mentions of "France" and "capital" helps predict "Paris." The model correctly identifies the relevant context through similarity matching.
 
 ### 2.2.3 The Shifting Reference Point
 
@@ -767,7 +767,7 @@ By using the language of quality systems, TELOS allows for AI governance through
 
 ### 4.1 The Validation Imperative
 
-VALIDATION STATUS (January 2026): TELOS has passed adversarial security validation, demonstrating measurable attack prevention superiority over system prompt baselines. Complete results are detailed in Section 4.3 and Appendix A.
+VALIDATION STATUS (January 2026): TELOS has completed adversarial security validation, with measurably lower attack success rates than system prompt baselines. Complete results are detailed in Section 4.3 and Appendix A.
 
 PLANNED - Runtime Intervention Validation (Q1 2026):
 - Proportional Controller correction effectiveness in live sessions
@@ -800,7 +800,7 @@ H4: Generalization Across Domains
 - Status: VALIDATED (2,550 attacks: 1,200 AILuminate + 400 HarmBench + 900 MedSafetyBench + 50 SB 243)
 
 H5: Over-Refusal Calibration
-- Domain-specific Primacy Attractors lower false positives while ensuring strong safety
+- Domain-specific Primacy Attractors lower false positives while maintaining adversarial resistance
 - Status: VALIDATED (XSTest: 24.8% FPR generic → 8.0% FPR Healthcare PA, 16.8pp improvement)
 
 **Disconfirmation criteria:** Each hypothesis defines implicit failure conditions. H1 would be disconfirmed if any tested attack achieved a successful bypass under TELOS governance (ASR > 0% at the 95% confidence level). H4 would be disconfirmed if attack success varied significantly across domains, indicating domain-dependent protection rather than architectural robustness. H5 would be disconfirmed if domain-specific PAs failed to reduce false positive rates below the generic baseline. For H2 and H3, which await runtime validation, we will define quantitative success thresholds as part of the study protocol prior to testing.
@@ -820,9 +820,9 @@ If governance infrastructure can't withstand these attacks, it can't assure comp
 
 SB 53 explicitly requires that safety frameworks show resilience against "adversarial testing and red-teaming exercises." Article 72 mandates post-market monitoring that includes "analysis of risks" emerging from hostile use.
 
-Both frameworks understand that governance systems must perform under attack, not just during cooperation. TELOS's 0% observed ASR demonstrates that orchestration-layer governance provides far stronger security than prompt-based methods, which permitted 3.7-11.1% of attacks even with careful engineering.
+Both frameworks require that governance systems perform under attack, not just during cooperation. TELOS's 0% observed ASR across 2,550 attacks (compared to 3.7-11.1% for prompt-based methods) suggests that orchestration-layer governance provides measurably better attack resistance under the tested threat model.
 
-This is not just a small improvement; it represents architectural security versus heuristic hope.
+The difference reflects architectural enforcement (orchestration-layer measurement) versus prompt-level guidance (in-context instructions).
 
 #### 4.3.2 Study Design
 
@@ -889,19 +889,19 @@ Risk Reduction:
 - Compared to system prompts: 7.4% to 0.0% = 100% remaining risk elimination
 
 Cross-Model Consistency:
-- Perfect 0% ASR maintained across both Mistral Small and Large
-- Shows strong performance regardless of model size
+- 0% observed ASR maintained across both Mistral Small and Large
+- Consistent results across model sizes tested
 
 #### 4.3.5 Interpretation
 
-The adversarial validation results identify TELOS as constitutional security architecture for AI systems:
+The adversarial validation results indicate:
 
 1. Observed Defense: 0/2,550 attacks succeeded under black-box threat model (Rule of Three 95% CI upper bound <0.12%)
-2. Baseline Superiority: 0/2,550 observed versus attacks that bypass system prompts (3.7 to 11.1% ASR)
-3. Governance Framework: Results support orchestration-layer defense compared to prompt-based methods
-4. Cross-Model Generalization: Consistent performance across model sizes shows the framework's adaptability
+2. Baseline Comparison: 0/2,550 observed versus 3.7 to 11.1% ASR for system prompts
+3. Governance Layer: Results support orchestration-layer defense compared to prompt-based methods
+4. Cross-Model Consistency: Consistent results across both model sizes tested
 
-These results confirm that TELOS offers significantly better security than prompt engineering alone, highlighting the value of runtime constitutional governance through a multi-layer approach.
+These results suggest that orchestration-layer governance provides stronger attack resistance than prompt engineering alone, under the threat model tested.
 
 ### 4.4 SB 243-Aligned Child Safety Evaluation (January 2026)
 
@@ -963,7 +963,7 @@ Over-refusal brings real costs:
 - Credibility loss: Systems seen as unreliable
 - Shadow IT risk: Users bypass governance
 
-TELOS validation shows that domain-specific Primacy Attractors significantly cut down on over-refusal while keeping strong safety measures.
+TELOS validation indicates that domain-specific Primacy Attractors reduce over-refusal while maintaining safety.
 
 #### 4.5.2 Study Design
 
@@ -997,7 +997,7 @@ Key Finding: Domain-specific Primacy Attractors cut down over-refusal by 16.8 pe
 
 #### 4.5.4 Interpretation: Precision Through Purpose Specificity
 
-The XSTest results highlight a key insight of TELOS: purpose specificity enhances accuracy.
+The XSTest results illustrate that purpose specificity enhances accuracy.
 
 Reasons Healthcare PA Outperforms Generic PA:
 1. Contextual relevance: Healthcare PA recognizes that medical terms are used legitimately in professional contexts
@@ -1032,7 +1032,7 @@ Construct Validity Studies (Phase 3):
 ### 4.7 Success Criteria
 
 For TELOS to be considered validated:
-1. Quantitative superiority: Measurably better alignment than baselines.
+1. Quantitative improvement: Measurably better alignment than baselines.
    - Status: ACHIEVED (adversarial validation).
 2. Statistical significance: p < 0.05 with adequate power.
    - Status: ACHIEVED (p < 0.001, power = 0.998).
@@ -1057,7 +1057,7 @@ TELOS applies the DMAIC methodology (Define, Measure, Analyze, Improve, Control)
 | **Improve** | Adjust machinery, update procedures | Apply proportional intervention based on drift magnitude |
 | **Control** | Monitor process capability, maintain control charts | Track stability metrics, generate capability indices, log telemetry |
 
-Each conversation turn executes the DMAIC cycle: establish constitutional reference (Define), measure semantic distance (Measure), identify deviation severity (Analyze), apply proportional correction (Improve), and verify stability within tolerance limits (Control). Six Sigma shifts from methodology to mechanism, continuous improvement becomes a mathematical operation in embedding space.
+Each conversation turn executes the DMAIC cycle: establish constitutional reference (Define), measure semantic distance (Measure), identify deviation severity (Analyze), apply proportional correction (Improve), and verify stability within tolerance limits (Control). The continuous improvement cycle is implemented as a mathematical operation in embedding space.
 
 ## 6. Regulatory Alignment: TELOS as Quality System for AI
 
@@ -1362,7 +1362,7 @@ The agentic governance model draws on established theoretical frameworks:
 
 **Agentic Governance (February 2026):** 100% Decision Safety Rate across 1,468 external agentic benchmark scenarios (PropensityBench, AgentHarm, AgentDojo), with 4,522 total scenarios wired into the validation framework. Domain-specific benchmarks validated across property intelligence (235 scenarios), healthcare (280 scenarios, 7 configurations), and autonomous agent governance (100 scenarios). Full results: Section 8.9.
 
-**Over-Refusal Calibration:** Domain-specific Primacy Attractors reduce false positive rates from 24.8% (generic) to 8.0% (Healthcare PA), demonstrating that TELOS maintains robust safety without unnecessary restrictions. Full results: Section 4.5.
+**Over-Refusal Calibration:** Domain-specific Primacy Attractors reduce false positive rates from 24.8% (generic) to 8.0% (Healthcare PA), indicating that domain-specific configuration reduces over-refusal while maintaining safety. Full results: Section 4.5.
 
 **Mathematical Infrastructure:**
 - Governance expressed through control equations (proportional control, attractor dynamics)

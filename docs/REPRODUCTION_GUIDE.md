@@ -13,7 +13,7 @@
 ### Step 1: Clone and Install
 
 ```bash
-git clone https://github.com/telos-ai-labs/telos.git
+git clone https://github.com/TELOS-Labs-AI/telos.git
 cd telos
 python3 -m venv venv
 source venv/bin/activate
@@ -313,7 +313,7 @@ telos/
 
 ## Contact & Support
 
-**Issues**: https://github.com/telos-ai-labs/telos/issues
+**Issues**: https://github.com/TELOS-Labs-AI/telos/issues
 
 ---
 

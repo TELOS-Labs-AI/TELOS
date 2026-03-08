@@ -161,7 +161,7 @@ All 5 drift sequences pass, validating the graduated sanction mechanism. This gr
 The entire benchmark runs locally with no API keys, no network access, and no proprietary data:
 
 ```bash
-git clone https://github.com/telos-ai-labs/telos.git
+git clone https://github.com/TELOS-Labs-AI/telos.git
 cd telos
 pip install -r requirements.txt
 python3 validation/nearmap/run_nearmap_benchmark.py --forensic -v
@@ -321,7 +321,7 @@ Every claim in this document can be independently verified:
 ```bash
 # Clone and install (no API keys needed)
 # Note: Private repo — contact JB@telos-labs.ai for access
-git clone https://github.com/telos-ai-labs/telos.git
+git clone https://github.com/TELOS-Labs-AI/telos.git
 cd telos
 pip install -r requirements.txt
 

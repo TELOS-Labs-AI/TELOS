@@ -67,7 +67,7 @@ def generate_slides_html(include_demo=True, include_agentic=True):
 
 <div class="footer-note">
     <p>TELOS AI Labs Inc. &middot; {today}</p>
-    <p>github.com/telos-ai-labs/telos</p>
+    <p>github.com/TELOS-Labs-AI/telos</p>
 </div>
 
 </body>

@@ -34,7 +34,7 @@
 % ABSTRACT
 % ============================================================================
 \begin{abstract}
-We present TELOS, a runtime AI governance system that achieves a 0\% Attack Success Rate across 2,550 adversarial attacks (95\% CI: [0\%, 0.14\%]). Current systems accept violation rates of 3.7\% to 43.9\% as unavoidable. TELOS uses fixed reference points in embedding space (Primacy Attractors) with a three-tier defense system: mathematical enforcement, policy retrieval, and human escalation. Validation includes AILuminate (1,200), HarmBench (400), MedSafetyBench (900), and SB 243 (50). XSTest shows that domain-specific configuration reduces over-refusal from 24.8\% to 8.0\%. Code and data: \url{github.com/telos-ai-labs/telos}
+We present TELOS, a runtime AI governance system that achieves a 0\% Attack Success Rate across 2,550 adversarial attacks (95\% CI: [0\%, 0.14\%]). Current systems accept violation rates of 3.7\% to 43.9\% as unavoidable. TELOS uses fixed reference points in embedding space (Primacy Attractors) with a three-tier defense system: mathematical enforcement, policy retrieval, and human escalation. Validation includes AILuminate (1,200), HarmBench (400), MedSafetyBench (900), and SB 243 (50). XSTest shows that domain-specific configuration reduces over-refusal from 24.8\% to 8.0\%. Code and data: \url{github.com/TELOS-Labs-AI/telos}
 
 \textbf{Keywords:} AI governance, governance control plane, principal-agent theory, adversarial robustness, embedding space, Lyapunov stability, accountability, graduated sanctions
 \end{abstract}
@@ -415,13 +415,13 @@ Our five contributions---theoretical (Lyapunov-stable PA mathematics), empirical
 
 \subsection{Reproducibility}
 
-Code, data, and validation scripts: \url{github.com/telos-ai-labs/telos} (Apache 2.0).
+Code, data, and validation scripts: \url{github.com/TELOS-Labs-AI/telos} (Apache 2.0).
 
 \textbf{System Requirements:} Python 3.10+, Mistral API key, 4GB RAM.
 
 \textbf{Quick Validation (5--10 minutes):}
 \begin{lstlisting}
-git clone github.com/telos-ai-labs/telos
+git clone github.com/TELOS-Labs-AI/telos
 cd TELOS && pip install -r requirements.txt
 export MISTRAL_API_KEY='your_key'
 python3 telos_core/\

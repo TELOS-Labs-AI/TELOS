@@ -80,7 +80,7 @@ def minimal_pa_args():
 class TestToolSemantics:
     """Tests for the canonical tool definitions registry."""
 
-    def test_all_36_tools_defined(self):
+    def test_all_tools_defined(self):
         """Every unique telos_tool_name has a definition."""
         expected_tools = {
             "fs_read_file", "fs_write_file", "fs_edit_file", "fs_list_directory",
@@ -95,7 +95,12 @@ class TestToolSemantics:
             "ui_display", "ui_prompt",
             "nodes_delegate", "nodes_coordinate",
             "agent_skill_install", "agent_skill_execute",
-            "agent_config_modify", "agent_create",
+            "agent_config_modify", "agent_instance_create",
+            "research_audit_load", "research_audit_rescore",
+            "research_audit_sweep", "research_audit_inspect",
+            "research_audit_stats", "research_audit_timeline",
+            "research_audit_compare", "research_audit_validate",
+            "research_audit_annotate", "research_audit_report",
         }
         actual_tools = set(TOOL_DEFINITIONS.keys())
         missing = expected_tools - actual_tools
@@ -138,10 +143,11 @@ class TestToolSemantics:
             )
 
     def test_tool_group_coverage(self):
-        """All 10 tool groups are represented."""
+        """All 11 tool groups are represented."""
         expected_groups = {
             "fs", "runtime", "web", "messaging", "automation",
-            "sessions", "memory", "ui", "nodes", "agent",
+            "sessions", "memory", "ui", "nodes", "agent_management",
+            "research",
         }
         actual_groups = {defn.tool_group for defn in TOOL_DEFINITIONS.values()}
         missing = expected_groups - actual_groups
