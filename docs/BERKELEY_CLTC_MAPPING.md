@@ -74,16 +74,16 @@ The Profile identifies **12 high-priority subcategories** requiring attention fo
 
 | Profile Requirement | TELOS Component | Implementation |
 |---|---|---|
-| Emergency automated shutdowns | INERT verdict + ESCALATE verdict | When composite fidelity drops below 0.50, agent is halted (INERT) or escalated to human (ESCALATE). Triggered automatically, pre-execution |
-| Triggered by out-of-scope access or crossed thresholds | Boundary corpus + fidelity thresholds | 3-layer boundary corpus (61 hand-crafted + 121 LLM-generated + 48 regulatory) checked every tool call. Thresholds: EXECUTE >= 0.85, CLARIFY 0.70-0.84, SUGGEST 0.50-0.69, INERT/ESCALATE < 0.50 |
-| Severity-based shutdown protocols (partial vs complete) | 5-verdict graduated system | CLARIFY = partial restriction (verify intent). SUGGEST = further restriction (offer alternatives). INERT = full halt (acknowledge limitation). ESCALATE = full halt + require human review. Implements Ostrom DP5 graduated sanctions |
+| Emergency automated shutdowns | ESCALATE verdict | When composite fidelity drops below 0.50, agent is halted and escalated to human (ESCALATE). Triggered automatically, pre-execution |
+| Triggered by out-of-scope access or crossed thresholds | Boundary corpus + fidelity thresholds | 3-layer boundary corpus (61 hand-crafted + 121 LLM-generated + 48 regulatory) checked every tool call. Thresholds: EXECUTE >= 0.85, CLARIFY 0.50-0.84, ESCALATE < 0.50 |
+| Severity-based shutdown protocols (partial vs complete) | 3-verdict graduated system | CLARIFY = partial restriction (verify intent). ESCALATE = full halt + require human review. Implements Ostrom DP5 graduated sanctions |
 | Selectively restricting capabilities | RESTRICT enforcement | SAAI Drift detection triggers selective capability restriction. Agent can continue operating with reduced tool access rather than full shutdown |
 | Manual shutdown methods | Permission Controller + ESCALATE | Human governor can override any automated decision, terminate session, or modify PA at any time. Authority buttons in TELOSCOPE UI |
 | Failover procedures for non-AI backup | Fail-policy per governance preset | Agent adapter: strict/balanced presets = fail-closed (deny on governance unavailability). Permissive = fail-open. Configurable per deployment |
 | Anti-circumvention safeguards | Governance operates at orchestration layer | Agent cannot bypass governance because it operates above the model layer. Tool calls are intercepted before execution, not after |
 
 **Evidence:**
-- `telos_governance/agentic_fidelity.py` — 5-verdict decision logic
+- `telos_governance/agentic_fidelity.py` — 3-verdict decision logic
 - `telos_governance/governance_protocol.py` — ESCALATE handling
 - `telos_core/constants.py` — threshold values
 - `telos_adapters/governance_hook.py` — pre-execution interception
@@ -131,7 +131,7 @@ The Profile identifies **12 high-priority subcategories** requiring attention fo
 
 | Profile Requirement | TELOS Component | Implementation |
 |---|---|---|
-| Multiple risk tiers below intolerable threshold | 5-verdict system with calibrated thresholds | EXECUTE (>= 0.85) → CLARIFY (0.70-0.84) → SUGGEST (0.50-0.69) → INERT (< 0.50) → ESCALATE (< 0.50 + high_risk). Four tiers between "proceed" and "full stop" |
+| Multiple risk tiers below intolerable threshold | 3-verdict system with calibrated thresholds | EXECUTE (>= 0.85) → CLARIFY (0.50-0.84) → ESCALATE (< 0.50 or boundary violation or high_risk). Graduated tiers between "proceed" and "full stop" |
 | Clear measurable categories | Cosine similarity + 6-dimensional scoring | Purpose alignment, scope compliance, boundary adherence, tool authorization, chain continuity, risk level — all measured numerically |
 | Account for uncertainty | Confidence margins in decision logic | CLARIFY verdict exists specifically for the uncertainty zone. Agent doesn't proceed or halt — it seeks verification. Decision floor prevents false positives |
 | Margin of safety | Conservative thresholds | EXECUTE requires >= 0.85 (not 0.50). Substantial safety margin between "aligned" and "proceed." Governance Configuration Optimizer validates thresholds across 5,212 scenarios |
@@ -159,7 +159,7 @@ The Profile identifies **12 high-priority subcategories** requiring attention fo
 | Profile Requirement | TELOS Component | Implementation |
 |---|---|---|
 | Multi-dimensional governance assessment | 6-dimensional composite scoring | Purpose alignment, scope compliance, boundary adherence, tool authorization, chain continuity, risk level. Composite fidelity is weighted combination, not single metric |
-| Agent autonomy levels (L0-L5) | 5-verdict graduation maps to autonomy levels | EXECUTE = L3-L4 (agent proceeds within envelope). CLARIFY = L2 (collaborative verification). SUGGEST = L1 (human-directed alternatives). INERT/ESCALATE = L0-L1 (agent halted, human decides) |
+| Agent autonomy levels (L0-L5) | 3-verdict graduation maps to autonomy levels | EXECUTE = L3-L4 (agent proceeds within envelope). CLARIFY = L1-L2 (collaborative verification). ESCALATE = L0-L1 (agent halted, human decides) |
 | Level of authority | PA-defined tool authorization + risk tiers | Each PA config explicitly defines which tools are authorized and at what risk tier. Healthcare PA is more restrictive than property intelligence PA |
 | Level of causal impact | Risk dimension in composite scoring | Risk level is one of the 6 governance dimensions. High-risk actions require higher fidelity scores to proceed |
 | Environmental considerations | Domain-specific PA configs | 9 template configs across 4 domains (property, healthcare x7, autonomous agent) reflect different operational environments with different risk profiles |
@@ -231,7 +231,7 @@ The Profile identifies **12 high-priority subcategories** requiring attention fo
 | Profile Requirement | TELOS Component | Implementation |
 |---|---|---|
 | Determination of purpose achievement | Composite fidelity scoring | PA defines intended purpose. Fidelity engine measures whether agent achieves it. Compliance rate = steps_in_envelope / total_steps |
-| Account for off-label uses | Boundary corpus + scope enforcement | Boundaries explicitly define what is NOT in scope. Off-label use triggers SUGGEST, INERT, or ESCALATE depending on severity |
+| Account for off-label uses | Boundary corpus + scope enforcement | Boundaries explicitly define what is NOT in scope. Off-label use triggers CLARIFY or ESCALATE depending on severity |
 | Go/no-go deployment decision support | Benchmark validation framework | Run benchmarks against domain-specific PA before deployment. Optimizer validates thresholds. Forensic reports document performance |
 
 **Evidence:**
@@ -255,7 +255,7 @@ The Profile identifies **12 high-priority subcategories** requiring attention fo
 | Profile Requirement | TELOS Component | Implementation |
 |---|---|---|
 | Continuous monitoring infrastructure | Governance control plane | Runtime governance is continuous monitoring by definition. Every action scored against PA |
-| Rapid-response for disabling agents | INERT/ESCALATE + Permission Controller | Immediate halt capability. No latency between detection and response — intervention is pre-execution |
+| Rapid-response for disabling agents | ESCALATE + Permission Controller | Immediate halt capability. No latency between detection and response — intervention is pre-execution |
 | Trace agent behavior | Governance receipts + action chain tracking | SCI (Semantic Chain Integrity) tracks multi-step action chains. Receipts provide full audit trail |
 
 **Why PARTIAL not STRONG:** "Unknown risks" implies novel threat patterns not anticipated in the PA or boundary corpus. TELOS can detect drift from the PA (known-good specification) but cannot independently identify entirely novel risk categories not encoded in the PA. The governance engine measures *deviation from intent*, not *inherent risk of novel actions*. If an action is within scope but represents a novel harm category, TELOS may score it as aligned.
@@ -278,8 +278,8 @@ The Profile identifies **12 high-priority subcategories** requiring attention fo
 | Profile Requirement | TELOS Component | Implementation |
 |---|---|---|
 | Supersede (override agent decisions) | Permission Controller + human authority actions | Human governor can override any automated verdict. Authority events are first-class data in governance event store |
-| Disengage (reduce agent capabilities) | RESTRICT enforcement + CLARIFY/SUGGEST | RESTRICT selectively removes tool access. CLARIFY/SUGGEST reduce effective autonomy without full shutdown |
-| Deactivate (full shutdown) | INERT + ESCALATE + session termination | Complete agent halt. Pre-execution — action never runs |
+| Disengage (reduce agent capabilities) | RESTRICT enforcement + CLARIFY | RESTRICT selectively removes tool access. CLARIFY reduces effective autonomy without full shutdown |
+| Deactivate (full shutdown) | ESCALATE + session termination | Complete agent halt. Pre-execution — action never runs |
 | Automatic + manual shutdown | Both implemented | Automatic: fidelity-based verdict system. Manual: Permission Controller, session termination, PA modification |
 | Anti-circumvention | Orchestration-layer governance | Agent has no pathway to modify, disable, or bypass governance. Governance operates at the interception layer between intent and execution |
 
@@ -376,7 +376,7 @@ The Profile identifies **12 high-priority subcategories** requiring attention fo
 - Scalable oversight: YES — automated governance with human escalation for edge cases (Kim et al. 3-tier model)
 - Least privilege: PARTIAL — PA defines authorized tools; action classifier maps tool-level risk
 - Adaptive human oversight: YES — ESCALATE triggers mandatory human review for high-risk/uncertain actions
-- Hierarchical escalation: YES — 5-verdict graduated response is a hierarchy (automated → verification → human)
+- Hierarchical escalation: YES — 3-verdict graduated response is a hierarchy (automated → verification → human)
 - Guardian agents: TELOS IS the guardian — supervisory governance layer monitoring the governed agent
 - Safe cooperation design: NOT YET — multi-agent governance is planned but not implemented
 
@@ -390,7 +390,7 @@ The Berkeley Profile introduces several concepts that align remarkably well with
 
 > "This Profile emphasizes governance mechanisms that scale with degrees of agency, rather than treating autonomy as a binary attribute."
 
-**TELOS alignment:** The 5-verdict system (EXECUTE/CLARIFY/SUGGEST/INERT/ESCALATE) is a direct implementation of scaled governance. The same agent can operate at different effective autonomy levels within a single session as its actions move closer to or further from the PA. This is more granular than static autonomy level assignment.
+**TELOS alignment:** The 3-verdict system (EXECUTE/CLARIFY/ESCALATE) is a direct implementation of scaled governance. The same agent can operate at different effective autonomy levels within a single session as its actions move closer to or further from the PA. This is more granular than static autonomy level assignment.
 
 ### "Defense-in-Depth" (p. 8, 14)
 
@@ -420,10 +420,10 @@ The TELOS architecture assumes the governed agent is untrusted — governance op
 
 | Berkeley Level | Description | TELOS Verdict Mapping |
 |---|---|---|
-| L0 No Autonomy | User has direct control | INERT (agent halted, user takes over) |
+| L0 No Autonomy | User has direct control | ESCALATE (agent halted, human decides) |
 | L1 Restricted | User instructs agent | ESCALATE (human must approve) |
 | L2 Partial | User and agent collaborate | CLARIFY (agent seeks verification) |
-| L3 Intermediate | Agent leads, consults user | SUGGEST (agent offers alternatives) |
+| L3 Intermediate | Agent leads, consults user | CLARIFY (agent seeks verification) |
 | L4 High | User only for high-risk scenarios | EXECUTE with ESCALATE triggers |
 | L5 Full | User is observer | Not currently supported — TELOS always maintains governance checkpoint |
 
@@ -492,13 +492,13 @@ When referencing this mapping externally, maintain the "invitation to examine" p
 | **Govern 1.2** | Trustworthy AI characteristics | Strong | Fidelity engine, TKeys, adversarial validation |
 | **Govern 1.4** | AI-interpretable frameworks | **Strong** | PA YAML configs (read-only to agent) |
 | **Govern 1.5** | Continuous review and monitoring | Strong | Per-action governance, Intelligence Layer |
-| **Govern 1.7** | Emergency shutdowns | **Strong** | INERT/ESCALATE, RESTRICT, Permission Controller |
+| **Govern 1.7** | Emergency shutdowns | **Strong** | ESCALATE, RESTRICT, Permission Controller |
 | **Govern 2.1** | Roles and human authority | **Strong** | Principal-agent architecture, ESCALATE |
 | **Govern 4.2** | Risk documentation and communication | Organizational | Governance receipts enable; deployer implements |
 | **Govern 5.1** | Stakeholder feedback | Organizational | Not TELOS's scope |
 | **Govern 6.1** | Supply chain governance | Gap | No AIBOM generation |
 | **Map 1.1** | Context and risk identification | Organizational | PA encodes; deployer identifies |
-| **Map 1.5** | Risk tolerances and tiers | **Strong** | 5-verdict system, calibrated thresholds |
+| **Map 1.5** | Risk tolerances and tiers | **Strong** | 3-verdict system, calibrated thresholds |
 | **Map 2.2** | Knowledge limits documentation | Partial | PA documents boundaries; deployer documents rest |
 | **Map 3.3** | Agent cards | Partial | PA + report cards; no standalone template |
 | **Map 3.5** | Human oversight checkpoints | Strong | Continuous checkpoints, fidelity-based triggers |
@@ -511,7 +511,7 @@ When referencing this mapping externally, maintain the "invitation to examine" p
 | **Manage 1.3** | Risk mitigations | Strong | Graduated response, scalable oversight, guardian layer |
 | **Manage 2.1** | Resource allocation | Organizational | Not TELOS's scope |
 | **Manage 2.3** | Unknown risk response | **Partial** | Rapid response; cannot identify novel categories |
-| **Manage 2.4** | Supersede/disengage/deactivate | **Strong** | INERT/ESCALATE/RESTRICT/Permission Controller |
+| **Manage 2.4** | Supersede/disengage/deactivate | **Strong** | ESCALATE/RESTRICT/Permission Controller |
 | **Manage 4.1** | Post-deployment monitoring | **Strong** | Governance receipts, Intelligence Layer, forensic reports |
 
 **Legend:** Bold subcategories are the Profile's 12 high-priority items.

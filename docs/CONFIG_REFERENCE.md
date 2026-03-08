@@ -231,10 +231,8 @@ The configuration drives six governance dimensions scored at runtime:
 | Decision | Threshold | Action |
 |----------|-----------|--------|
 | EXECUTE | >= 0.85 | Proceed |
-| CLARIFY | >= 0.70 | Verify intent |
-| SUGGEST | >= 0.50 | Offer alternatives |
-| INERT | < 0.50 | Block |
-| ESCALATE | < 0.50 + high_risk | Require human review |
+| CLARIFY | >= 0.50 | Verify intent |
+| ESCALATE | < 0.50 (or boundary violation, or high_risk) | Require human review |
 
 ---
 

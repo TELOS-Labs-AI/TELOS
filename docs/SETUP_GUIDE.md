@@ -104,7 +104,7 @@ telos init --template property-intel
 telos score "What is the roof condition for 742 Evergreen Terrace?" -c property_intel.yaml
 ```
 
-Output shows the 6-dimension governance scoring (purpose, scope, tool, chain, boundary, composite) and the governance decision (EXECUTE, CLARIFY, SUGGEST, ESCALATE, or INERT).
+Output shows the 6-dimension governance scoring (purpose, scope, tool, chain, boundary, composite) and the governance decision (EXECUTE, CLARIFY, or ESCALATE).
 
 ### 3. Run the Live Demo
 

@@ -1274,12 +1274,10 @@ Each tier acts as a filter: if a tier produces a conclusive result (clear violat
 | Decision | Threshold | Action |
 |----------|-----------|--------|
 | EXECUTE | $\geq 0.85$ | Proceed with high confidence |
-| CLARIFY | $\geq 0.70$ | Verify intent before proceeding |
-| SUGGEST | $\geq 0.50$ | Offer alternatives within scope |
-| INERT | $< 0.50$ | Acknowledge limitation |
-| ESCALATE | $< 0.50$ + high\_risk | Require human review |
+| CLARIFY | $\geq 0.50$ | Verify intent before proceeding |
+| ESCALATE | $< 0.50$ (or boundary violation, or high\_risk) | Require human review |
 
-These thresholds implement graduated sanctions aligned with Ostrom's Design Principle 5 (Ostrom, 1990): sanctions begin with minor consequences (CLARIFY) and escalate proportionally to violation severity (ESCALATE). This graduated approach avoids the binary allow/deny limitation of tool-level permissions while maintaining proportional governance.
+These thresholds implement graduated sanctions aligned with Ostrom's Design Principle 5 (Ostrom, 1990): sanctions begin with minor consequences (CLARIFY) and escalate proportionally to violation severity (ESCALATE). This three-tier approach avoids the binary allow/deny limitation of tool-level permissions while maintaining proportional governance.
 
 ### 8.6 Chain Continuity and Drift Tracking
 
@@ -1315,7 +1313,7 @@ These metrics replace the conversational Primacy State (harmonic mean of user an
 Agentic governance tracks three categories of governance events:
 
 1. **Measurement** — the agent acted, the engine scored the action against the PA
-2. **Decision** — the engine issued a graduated response (EXECUTE, CLARIFY, SUGGEST, INERT, ESCALATE)
+2. **Decision** — the engine issued a graduated response (EXECUTE, CLARIFY, ESCALATE)
 3. **Authority** — the human exercised authority (approve, reject, adjust PA specification, override decision, terminate session)
 
 Authority events are not annotations on measurement data. They are first-class governance data with equal standing in the audit trail. This reflects the principal-agent accountability structure (Bovens, 2007): the forum (PA specification) defines expectations, the actor (agent) operates within them, and the account (governance telemetry including authority events) documents the complete governance relationship.

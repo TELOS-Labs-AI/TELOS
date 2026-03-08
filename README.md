@@ -7,7 +7,7 @@ Runtime governance framework for AI agents.
 [![AgentHarm Dataset](https://zenodo.org/badge/DOI/10.5281/zenodo.15194713.svg)](https://doi.org/10.5281/zenodo.15194713)
 [![SafeToolBench Dataset](https://zenodo.org/badge/DOI/10.5281/zenodo.15194730.svg)](https://doi.org/10.5281/zenodo.15194730)
 
-TELOS sits between an AI agent and its tools. Every action passes through a multi-layer scoring cascade -- semantic similarity, boundary corpus matching, optional SetFit classification, and regulatory compliance checks -- producing one of five verdicts: EXECUTE, SUGGEST, CLARIFY, INERT, or ESCALATE. All governance decisions are cryptographically signed (Ed25519) and hash-chained into a tamper-evident audit trail. Runs entirely on-device, no cloud dependency. Framework-agnostic.
+TELOS sits between an AI agent and its tools. Every action passes through a multi-layer scoring cascade -- semantic similarity, boundary corpus matching, optional SetFit classification, and regulatory compliance checks -- producing one of three verdicts: EXECUTE, CLARIFY, or ESCALATE. All governance decisions are cryptographically signed (Ed25519) and hash-chained into a tamper-evident audit trail. Runs entirely on-device, no cloud dependency. Framework-agnostic.
 
 ## Quick Start
 

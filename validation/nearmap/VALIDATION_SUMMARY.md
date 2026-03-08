@@ -47,7 +47,7 @@ TELOS is a governance engine that sits between a user's request and an AI agent'
 
 Each governance receipt records the five fidelity scores, the decision made, and the reasoning — creating an audit trail that maps to regulatory documentation requirements (NAIC Model Bulletin, EU AI Act Article 72, CO SB 24-205).
 
-Based on these checks, TELOS makes one of five governance decisions: **proceed** (EXECUTE), **ask for clarification** (CLARIFY), **suggest alternatives** (SUGGEST), **acknowledge the request is outside scope** (INERT), or **escalate to a human** (ESCALATE).
+Based on these checks, TELOS makes one of three governance decisions: **proceed** (EXECUTE), **ask for clarification** (CLARIFY), or **escalate to a human** (ESCALATE).
 
 ### What We Tested
 

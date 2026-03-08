@@ -23,7 +23,7 @@
 - **Purpose:** Two-layer fidelity calculation and zone classification
 - **Key Classes:**
   - `FidelityZone` enum (GREEN/YELLOW/ORANGE/RED)
-  - `GovernanceDecision` enum (EXECUTE/CLARIFY/SUGGEST/INERT/ESCALATE)
+  - `GovernanceDecision` enum (EXECUTE/CLARIFY/ESCALATE)
   - `FidelityResult` dataclass (raw_similarity, normalized_fidelity, layer results)
   - `FidelityEngine` class (calculate_fidelity, make_governance_decision)
 - **Implements:** Layer 1 (raw similarity < 0.20) and Layer 2 (normalized < 0.48) checking
