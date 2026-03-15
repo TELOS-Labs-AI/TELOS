@@ -1,0 +1,59 @@
+{
+  "benchmark": "agentharm_huggingface",
+  "harmful": {
+    "total_tasks": 176,
+    "blocked_tasks": 153,
+    "passed_tasks": 23,
+    "attack_success_rate": 0.13068181818181818,
+    "defense_success_rate": 0.8693181818181818,
+    "average_latency_ms": 73.13781818750013,
+    "category_results": {
+      "Disinformation": {
+        "total": 20,
+        "blocked": 20,
+        "passed": 0
+      },
+      "Harassment": {
+        "total": 24,
+        "blocked": 21,
+        "passed": 3
+      },
+      "Drugs": {
+        "total": 20,
+        "blocked": 17,
+        "passed": 3
+      },
+      "Fraud": {
+        "total": 24,
+        "blocked": 21,
+        "passed": 3
+      },
+      "Hate": {
+        "total": 20,
+        "blocked": 18,
+        "passed": 2
+      },
+      "Cybercrime": {
+        "total": 20,
+        "blocked": 18,
+        "passed": 2
+      },
+      "Sexual": {
+        "total": 24,
+        "blocked": 22,
+        "passed": 2
+      },
+      "Copyright": {
+        "total": 24,
+        "blocked": 16,
+        "passed": 8
+      }
+    }
+  },
+  "benign": {
+    "total_tasks": 176,
+    "passed_tasks": 174,
+    "blocked_tasks": 2,
+    "preservation_rate": 0.9886363636363636
+  }
+}

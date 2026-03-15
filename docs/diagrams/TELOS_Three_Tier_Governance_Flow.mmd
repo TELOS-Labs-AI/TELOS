@@ -1,0 +1,52 @@
+%% TELOS Three-Tier Governance Flow
+%% Corrected flow logic based on constants.py and academic paper
+%%
+%% Key Thresholds:
+%%   - SIMILARITY_BASELINE = 0.20 (Layer 1 hard block)
+%%   - FIDELITY_GREEN = 0.70 (no intervention)
+%%   - FIDELITY_YELLOW = 0.60 (minor drift)
+%%   - FIDELITY_ORANGE = 0.50 (drift detected)
+%%   - FIDELITY_RED < 0.50 (significant drift)
+%%
+%% Copy everything below this line into Mermaid.ai:
+
+flowchart TD
+    subgraph Input["Input Processing"]
+        A[User Query] --> B[Embed Query]
+    end
+
+    subgraph Tier1["Tier 1: Mathematical Enforcement"]
+        B --> C{Raw Similarity < 0.20?}
+        C -->|Yes| D[HARD BLOCK<br/>Extreme Off-Topic]
+        C -->|No| E[Calculate Fidelity]
+        E --> F{Fidelity >= 0.70?}
+    end
+
+    subgraph GREENZone["GREEN Zone"]
+        F -->|Yes| P[Generate Native Response]
+    end
+
+    subgraph Tier2["Tier 2: RAG Policy Retrieval"]
+        F -->|No| G{Fidelity >= 0.50?}
+        G -->|Yes| H[Retrieve Domain Policies]
+        H --> I[Steward Intervention]
+        I --> J{Policy Compliant?}
+        J -->|Yes| K[Generate Guided Response]
+        J -->|No| L[Block + Policy Citation]
+    end
+
+    subgraph Tier3["Tier 3: Human Escalation"]
+        G -->|No| M{Secondary Risk Flags?}
+        M -->|Yes| N[Flag for Human Review]
+        M -->|No| O[Auto-Block]
+    end
+
+    subgraph Output["Output"]
+        P --> Q[Record Governance Trace]
+        K --> Q
+        L --> Q
+        N --> Q
+        O --> Q
+        D --> Q
+        Q --> R[Return Response]
+    end

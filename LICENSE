@@ -1,0 +1,77 @@
+TELOS AI Labs Inc. -- Proprietary Software License
+
+Copyright (c) 2025-2026 TELOS AI Labs Inc. All rights reserved.
+
+NOTICE: This software and associated documentation files (the "Software") are
+proprietary and confidential. The Software is the exclusive property of TELOS
+AI Labs Inc.
+
+1. GRANT OF LICENSE
+
+   Access to and use of the Software is granted only under a separate written
+   agreement with TELOS AI Labs Inc. No license, right, or interest in the
+   Software is granted except as expressly set forth in such written agreement.
+
+2. RESTRICTIONS
+
+   Without the prior written permission of TELOS AI Labs Inc., you may not:
+
+   (a) Copy, reproduce, or duplicate the Software or any portion thereof;
+   (b) Modify, adapt, translate, or create derivative works based on the Software;
+   (c) Distribute, sublicense, lease, lend, or otherwise transfer the Software
+       to any third party;
+   (d) Reverse engineer, disassemble, decompile, or otherwise attempt to derive
+       the source code of the Software;
+   (e) Remove or alter any proprietary notices, labels, or marks on the Software;
+   (f) Use the Software for any purpose not expressly authorized by TELOS AI
+       Labs Inc.
+
+3. CONFIDENTIALITY
+
+   The Software contains trade secrets and proprietary information of TELOS AI
+   Labs Inc. You agree to hold the Software in confidence and to take all
+   reasonable precautions to prevent unauthorized disclosure or use of the
+   Software.
+
+4. OPEN-SOURCE COMPONENTS
+
+   Certain components of the TELOS platform are separately released under the
+   Apache License, Version 2.0, in the public repository located at
+   https://github.com/telos-ai-labs/telos. Those components include:
+
+     - telos_core
+     - telos_governance
+     - telos_adapters/generic
+     - telos_adapters/langgraph
+     - telos_privacy
+     - telos_observatory
+
+   The Apache 2.0 license applies exclusively to those components as distributed
+   in the public repository. This proprietary license governs all other software
+   in this repository, including but not limited to proprietary adapters, trained
+   models, validation data, gateway services, and internal tooling.
+
+5. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL
+   TELOS AI LABS INC. BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY,
+   WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF,
+   OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+
+6. TERMINATION
+
+   This license is effective until terminated. TELOS AI Labs Inc. may terminate
+   this license at any time if you fail to comply with any term or condition
+   herein. Upon termination, you must immediately cease all use of the Software
+   and destroy all copies in your possession or control.
+
+7. GOVERNING LAW
+
+   This license shall be governed by and construed in accordance with the laws
+   of the State of Delaware, United States, without regard to its conflict of
+   law provisions.
+
+For licensing inquiries, contact: JB@telos-labs.ai

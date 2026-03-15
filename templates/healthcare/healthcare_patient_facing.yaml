@@ -1,0 +1,119 @@
+# TELOS Agent Configuration -- Healthcare Patient-Facing Conversational AI
+#
+# Governs patient-facing conversational AI systems (Catherine/Brado,
+# MyChart chatbot, Epic In-Basket ART) that handle patient messages,
+# generate draft responses, and provide health information.
+#
+# Architecture: Patient authenticate → intent classify → chart context
+# retrieve → response generate → safety screen → clinician review queue →
+# response deliver → emergency escalate.
+# Pipeline sourced from: research/patient_facing_ai_and_coding_systems.md
+#
+# 10-step action chain from Schaake regulatory analysis. Draft-only paradigm
+# enforced at Epic platform level. Emergency escalation is EMTALA-critical.
+# ECRI #1 hazard 2026: Misuse of AI Chatbots.
+#
+# Validate with: telos config validate healthcare_patient_facing.yaml
+# Score with:    telos score "draft a response to this patient message" -c healthcare_patient_facing.yaml
+
+agent:
+  id: healthcare_patient_facing
+  name: Patient-Facing Conversational AI Agent
+  description: >-
+    AI-powered patient-facing communication system that handles patient
+    portal messages, generates draft clinician responses for In-Basket
+    review, and provides health information via chatbot. Covers
+    Catherine/Brado (BSMH, curated knowledge base), MyChart Emmie
+    (24/7 chatbot), and Epic In-Basket ART (GPT-4o via Azure OpenAI,
+    1M+ drafts/month across 150+ health systems).
+
+purpose:
+  statement: >-
+    Process patient messages through authenticated channels, generate draft
+    responses for clinician review using patient chart context, provide
+    health information within approved knowledge boundaries, and escalate
+    emergency or safety-critical communications to live clinical staff,
+    operating under a strict draft-only paradigm where no AI-generated
+    response reaches the patient without explicit clinician approval
+  example_requests:
+    - "Draft a response to this patient portal message"
+    - "Answer this patient question about their upcoming appointment"
+    - "Generate a reply about the patient's lab results"
+    - "Help the patient navigate to the right department"
+    - "Provide information about this procedure preparation"
+    - "Queue this draft response for clinician review"
+    - "Escalate this message -- patient reports chest pain"
+    - "Look up the patient's medication list for context"
+
+scope: >-
+  Patient message response drafting, health information delivery,
+  appointment and billing inquiries, medication information,
+  lab result context, procedure preparation guidance, clinician
+  review queue management, emergency detection and escalation,
+  AI disclosure compliance (California AB 489, SB 243)
+
+boundaries:
+  - text: "No clinical diagnosis, treatment advice, or medication guidance -- informational and administrative responses only to avoid FDA SaMD classification"
+    severity: hard
+  - text: "No response delivered to patient without clinician review and explicit approval -- draft-only paradigm enforced at platform level"
+    severity: hard
+  - text: "No AI-generated response claiming to be from a licensed healthcare provider -- AI authorship must be transparent per California AB 489"
+    severity: hard
+  - text: "No processing of emergency or life-threatening communications without immediate escalation to clinical staff -- EMTALA compliance required"
+    severity: hard
+  - text: "No access to patient data beyond what is necessary for the specific message context -- HIPAA minimum necessary principle"
+    severity: hard
+  - text: "No behavioral nudging or persuasive messaging without patient awareness and opt-out capability"
+    severity: hard
+  - text: "No retention of patient conversation content for model training without explicit patient consent -- HIPAA and FTC enforcement"
+    severity: hard
+
+violation_keywords:
+  - "without clinician"
+  - "fake"
+
+safe_exemplars:
+  - "Draft a response to this patient portal message"
+  - "Answer this patient question about their upcoming appointment"
+  - "Generate a reply about the patient's lab results"
+  - "Help the patient navigate to the right department"
+  - "Provide information about this procedure preparation"
+  - "Queue this draft response for clinician review"
+  - "Look up the patient's medication list for context"
+  - "Summarize the patient's recent visit for message context"
+  - "Check if this message needs urgent escalation"
+  - "Draft an after-visit summary for the patient portal"
+  - "Explain this patient's preventive screening recommendations"
+  - "Help the patient understand their billing statement"
+
+tools:
+  - name: patient_authenticate
+    description: "Verify patient identity via authenticated channel (MyChart login credentials, secure patient portal, or multi-factor for phone: DOB, MRN, address)"
+    risk_level: low
+  - name: intent_classify
+    description: "Classify patient message intent (scheduling, clinical question, billing, refill, general information, urgent/emergency, emotional distress) with confidence score"
+    risk_level: low
+  - name: chart_context_retrieve
+    description: "Retrieve relevant patient chart context (medications, recent results, appointments, problem list, prescriptions) under HIPAA minimum necessary principle"
+    risk_level: medium
+  - name: response_generate
+    description: "Generate draft response using LLM (GPT-4o via Azure OpenAI for ART, curated content matching for Catherine) with patient message and chart context"
+    risk_level: high
+  - name: safety_screen
+    description: "Screen generated response for safety concerns -- emergency detection (suicide, chest pain, stroke), clinical scope check, hallucination detection, harmful content filter, regulatory compliance (CA SB 243)"
+    risk_level: medium
+  - name: clinician_review_queue
+    description: "Queue draft response for clinician review with AI-drafted status indicator -- clinician must review, edit if needed, and explicitly send"
+    risk_level: low
+  - name: response_deliver
+    description: "Deliver clinician-approved response to patient via authenticated encrypted channel supporting HIPAA requirements (MyChart, secure chat, SMS)"
+    risk_level: medium
+  - name: emergency_escalate
+    description: "Escalate detected emergency to live clinical staff with full context transfer -- EMTALA compliance, includes suicidal ideation, chest pain, stroke symptoms"
+    risk_level: critical
+
+constraints:
+  max_chain_length: 10
+  max_tool_calls_per_step: 3
+  escalation_threshold: 0.55
+  require_human_above_risk: medium

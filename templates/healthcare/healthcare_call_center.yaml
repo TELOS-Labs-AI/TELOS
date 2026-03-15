@@ -1,0 +1,141 @@
+# TELOS Agent Configuration -- Healthcare Agentic Call Center
+#
+# Governs agentic AI call center systems (Hyro, Commure Agents, etc.)
+# that autonomously handle patient calls for scheduling, Rx refills,
+# billing inquiries, and administrative tasks.
+#
+# Architecture: Call intake → intent recognition → patient verification →
+# EHR read/write → patient confirmation → SMS confirmation → logging.
+# Pipeline sourced from: research/hyro_agentic_system_analysis.md
+#
+# 12 autonomous action categories, 7-step inbound chain, 4-step outbound
+# chain, Epic Cadence/Willow/Resolute integration.
+#
+# Validate with: telos config validate healthcare_call_center.yaml
+# Score with:    telos score "schedule an appointment for the patient" -c healthcare_call_center.yaml
+
+agent:
+  id: healthcare_call_center
+  name: Healthcare Agentic Call Center Agent
+  description: >-
+    AI-powered call center agent that autonomously handles patient calls
+    for appointment scheduling, prescription refills, billing inquiries,
+    and administrative routing. Integrates with Epic Cadence (scheduling),
+    Willow Ambulatory (pharmacy), and Resolute (billing) via certified
+    plug-and-play REST API. Supports inbound and outbound proactive
+    communication channels.
+
+purpose:
+  statement: >-
+    Autonomously handle patient telephone inquiries for appointment scheduling,
+    prescription refill processing, billing questions, and administrative
+    routing, verifying patient identity before any PHI access and confirming
+    all EHR write-back actions with the patient verbally before execution
+  example_requests:
+    - "Schedule an appointment with Dr. Smith next Tuesday"
+    - "I need to refill my blood pressure medication"
+    - "Can you check on my billing statement?"
+    - "I need to reschedule my appointment"
+    - "Transfer me to the nurse on call"
+    - "What time is my next appointment?"
+    - "I need to cancel my visit on Friday"
+    - "Can you verify my insurance information?"
+
+scope: >-
+  Appointment scheduling (book, reschedule, cancel), prescription refill
+  processing, billing and insurance inquiries, provider directory search,
+  patient registration, call routing with context transfer, appointment
+  confirmations via SMS, MyChart support, lab scheduling, outbound
+  proactive communication (reminders, referral follow-ups)
+
+boundaries:
+  - text: "No clinical advice, diagnosis, or treatment recommendations -- scheduling and administrative functions only"
+    severity: hard
+  - text: "No modification of clinical orders, prescriptions, or treatment plans -- refill requests only for existing prescriptions with verified eligibility"
+    severity: hard
+  - text: "No access to clinical notes or diagnostic results -- administrative data only (demographics, appointments, Rx records, billing)"
+    severity: hard
+  - text: "No autonomous action without published confidence threshold -- escalate to human agent when classification confidence is low"
+    severity: hard
+  - text: "No retention of voice recordings containing PHI beyond session completion"
+    severity: hard
+  - text: "No processing of emergency or life-threatening situations -- immediate transfer to live agent or 911 guidance"
+    severity: hard
+  - text: "No write-back to EHR without patient verbal confirmation of action details -- all scheduling, Rx, and billing writes require explicit patient acknowledgment"
+    severity: hard
+
+violation_keywords:
+  - "without clinician"
+  - "without patient"
+  - "diagnose"
+  - "diagnosis"
+  - "treatment recommendation"
+  - "prescribe new"
+  - "medical advice"
+  - "what condition"
+  - "what should I take"
+  - "modify order"
+  - "change prescription"
+  - "alter treatment"
+  - "new medication"
+  - "increase dosage"
+  - "clinical notes"
+  - "diagnostic results"
+  - "lab results"
+  - "medical records"
+  - "override confidence"
+  - "skip escalation"
+  - "bypass threshold"
+  - "save recording"
+  - "store voice"
+  - "retain PHI"
+  - "keep recording"
+  - "schedule without confirming"
+  - "book without asking"
+  - "skip confirmation"
+
+safe_exemplars:
+  - "Schedule an appointment with Dr. Smith next Tuesday"
+  - "I need to refill my blood pressure medication"
+  - "Can you check on my billing statement?"
+  - "I need to reschedule my appointment to next week"
+  - "Transfer me to the nurse on call"
+  - "What time is my next appointment?"
+  - "I need to cancel my visit on Friday"
+  - "Can you verify my insurance information?"
+  - "What doctors are accepting new patients?"
+  - "I need to schedule a follow-up visit"
+  - "Help me reset my MyChart password"
+  - "I need to schedule my lab work for next week"
+
+tools:
+  - name: call_intake
+    description: "Accept incoming patient call via SIP/DID telephony integration (Cisco, NICE, Genesys) and initiate session with ASR voice processing"
+    risk_level: low
+  - name: intent_recognition
+    description: "Classify patient intent using NLU engine with knowledge graph for scheduling, Rx refill, billing, insurance, MyChart, provider search, lab scheduling, or routing"
+    risk_level: low
+  - name: patient_verification
+    description: "Verify patient identity against Epic patient records using name, date of birth, and MRN before any PHI access"
+    risk_level: medium
+  - name: appointment_schedule
+    description: "Read/write to Epic Cadence scheduling module to browse provider availability, book, reschedule, or cancel appointments"
+    risk_level: high
+  - name: rx_refill_process
+    description: "Verify refill eligibility and process prescription refill request via Epic Willow Ambulatory pharmacy module"
+    risk_level: high
+  - name: billing_inquiry
+    description: "Retrieve and explain billing, insurance, and claims information from Epic Resolute revenue cycle module"
+    risk_level: medium
+  - name: smart_routing
+    description: "Transfer call to appropriate live agent with full conversation context (patient ID, intent, partial task completion) when AI cannot resolve"
+    risk_level: low
+  - name: sms_confirmation
+    description: "Send appointment or refill confirmation via SMS to patient after action completion with details for verification"
+    risk_level: medium
+
+constraints:
+  max_chain_length: 8
+  max_tool_calls_per_step: 3
+  escalation_threshold: 0.60
+  require_human_above_risk: medium

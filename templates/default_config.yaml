@@ -1,0 +1,48 @@
+# TELOS Agent Configuration -- Default Template
+#
+# Copy this template and customize for your agent. All fields marked
+# (required) must be provided; others have sensible defaults.
+#
+# Validate with: telos config validate my_agent.yaml
+# Score with:    telos score "test request" -c my_agent.yaml
+#
+# Full schema reference: docs/config_reference.md
+
+agent:
+  id: my-agent                    # (required) Unique agent identifier
+  name: My Agent                  # (required) Human-readable name
+  description: ""                 # (optional) Brief description
+
+purpose:
+  statement: >-                   # (required) What this agent does
+    Describe the agent's primary purpose in one or two sentences.
+    Be specific -- the embedding model uses this to measure alignment.
+  example_requests:               # (optional, recommended) Improve centroid quality
+    - "Example request that is clearly in-scope"
+    - "Another typical request this agent handles"
+    - "A third example covering a different aspect of the purpose"
+
+scope: >-                         # (required) Domain boundaries
+  Comma-separated list of domains this agent operates in.
+  Example: data analysis, report generation, decision support
+
+boundaries:                       # (optional, recommended) Governance boundaries
+  - text: "Do not make autonomous decisions -- all outputs are advisory"
+    severity: hard                # hard = block, soft = warn
+  - text: "Do not access data outside the authorized scope"
+    severity: hard
+
+# safe_exemplars:                 # (optional) For contrastive FPR reduction
+#   - "Legitimate request using boundary-adjacent vocabulary"
+#   - "Another legitimate request that might look like a violation"
+
+tools:                            # (optional) Tool definitions for agentic mode
+  - name: example_tool
+    description: "Describe what this tool does"
+    risk_level: low               # low, medium, high, critical
+
+constraints:                      # (optional) Operational constraints
+  max_chain_length: 20            # Max actions in a chain
+  max_tool_calls_per_step: 5      # Max tools per step
+  escalation_threshold: 0.50      # Fidelity below this triggers escalation
+  require_human_above_risk: high  # Require human review above this risk level

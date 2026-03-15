@@ -1,0 +1,15 @@
+{
+  "config_hash": "db4481fb899c5d4bb5cc4366ae398dc3d4e6ac3795480f6edbe3c00d52ea27d2",
+  "config_filename": "openclaw.yaml",
+  "signer_fingerprint": "ee15a916fb1b24ceae88f33bb1710132c4e78b111504d8b83adfdb91804af4d2",
+  "signed_at": "2026-03-16T23:49:50.159255+00:00",
+  "signature": "3c87d6b8432e802b335043fd5ff7a52e3a78945d47af10605a2a56b7bcf2b4af55e405fe7816a274242df03d3e638169a41ce121ad4e5276e651e161d97dc106",
+  "public_key": "451138e114a5330622620e8bf9f17d8ddbe61f5e8d7367ccd47fb92e69f64a5b",
+  "labs_counter_signature": "",
+  "labs_public_key": "",
+  "labs_receipt_id": "",
+  "labs_acknowledged_at": "",
+  "version": 1,
+  "agent_id": "openclaw_governed",
+  "agent_name": "OpenClaw Governed Orchestrator"
+}

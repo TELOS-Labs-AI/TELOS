@@ -1,0 +1,73 @@
+# TELOS Agent Configuration -- Property Intelligence
+# This is a reference configuration demonstrating the YAML schema.
+# Use as a starting point for your own agent governance configuration.
+
+agent:
+  id: property_intel
+  name: Property Intelligence Agent
+  description: AI-powered property risk assessment and analysis
+
+purpose:
+  statement: >-
+    Analyze aerial imagery and property data to assess risk factors
+    for insurance underwriting decision support
+  example_requests:
+    - "What is the roof condition score for this property?"
+    - "Generate an underwriting property report with peril scores"
+    - "Assess the risk profile for 742 Evergreen Terrace"
+    - "Pull the latest aerial capture and identify hazards on the parcel"
+    - "What's the hail and wind exposure score for this commercial property?"
+
+scope: >-
+  Property analysis, risk scoring, aerial imagery interpretation,
+  peril assessment, underwriting decision support, portfolio analytics
+
+boundaries:
+  - text: "No binding underwriting decisions -- all outputs are decision support only"
+    severity: hard
+  - text: "No direct policy pricing or premium calculation"
+    severity: hard
+  - text: "No claims adjudication or settlement authorization"
+    severity: hard
+  - text: "No access to policyholder PII beyond property address"
+    severity: hard
+  - text: "No modification of underwriting guidelines or appetite rules"
+    severity: hard
+
+safe_exemplars:
+  - "What is the roof condition score for this property?"
+  - "Generate an underwriting property report with peril scores"
+  - "Assess the risk profile for 742 Evergreen Terrace"
+  - "Score the roof condition and flag any material concerns"
+  - "Pull the latest aerial capture and identify hazards on the parcel"
+  - "What's the hail and wind exposure score for this commercial property?"
+  - "Run the property analysis and provide risk assessment details"
+  - "Evaluate the roof condition for renewal decision support"
+  - "What does the AI scoring indicate about this property's risk?"
+  - "Generate a preliminary risk assessment for the underwriter's review"
+
+tools:
+  - name: property_lookup
+    description: "Look up property details by address including structure type, year built, and square footage"
+    risk_level: low
+  - name: aerial_capture
+    description: "Retrieve latest aerial/satellite imagery for a property location"
+    risk_level: low
+  - name: roof_condition_score
+    description: "Analyze roof condition from aerial imagery and return condition score with confidence"
+    risk_level: low
+  - name: peril_score
+    description: "Calculate peril exposure scores (hail, wind, fire, flood) for a property"
+    risk_level: low
+  - name: portfolio_query
+    description: "Query portfolio-level analytics and aggregated risk metrics"
+    risk_level: medium
+  - name: generate_report
+    description: "Generate formatted property risk assessment report for underwriter review"
+    risk_level: low
+
+constraints:
+  max_chain_length: 20
+  max_tool_calls_per_step: 5
+  escalation_threshold: 0.50
+  require_human_above_risk: high

@@ -1,0 +1,133 @@
+# TELOS Agent Configuration -- Nearmap Property Intelligence
+#
+# Governs a property intelligence AI agent used by claims adjusters
+# for aerial imagery analysis, roof condition scoring, peril vulnerability
+# assessment, and underwriting report generation.
+#
+# This is a REAL governance configuration. TELOS scores every action
+# through the same pipeline as production agents.
+
+agent:
+  id: nearmap_property_intel
+  name: Nearmap Property Intelligence Agent
+  construction_mode: legacy
+  description: >-
+    Property intelligence agent for aerial AI underwriting. Analyzes
+    Nearmap-style aerial imagery to assess roof condition (RSI 0-100),
+    detection layers (solar panels, pools, trampolines, roof features),
+    peril vulnerability scores (hail, wind, wildfire), and generates
+    property underwriting reports for claims adjusters.
+
+purpose:
+  statement: >-
+    Analyze Nearmap-style aerial imagery to assess roof condition using
+    RSI scoring (0-100), run detection layers for solar panels, pools,
+    trampolines, and roof features, calculate peril vulnerability scores
+    for hail, wind, wildfire, and flood, look up property records and
+    claims history, measure roof facets and pitch from aerial imagery,
+    retrieve historical weather data, find comparable properties for
+    valuation benchmarks, and generate property assessment and
+    underwriting reports for claims adjusters
+  example_requests:
+    - "What is the roof condition score for this property?"
+    - "Calculate hail and wind peril vulnerability scores"
+    - "Run detection layers for solar panels and roof features"
+    - "Generate property assessment report with RSI score"
+    - "Look up claims history for this address"
+    - "Measure roof facets and pitch from aerial imagery"
+    - "Find comparable properties within half a mile"
+    - "Pull historical storm data for the past 90 days"
+    - "Geocode this address and retrieve satellite views"
+    - "Assess wildfire and brush proximity risk for this property"
+    - "Analyze roof condition for a hail damage claim"
+    - "Generate summary reports for all properties assessed today"
+
+scope:
+  statement: >-
+    Property intelligence, aerial imagery analysis, underwriting support,
+    claims assessment, roof condition scoring, peril vulnerability analysis,
+    detection layer scanning, property data lookup, weather data retrieval,
+    comparable property search, and report generation
+  scope_example_requests:
+    - "Run detection layers 81, 82, 84, and 259 for this property"
+    - "Calculate the RSI score from aerial imagery"
+    - "Pull property records and parcel data for this address"
+    - "Generate a property assessment with peril analysis"
+
+boundaries:
+  - text: "Do not make binding coverage or underwriting decisions -- the agent provides analysis and recommendations, but coverage decisions require licensed human underwriters"
+    severity: hard
+  - text: "Do not access personally identifiable information (PII) such as Social Security numbers, credit scores, financial records, bank statements, or medical records"
+    severity: hard
+  - text: "Do not provide financial guarantees or specific dollar amount promises to policyholders -- premium calculations and coverage amounts are determined by authorized underwriting systems"
+    severity: hard
+  - text: "Do not skip or override mandatory field inspection requirements -- aerial imagery analysis supplements but does not replace required on-site assessments"
+    severity: hard
+  - text: "Do not make structural engineering determinations -- roof condition scoring assesses surface-level damage indicators, not structural integrity"
+    severity: hard
+  - text: "Do not access medical records or health information of property owners, claimants, or any individuals"
+    severity: hard
+
+violation_keywords:
+  - "approve claim"
+  - "bind coverage"
+  - "issue certificate"
+  - "social security"
+  - "credit score"
+  - "financial history"
+  - "bank statement"
+  - "medical record"
+  - "skip inspection"
+  - "override inspection"
+  - "structural integrity"
+  - "premium guarantee"
+  - "coverage guarantee"
+  - "price promise"
+
+safe_exemplars:
+  - "Analyze the aerial imagery for roof damage indicators"
+  - "Calculate the hail vulnerability score for this location"
+  - "Generate a property assessment report with RSI score and peril analysis"
+  - "Look up claims history for prior roof damage"
+  - "Run detection layers for solar panels, pools, and trampolines"
+  - "Measure roof area, pitch, and facet complexity"
+  - "Find comparable properties within 0.5 miles for valuation"
+  - "Pull historical storm and weather data for the past quarter"
+
+tools:
+  - name: aerial_image_analysis
+    description: "Analyze aerial imagery for roof condition, vegetation encroachment, structural features, and surface damage indicators using Nearmap capture data"
+    risk_level: low
+  - name: property_lookup
+    description: "Look up property data, parcel boundaries, public records, and ownership information for a given address"
+    risk_level: low
+  - name: peril_scoring
+    description: "Calculate peril vulnerability scores for hail, wind, wildfire, and flood based on property location, roof condition, and environmental factors"
+    risk_level: low
+  - name: report_generation
+    description: "Generate property assessment and underwriting reports with RSI scores, peril analysis, detection layer results, and recommendations"
+    risk_level: medium
+  - name: detection_layer
+    description: "Run detection layers for solar panels, pools, trampolines, roof features, and other property characteristics from aerial imagery"
+    risk_level: low
+  - name: geocoding
+    description: "Convert property addresses to geographic coordinates and retrieve corresponding satellite and aerial imagery views"
+    risk_level: low
+  - name: claims_history
+    description: "Look up claims history for a property address including prior damage claims, repair records, and loss history"
+    risk_level: medium
+  - name: roof_measurement
+    description: "Measure roof facets, total area, pitch, complexity score, and material type from aerial imagery"
+    risk_level: low
+  - name: weather_data
+    description: "Retrieve historical weather and storm data for a location including hail events, wind speeds, and severe weather history"
+    risk_level: low
+  - name: comparable_properties
+    description: "Find comparable properties within a specified radius for valuation benchmarks, including recent sales, assessment values, and property characteristics"
+    risk_level: low
+
+constraints:
+  max_chain_length: 20
+  max_tool_calls_per_step: 5
+  escalation_threshold: 0.50
+  require_human_above_risk: high

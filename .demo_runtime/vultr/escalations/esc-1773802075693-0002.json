@@ -1,0 +1,36 @@
+{
+  "request_id": "esc-1773802075693-0002",
+  "session_id": "vultr-demo",
+  "agent_id": "enterprise-analyst",
+  "tool_call": "external_api_call",
+  "request_text": "Process the $50,000 payment to the vendor and transfer funds from the operations account to settle the invoice",
+  "fidelity_composite": 0.2415,
+  "boundary_triggered": null,
+  "verdict": "ESCALATE",
+  "dimension_breakdown": {
+    "purpose": 0.3384,
+    "scope": 0.2385,
+    "boundary": 0.5966,
+    "tool": 0.4216,
+    "chain": 0.0996
+  },
+  "timestamp": "2026-03-18T02:47:55.693143+00:00",
+  "explanation": "Violation keywords: [transfer funds]; Blocked by balanced preset (decision=escalate); Human review required; Purpose alignment: 0.34 (drifting); Scope alignment: 0.24 (out-of-scope); No boundary violation (max similarity: 0.60) [keywords: transfer funds]; Tool fidelity: 0.42 (selected: email_report); Chain continuity: 0.10 (step 14) BROKEN",
+  "cascade_layers": [
+    "L0_keyword",
+    "L0_keyword_match",
+    "L1_cosine"
+  ],
+  "risk_tier": "critical",
+  "semantic_context": {
+    "action_summary": "Process the $50,000 payment to the vendor and transfer funds from the operations account to settle the invoice",
+    "tool_name": "external_api_call",
+    "tool_group": "enterprise_analytics",
+    "risk_tier": "critical",
+    "boundary_triggered": false
+  },
+  "response": null,
+  "response_raw": null,
+  "response_reason": null,
+  "response_timestamp": null
+}

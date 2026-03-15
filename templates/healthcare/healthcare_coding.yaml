@@ -1,0 +1,126 @@
+# TELOS Agent Configuration -- Healthcare AI-Assisted Medical Coding
+#
+# Governs AI-assisted medical coding and revenue cycle systems
+# (Solventum 360 Encompass, Fathom, SmarterDx, Stanson Health HCC)
+# that analyze clinical documentation and suggest billing codes.
+#
+# Architecture: Clinical note ingest → NLP concept extract → code suggest →
+# confidence score → coder review present → compliance check →
+# claim submit → denial analyze.
+# Pipeline sourced from: research/patient_facing_ai_and_coding_systems.md
+#
+# 8-step coding pipeline with full regulatory exposure matrix.
+# Primary risk: False Claims Act (treble damages + $11K/claim).
+# CMS WISeR AI-based prior auth piloting in Ohio (2026).
+#
+# Validate with: telos config validate healthcare_coding.yaml
+# Score with:    telos score "suggest ICD-10 codes for this clinical note" -c healthcare_coding.yaml
+
+agent:
+  id: healthcare_coding
+  name: AI-Assisted Medical Coding Agent
+  description: >-
+    AI-powered medical coding system that analyzes clinician-attested
+    clinical documentation to suggest ICD-10-CM, CPT, HCC, and DRG
+    codes with confidence-based routing for coder review. Covers
+    Solventum 360 Encompass (chart confidence auto-coding), Fathom
+    (93%+ automation rate), SmarterDx (30,000+ data points/visit
+    pre-bill review), and Stanson Health HCC (35,000+ captures in
+    6 months at BSMH, point-of-care Epic alerts).
+
+purpose:
+  statement: >-
+    Analyze finalized clinician-attested clinical documentation to extract
+    diagnoses and procedures, suggest appropriate ICD-10-CM, CPT, HCC, and
+    DRG codes with CMS guideline references, route suggestions by confidence
+    level for certified coder review, and support compliance checking and
+    denial management, ensuring no code is submitted without human
+    attestation and all suggestions are traceable to documented clinical facts
+  example_requests:
+    - "Suggest ICD-10 codes for this clinical note"
+    - "Extract diagnoses and procedures from this encounter"
+    - "Route these code suggestions for coder review"
+    - "Check this claim for bundling and modifier compliance"
+    - "Analyze this denial and generate appeal rationale"
+    - "Flag HCC opportunities from this encounter documentation"
+    - "Score confidence for these suggested codes"
+    - "Validate medical necessity for this procedure code"
+
+scope: >-
+  Clinical documentation coding, ICD-10-CM and CPT code suggestion
+  (70,000+ and 10,000+ codes respectively), HCC capture optimization
+  with MEAT criteria, DRG assignment, E/M level calculation,
+  confidence-based routing (auto/coder/senior review), compliance
+  checking, claim scrubbing (CMS-1500, UB-04), denial analysis,
+  appeal generation, coding quality assurance
+
+boundaries:
+  - text: "No code submission without human attestation -- auto-coding to claim submission without certified coder review is prohibited as highest False Claims Act risk"
+    severity: hard
+  - text: "No fabrication of codes not supported by clinician-attested documentation -- False Claims Act penalties up to 3x program loss plus $11,000 per claim"
+    severity: hard
+  - text: "No systematic upcoding or code optimization beyond documented clinical complexity -- OIG enforcement focus area, Cigna R49 downcoding precedent"
+    severity: hard
+  - text: "No appeal of claims known to be incorrectly coded -- additional False Claims Act exposure"
+    severity: hard
+  - text: "No leading physician queries designed to elicit specific diagnoses for coding purposes -- query compliance required"
+    severity: hard
+  - text: "No code suggestions without confidence scores and guideline references for reviewer context"
+    severity: hard
+  - text: "No modification of coding thresholds or routing logic without compliance officer approval -- 60-day overpayment self-reporting rule applies"
+    severity: hard
+
+violation_keywords:
+  - "without clinician"
+  - "without coder review"
+  - "code it anyway"
+  - "submit without"
+  - "without attestation"
+  - "upcod"
+  - "fabricat"
+
+safe_exemplars:
+  - "Suggest ICD-10 codes for this clinical note"
+  - "Extract diagnoses and procedures from this encounter"
+  - "Route these code suggestions for coder review"
+  - "Check this claim for bundling and modifier compliance"
+  - "Analyze this denial and generate appeal rationale"
+  - "Flag HCC opportunities from this encounter documentation"
+  - "Score confidence for these suggested codes"
+  - "Validate medical necessity for this procedure code"
+  - "Present coding suggestions with supporting documentation"
+  - "Run pre-submission compliance checks on this claim"
+  - "Review negation detection for 'no evidence of' phrases"
+  - "Check temporal context for historical vs current diagnoses"
+
+tools:
+  - name: clinical_note_ingest
+    description: "Ingest finalized clinician-attested clinical note for coding analysis -- clinician attestation required, AI cannot code unattested documentation"
+    risk_level: low
+  - name: nlp_concept_extract
+    description: "Extract diagnoses, procedures, and clinical concepts from note using NLP with negation detection ('no evidence of'), temporal context ('history of' vs 'current'), and uncertainty markers"
+    risk_level: medium
+  - name: code_suggest
+    description: "Map extracted concepts to ICD-10-CM (70,000+ codes), CPT (10,000+ codes), HCC, and DRG codes with cross-reference to CMS coding guidelines"
+    risk_level: high
+  - name: confidence_score
+    description: "Assign confidence score to each suggested code and route by threshold -- HIGH: auto-queue, MODERATE: coder review, LOW: senior coder/CDI, CONFLICTING: physician query"
+    risk_level: medium
+  - name: coder_review_present
+    description: "Present code suggestions to certified coder with supporting clinical documentation, guideline references, and accept/modify/reject controls per code"
+    risk_level: low
+  - name: compliance_check
+    description: "Run pre-submission compliance checks -- bundling rules, modifier requirements, medical necessity, 60-day overpayment rule, CMS-1500/UB-04 claim form validation"
+    risk_level: medium
+  - name: claim_submit
+    description: "Submit finalized claim to clearinghouse for payer adjudication via HIPAA EDI 837 transaction -- submission constitutes certification of claim accuracy"
+    risk_level: high
+  - name: denial_analyze
+    description: "Analyze denial reason code against clinical documentation, assess appeal viability, and generate appeal rationale with medical necessity narrative if clinically justified"
+    risk_level: high
+
+constraints:
+  max_chain_length: 10
+  max_tool_calls_per_step: 3
+  escalation_threshold: 0.55
+  require_human_above_risk: medium

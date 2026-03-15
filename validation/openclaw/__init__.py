@@ -1,0 +1,1 @@
+# TELOS OpenClaw validation
